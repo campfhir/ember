@@ -1,0 +1,37 @@
+{
+  "name": "@campfhir/ember",
+  "version": "2.3-alpha",
+  "description": "Parse HL7 in Typescript",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "nyc mocha"
+  },
+  "keywords": [
+    "HL7",
+    "v2",
+    "Typescript"
+  ],
+  "author": {
+    "name": "Scott Eremia-Roden"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/campfhir/ember.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/debug": "^4.1.7",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.15.11",
+    "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3"
+  },
+  "dependencies": {
+    "debug": "^4.3.4"
+  }
+}

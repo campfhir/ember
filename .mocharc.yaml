@@ -1,0 +1,8 @@
+spec:
+  - "spec/**/*.spec.ts"
+ui: "bdd"
+check-leaks: true
+require:
+  - "ts-node/register"
+  - "dotenv/config"
+recursive: true
