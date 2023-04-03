@@ -7,6 +7,8 @@ import {
   MSH,
   WrappedResult,
   PersonLocation,
+  ExtendedCompositeNameAndIdForOrganizations,
+  JobCodeClass,
 } from "../../../typings";
 import {
   CodedElement,
@@ -138,6 +140,48 @@ export const parseCodedElement = (
     alternateText: unescapeStrings(component[4], controlCharacters),
     nameOfAlternateCodingSystem: unescapeStrings(
       component[5],
+      controlCharacters
+    ),
+  };
+};
+
+export const parseJobCodeClass = (
+  field: string | undefined,
+  controlCharacters: MSH["controlCharacters"]
+): JobCodeClass => {
+  const { componentSeparator } = controlCharacters;
+  const component = field?.split(componentSeparator);
+  if (component == null) return {};
+
+  return {
+    jobCode: unescapeStrings(component[0], controlCharacters),
+    jobClass: unescapeStrings(component[1], controlCharacters),
+  };
+};
+
+export const parseExtendedCompositeNameAndIdForOrganizations = (
+  field: string | undefined,
+  controlCharacters: MSH["controlCharacters"]
+): ExtendedCompositeNameAndIdForOrganizations => {
+  const { componentSeparator } = controlCharacters;
+  const component = field?.split(componentSeparator);
+  if (component == null) return {};
+  return {
+    organizationName: unescapeStrings(component[0], controlCharacters),
+    organizationNameTypeCode: unescapeStrings(component[1], controlCharacters),
+    idNumber: component[2] ? parseInt(component[2], 10) : undefined,
+    checkDigit: unescapeStrings(component[3], controlCharacters),
+    codeIdentifyingTheCheckDigitSchemeEmployed: unescapeStrings(
+      component[4],
+      controlCharacters
+    ),
+    assigningAuthority: parseHierarchicDesignator(
+      component[5],
+      controlCharacters
+    ),
+    identifierTypeCode: unescapeStrings(component[6], controlCharacters),
+    assigningFacilityId: parseHierarchicDesignator(
+      component[7],
       controlCharacters
     ),
   };

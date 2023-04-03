@@ -11,6 +11,7 @@ describe("Given an ADT AO4", () => {
 EVN||200007010800||||200007010800
 PID|||583295^^^ADT1||DOE^JANE||19610615|M||2106-3|123 MAIN \\T\\ CLARK STREET^^GREENSBORO^NC^27401-1020|GL|(919)379-1212|(919)271-3434~(919)277-3114||S||PATID12345001^2^M10|123456789|9-87654^NC
 NK1|1|BATES^RONALD^L|SPO|||||20011105
+NK1|2|BATES^JUDY^L|SISTER|||||20011105
 PV1||E||||||5101^NELL^FREDERICK^P^^DR|||||||||||V1295^^^ADT1|||||||||||||||||||||||||200007010800||||||||
 PV2|||^ABDOMINAL PAIN
 OBX|1|HD|SR Instance UID||1.123456.2.2000.31.2.1||||||F||||||
@@ -53,6 +54,7 @@ IN2|ID1551001|SSN12345678`;
     expect(msg.patientVisit.referringDoctor?.[0].familyName).to.equal("NELL");
     expect(msg.patientVisit.admitDateTime).to.equal("200007010800");
     expect(msg.eventType.recordedDateTime).to.equal("200007010800");
+    console.log(msg.nextOfKin);
   });
 });
 

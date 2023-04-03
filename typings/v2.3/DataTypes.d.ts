@@ -7,6 +7,61 @@ export type CodedElement = {
   nameOfAlternateCodingSystem?: string;
 };
 
+export type ExtendedCompositeNameAndIdForOrganizations = {
+  organizationName?: string;
+  /**
+   * | Code | Description                 |
+   * | ---- | --------------------------- |
+   * | A    | Alias name                  |
+   * | D    | Display name                |
+   * | L    | Legal name                  |
+   * | SL   | Stock exchange listing name |
+   */
+  organizationNameTypeCode?: string;
+  idNumber?: number;
+  checkDigit?: string;
+  /**
+   * Common values
+   *
+   * | Code | Value            |
+   * | ---- | ---------------- |
+   * | M10  | Mod 10 algorithm |
+   * | M11  | Mod 11 algorithm |
+   */
+  codeIdentifyingTheCheckDigitSchemeEmployed?: string;
+  assigningAuthority?: HierarchicDesignator;
+  /**
+   * Common values
+   *
+   * | Value | Description                   |
+   * | ----- | ----------------------------- |
+   * | AM    | American Express              |
+   * | AN    | Account number                |
+   * | BR    | Birth registry number         |
+   * | DI    | Diners Club card              |
+   * | DL    | Drivers license number        |
+   * | DN    | Doctor number                 |
+   * | DS    | Discover Card                 |
+   * | EI    | Employee number               |
+   * | EN    | Employer number               |
+   * | GI    | Guarantor internal identifier |
+   * | GN    | Guarantor external identifier |
+   * | MA    | Medicaid number               |
+   * | MC    | Medicare number               |
+   * | MR    | Medical record number         |
+   * | MS    | MasterCard                    |
+   * | PI    | Patient internal identifier   |
+   * | PT    | Patient external identifier   |
+   * | RR    | Railroad Retirement number    |
+   * | SS    | Social Security number        |
+   * | VN    | Visit number                  |
+   * | VS    | VISA                          |
+   * | XX    | Organization Identifier       |
+   */
+  identifierTypeCode?: string;
+  assigningFacilityId?: HierarchicDesignator;
+};
+
 export type HierarchicDesignator = {
   namespaceId?: string;
   universalId?: string;
@@ -58,7 +113,7 @@ export type ExtendedCompositeIdNumberAndName = {
   nameType?: string;
   identifierCheckDigit?: string;
   /**
-   * Common Code Values
+   * Common values
    *
    * | Code | Value            |
    * | ---- | ---------------- |
@@ -67,7 +122,9 @@ export type ExtendedCompositeIdNumberAndName = {
    */
   codeIdentifyingTheCheckDigitSchemeEmployed?: string;
   /**
-   * | VALUE | DESCRIPTION                   |
+   * Common values
+   *
+   * | Value | Description                   |
    * | ----- | ----------------------------- |
    * | AM    | American Express              |
    * | AN    | Account number                |
@@ -179,6 +236,11 @@ export type ExtendedPersonName = {
    * | P    | Phonetic (i.e., ASCII, Katakana, Hiragana, etc.) |
    */
   nameRepresentationCode?: string;
+};
+
+export type JobCodeClass = {
+  jobCode?: string;
+  jobClass?: string;
 };
 
 export type ExtendedAddress = {

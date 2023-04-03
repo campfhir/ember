@@ -4,6 +4,7 @@ import {
   ExtendedAddress,
   ExtendedCompositeIdNumberAndName,
   ExtendedCompositeIdWithCheckDigit,
+  ExtendedCompositeNameAndIdForOrganizations,
   ExtendedPersonName,
   ExtendedTelecommunicationNumber,
   FinancialClass,
@@ -397,7 +398,45 @@ export type NCK = {};
 
 /** The NK1 segment contains information about the patient’s other related parties.  Any associated parties may be identified.  Utilizing NK1-1-set ID, multiple NK1 segments can be sent to patient accounts
  */
-export type NK1 = {};
+export type NK1 = {
+  setID: string;
+  name?: ExtendedPersonName[];
+  relationship?: CodedElement;
+  address?: ExtendedAddress[];
+  phoneNumber?: ExtendedTelecommunicationNumber[];
+  businessPhoneNumber?: ExtendedTelecommunicationNumber[];
+  contactRole?: CodedElement;
+  startDate?: string;
+  endDate?: string;
+  associatedPartiesJobTitle?: string;
+  jobAssociatedPartiesCodeClass?: JobClassCode;
+  associatedPartiesEmployeeNumber?: ExtendedCompositeIdWithCheckDigit;
+  organizationName?: ExtendedCompositeNameAndIdForOrganizations[];
+  maritalStatus?: string;
+  sex?: string;
+  dateOfBirth?: string;
+  livingDependency?: string[];
+  ambulatoryStatus?: string[];
+  citizenship?: string[];
+  primaryLanguage?: CodedElement;
+  livingArrangement?: string;
+  publicityIndicator?: CodedElement;
+  protectionIndicator?: string;
+  studentIndicator?: string;
+  religion?: string;
+  mothersMaidenName?: ExtendedPersonName;
+  nationalityCode?: CodedElement;
+  ethnicGroup?: string;
+  contactReason?: CodedElement[];
+  contactPersonName?: ExtendedPersonName[];
+  contactPersonTelephoneNumber?: ExtendedTelecommunicationNumber[];
+  contactPersonAddress?: ExtendedAddress[];
+  associatedPartyIdentifiers?: ExtendedCompositeIdWithCheckDigit[];
+  jobStatus?: string;
+  race?: string;
+  handicap?: string;
+  contactPersonSocialSecurityNumber?: string;
+};
 
 /** The NPU segment allows the updating of census (bed status) data without sending patient-specific data.  An example might include changing the status of a bed from “housekeeping” to “unoccupied.”
  */
@@ -498,7 +537,75 @@ export type PD1 = {
    * | WU   | Walk up                      |
    */
   livingDependency?: string;
+  /**
+   * Common codes
+   *
+   * | Code | Description |
+   * | ---- | ----------- |
+   * | A    | Alone       |
+   * | F    | Family      |
+   * | I    | Institution |
+   * | R    | Relative    |
+   * | S    | Spouse Only |
+   * | U    | Unknown     |
+   */
   livingArrangement?: string;
+  patientPrimaryFacility?: ExtendedCompositeNameAndIdForOrganizations[];
+  patientPrimaryCareProviderNameAndIdNumber?: ExtendedCompositeIdNumberAndName[];
+  /**
+   * Common codes
+   *
+   * | Code | Description       |
+   * | ---- | ----------------- |
+   * | F    | Full-time student |
+   * | N    | Not a student     |
+   * | P    | Part-time student |
+   */
+  studentStatus?: string;
+  handicap?: string;
+  /**
+   * Common Values
+   *
+   * | Code | Description                                                             |
+   * | ---- | ----------------------------------------------------------------------- |
+   * | F    | Yes, patient has a living will but it is not on file                    |
+   * | I    | No, patient does not have a living will but information was provided    |
+   * | N    | No, patient does not have a living will and no information was provided |
+   * | U    | Unknown                                                                 |
+   * | Y    | Yes, patient has a living will                                          |
+   */
+  livingWill?: string;
+  /**
+   * Common Values
+   *
+   * | Code | Description                                                          |
+   * | ---- | -------------------------------------------------------------------- |
+   * | F    | Yes, patient is a donor, but card is not on file                     |
+   * | I    | No, patient does not have a living will but information was provided |
+   * | U    | Unknown                                                              |
+   * | Y    | Yes, patient is a donor and card is on file                          |
+   */
+  organDonor?: string;
+  /**
+   * Common Values
+   *
+   * | Code | Description |
+   * | ---- | ----------- |
+   * | Y    | Yes         |
+   * | N    | No          |
+   */
+  separateBill?: string;
+  duplicatePatient?: ExtendedCompositeIdWithCheckDigit[];
+  publicityIndicator?: CodedElement;
+  /**
+   * Common Values
+   *
+   * | Code | Description |
+   * | ---- | ----------- |
+   * | Y    | Yes         |
+   * | N    | No          |
+   */
+  protectionIndicator?: string;
 };
 
 /**

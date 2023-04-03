@@ -1,6 +1,6 @@
 import type { WrappedResult, MSH } from "../../../typings";
 import { ADT_A04 } from "../../../typings/v2.3";
-import { parsePID, parsePV1, parseEVN } from "../segmentParsers";
+import { parsePID, parsePV1, parseEVN, parseNK1 } from "../segmentParsers";
 import { getSegmentHeader } from "../utils";
 
 export const parseAdt = (
@@ -35,6 +35,15 @@ const parseAdt_A04 = (msh: MSH, segments: string[]): WrappedResult<ADT_A04> => {
     if (header === "EVN") {
       const evn = parseEVN(fieldString, msh.controlCharacters);
       hl7Message.eventType = evn;
+      continue;
+    }
+    if (header === "NK1") {
+      const nk1 = parseNK1(fieldString, msh.controlCharacters);
+      if (hl7Message.nextOfKin == null) {
+        hl7Message.nextOfKin = [nk1];
+        continue;
+      }
+      hl7Message.nextOfKin.push(nk1);
       continue;
     }
   }
