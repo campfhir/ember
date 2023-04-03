@@ -6,5 +6,5 @@ export const parseDB1 = (
 ): DB1 => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const db1 = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };

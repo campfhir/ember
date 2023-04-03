@@ -6,6 +6,5 @@ export const parsePD1 = (
 ): PD1 => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const pd1 = segment.split(fieldSeparator);
-
-  return {};
+  throw new Error("Not implemented");
 };

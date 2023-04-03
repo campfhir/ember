@@ -6,5 +6,5 @@ export const parseIN1 = (
 ): IN1 => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const in1 = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };

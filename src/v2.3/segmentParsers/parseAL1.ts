@@ -6,5 +6,5 @@ export const parseAL1 = (
 ): AL1 => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const al1 = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };

@@ -6,5 +6,5 @@ export const parseGT1 = (
 ): GT1 => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const gt1 = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };

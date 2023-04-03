@@ -483,9 +483,23 @@ More than one PCR segment can be included in the message if more than one produc
  */
 export type PCR = {};
 
-/** The patient additional demographic segment contains demographic information that is likely to change about the patient.
+/** The patient additional demographic segment contains demographic information
+ *  that is likely to change about the patient.
  */
-export type PD1 = {};
+export type PD1 = {
+  /**
+   * Common codes
+   *
+   * | Code | Description                  |
+   * | ---- | ---------------------------- |
+   * | CB   | Common Bath                  |
+   * | D    | Spouse Dependent             |
+   * | M    | Medical Supervision Required |
+   * | WU   | Walk up                      |
+   */
+  livingDependency?: string;
+  livingArrangement?: string;
+};
 
 /**
  */

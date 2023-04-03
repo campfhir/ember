@@ -6,5 +6,5 @@ export const parseNK1 = (
 ): NK1 => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const NK1 = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };

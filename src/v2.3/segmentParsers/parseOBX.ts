@@ -6,5 +6,5 @@ export const parseOBX = (
 ): OBX => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const obx = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };

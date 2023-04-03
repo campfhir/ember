@@ -6,5 +6,5 @@ export const parseUB2 = (
 ): UB2 => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const ub2 = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };

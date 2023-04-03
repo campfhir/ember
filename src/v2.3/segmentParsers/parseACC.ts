@@ -6,5 +6,5 @@ export const parseACC = (
 ): ACC => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const acc = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };

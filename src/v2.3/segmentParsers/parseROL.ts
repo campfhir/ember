@@ -6,5 +6,5 @@ export const parseROL = (
 ): ROL => {
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const rol = segment.split(fieldSeparator);
-  return {};
+  throw new Error("Not implemented");
 };
