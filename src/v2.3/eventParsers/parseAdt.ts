@@ -1,17 +1,29 @@
-import type { WrappedResult, MSH } from "../../../typings";
+import type { WrappedResult, MessageSegments } from "../../../typings";
+
 import { ADT_A04 } from "../../../typings/v2.3";
-import { parsePID, parsePV1, parseEVN, parseNK1 } from "../segmentParsers";
+import {
+  parsePID,
+  parsePV1,
+  parseEVN,
+  parseNK1,
+  parsePD1,
+  parseAL1,
+  parseACC,
+} from "../segmentParsers";
 import { getSegmentHeader } from "../utils";
 
 export const parseAdt = (
-  msh: MSH,
+  msh: MessageSegments["MSH"],
   segments: string[]
 ): WrappedResult<ADT_A04> => {
   if (msh.message.event === "A04") return parseAdt_A04(msh, segments);
   return { ok: false, err: new Error("Not Implemented") };
 };
 
-const parseAdt_A04 = (msh: MSH, segments: string[]): WrappedResult<ADT_A04> => {
+export function parseAdt_A04(
+  msh: MessageSegments["MSH"],
+  segments: string[]
+): WrappedResult<ADT_A04> {
   const hl7Message: Partial<ADT_A04> = {
     messageHeader: msh,
   };
@@ -46,6 +58,25 @@ const parseAdt_A04 = (msh: MSH, segments: string[]): WrappedResult<ADT_A04> => {
       hl7Message.nextOfKin.push(nk1);
       continue;
     }
+    if (header === "PD1") {
+      const pd1 = parsePD1(fieldString, msh.controlCharacters);
+      hl7Message.patientDemographics = pd1;
+      continue;
+    }
+    if (header === "AL1") {
+      const al1 = parseAL1(fieldString, msh.controlCharacters);
+      if (hl7Message.patientAllergyInformation == null) {
+        hl7Message.patientAllergyInformation = [al1];
+        continue;
+      }
+      hl7Message.patientAllergyInformation.push(al1);
+      continue;
+    }
+    if (header === "ACC") {
+      const acc = parseACC(fieldString, msh.controlCharacters);
+      hl7Message.accident = acc;
+      continue;
+    }
   }
   const a04 = hl7Message as ADT_A04;
 
@@ -74,4 +105,4 @@ const parseAdt_A04 = (msh: MSH, segments: string[]): WrappedResult<ADT_A04> => {
     };
   }
   return { ok: true, val: a04 as ADT_A04, warnings };
-};
+}

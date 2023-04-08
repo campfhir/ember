@@ -7,7 +7,7 @@ import {
   parseExtendedCompositeNameAndIdForOrganizations,
   parseExtendedTelecommunicationNumber,
   parseJobCodeClass,
-  unescapeStrings,
+  hl7StringEscaper,
 } from "../utils";
 
 export const parseNK1 = (
@@ -18,7 +18,7 @@ export const parseNK1 = (
   const nk1 = segment.split(fieldSeparator);
 
   return {
-    setID: unescapeStrings(nk1[1], controlCharacters) ?? "",
+    setID: hl7StringEscaper(nk1[1], controlCharacters) ?? "",
     name: nk1[2]
       ?.split(repetitionSeparator)
       .map((person) => parseExtendPersonName(person, controlCharacters)),
@@ -37,9 +37,9 @@ export const parseNK1 = (
         parseExtendedTelecommunicationNumber(phone, controlCharacters)
       ),
     contactRole: parseCodedElement(nk1[7], controlCharacters),
-    startDate: unescapeStrings(nk1[8], controlCharacters),
-    endDate: unescapeStrings(nk1[9], controlCharacters),
-    associatedPartiesJobTitle: unescapeStrings(nk1[10], controlCharacters),
+    startDate: hl7StringEscaper(nk1[8], controlCharacters),
+    endDate: hl7StringEscaper(nk1[9], controlCharacters),
+    associatedPartiesJobTitle: hl7StringEscaper(nk1[10], controlCharacters),
     jobAssociatedPartiesCodeClass: parseJobCodeClass(
       nk1[11],
       controlCharacters
@@ -53,29 +53,29 @@ export const parseNK1 = (
       .map((org) =>
         parseExtendedCompositeNameAndIdForOrganizations(org, controlCharacters)
       ),
-    maritalStatus: unescapeStrings(nk1[14], controlCharacters),
-    sex: unescapeStrings(nk1[15], controlCharacters),
-    dateOfBirth: unescapeStrings(nk1[16], controlCharacters),
+    maritalStatus: hl7StringEscaper(nk1[14], controlCharacters),
+    sex: hl7StringEscaper(nk1[15], controlCharacters),
+    dateOfBirth: hl7StringEscaper(nk1[16], controlCharacters),
     livingDependency: nk1[17]
       ?.split(repetitionSeparator)
-      .map((dep) => unescapeStrings(dep, controlCharacters)),
+      .map((dep) => hl7StringEscaper(dep, controlCharacters)),
     ambulatoryStatus: nk1[18]
       ?.split(repetitionSeparator)
       .map((ambulatoryStatus) =>
-        unescapeStrings(ambulatoryStatus, controlCharacters)
+        hl7StringEscaper(ambulatoryStatus, controlCharacters)
       ),
     citizenship: nk1[19]
       ?.split(repetitionSeparator)
-      .map((citizenship) => unescapeStrings(citizenship, controlCharacters)),
+      .map((citizenship) => hl7StringEscaper(citizenship, controlCharacters)),
     primaryLanguage: parseCodedElement(nk1[20], controlCharacters),
-    livingArrangement: unescapeStrings(nk1[21], controlCharacters),
+    livingArrangement: hl7StringEscaper(nk1[21], controlCharacters),
     publicityIndicator: parseCodedElement(nk1[22], controlCharacters),
-    protectionIndicator: unescapeStrings(nk1[23], controlCharacters),
-    studentIndicator: unescapeStrings(nk1[24], controlCharacters),
-    religion: unescapeStrings(nk1[25], controlCharacters),
+    protectionIndicator: hl7StringEscaper(nk1[23], controlCharacters),
+    studentIndicator: hl7StringEscaper(nk1[24], controlCharacters),
+    religion: hl7StringEscaper(nk1[25], controlCharacters),
     mothersMaidenName: parseExtendPersonName(nk1[26], controlCharacters),
     nationalityCode: parseCodedElement(nk1[27], controlCharacters),
-    ethnicGroup: unescapeStrings(nk1[28], controlCharacters),
+    ethnicGroup: hl7StringEscaper(nk1[28], controlCharacters),
     contactReason: nk1[29]
       ?.split(repetitionSeparator)
       .map((reason) => parseCodedElement(reason, controlCharacters)),
@@ -95,10 +95,10 @@ export const parseNK1 = (
       .map((id) =>
         parseExtendedCompositeIdWithCheckDigit(id, controlCharacters)
       ),
-    jobStatus: unescapeStrings(nk1[34], controlCharacters),
-    race: unescapeStrings(nk1[35], controlCharacters),
-    handicap: unescapeStrings(nk1[36], controlCharacters),
-    contactPersonSocialSecurityNumber: unescapeStrings(
+    jobStatus: hl7StringEscaper(nk1[34], controlCharacters),
+    race: hl7StringEscaper(nk1[35], controlCharacters),
+    handicap: hl7StringEscaper(nk1[36], controlCharacters),
+    contactPersonSocialSecurityNumber: hl7StringEscaper(
       nk1[37],
       controlCharacters
     ),

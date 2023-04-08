@@ -9,6 +9,8 @@ import {
   PersonLocation,
   ExtendedCompositeNameAndIdForOrganizations,
   JobCodeClass,
+  MessageSegments,
+  SegmentHeaders,
 } from "../../../typings";
 import {
   CodedElement,
@@ -17,7 +19,6 @@ import {
   ExtendedPersonName,
   HeaderResults,
   HierarchicDesignator,
-  SegmentHeader,
 } from "../../../typings";
 
 export const parseExtendedAddress = (
@@ -28,19 +29,19 @@ export const parseExtendedAddress = (
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    streetAddress: unescapeStrings(component[0], controlCharacters),
-    otherDesignation: unescapeStrings(component[1], controlCharacters),
-    city: unescapeStrings(component[2], controlCharacters),
-    stateOrProvince: unescapeStrings(component[3], controlCharacters),
-    zipOrPostalCode: unescapeStrings(component[4], controlCharacters),
-    country: unescapeStrings(component[5], controlCharacters),
-    addressType: unescapeStrings(component[6], controlCharacters),
-    otherGeographicDesignation: unescapeStrings(
+    streetAddress: hl7StringEscaper(component[0], controlCharacters),
+    otherDesignation: hl7StringEscaper(component[1], controlCharacters),
+    city: hl7StringEscaper(component[2], controlCharacters),
+    stateOrProvince: hl7StringEscaper(component[3], controlCharacters),
+    zipOrPostalCode: hl7StringEscaper(component[4], controlCharacters),
+    country: hl7StringEscaper(component[5], controlCharacters),
+    addressType: hl7StringEscaper(component[6], controlCharacters),
+    otherGeographicDesignation: hl7StringEscaper(
       component[7],
       controlCharacters
     ),
-    countyParishCode: unescapeStrings(component[8], controlCharacters),
-    censusTract: unescapeStrings(component[9], controlCharacters),
+    countyParishCode: hl7StringEscaper(component[8], controlCharacters),
+    censusTract: hl7StringEscaper(component[9], controlCharacters),
   };
 };
 
@@ -52,12 +53,12 @@ export const parseDriversLicenseNumber = (
   const { componentSeparator } = controlCharacters;
   const components = field.split(componentSeparator);
   return {
-    driversLicenseNumber: unescapeStrings(components[0], controlCharacters),
-    issuingStateProvinceCounty: unescapeStrings(
+    driversLicenseNumber: hl7StringEscaper(components[0], controlCharacters),
+    issuingStateProvinceCounty: hl7StringEscaper(
       components[1],
       controlCharacters
     ),
-    expirationDate: unescapeStrings(components[2], controlCharacters),
+    expirationDate: hl7StringEscaper(components[2], controlCharacters),
   };
 };
 
@@ -69,8 +70,8 @@ export const parseExtendedTelecommunicationNumber = (
   const component = field.split(componentSeparator);
   if (component == null) return {};
   return {
-    telephoneNumber: unescapeStrings(component[0], controlCharacters),
-    telecommunicationUseCode: unescapeStrings(
+    telephoneNumber: hl7StringEscaper(component[0], controlCharacters),
+    telecommunicationUseCode: hl7StringEscaper(
       component[1],
       controlCharacters
     ) as
@@ -83,11 +84,11 @@ export const parseExtendedTelecommunicationNumber = (
       | "VHN"
       | "WPN"
       | undefined,
-    telecommunicationEquipmentType: unescapeStrings(
+    telecommunicationEquipmentType: hl7StringEscaper(
       component[2],
       controlCharacters
     ) as "BP" | "CP" | "FX" | "Internet" | "MD" | "PH" | "X.400" | undefined,
-    emailAddress: unescapeStrings(component[3], controlCharacters),
+    emailAddress: hl7StringEscaper(component[3], controlCharacters),
     countryCode: component[4],
     areaCityCode: component[5],
     extension: component[7],
@@ -103,13 +104,13 @@ export const parseExtendPersonName = (
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    familyName: unescapeStrings(component[0], controlCharacters),
-    givenName: unescapeStrings(component[1], controlCharacters),
-    middleInitialOrName: unescapeStrings(component[2], controlCharacters),
-    suffix: unescapeStrings(component[3], controlCharacters),
-    prefix: unescapeStrings(component[4], controlCharacters),
-    degree: unescapeStrings(component[5], controlCharacters),
-    nameTypeCode: unescapeStrings(component[6], controlCharacters) as
+    familyName: hl7StringEscaper(component[0], controlCharacters),
+    givenName: hl7StringEscaper(component[1], controlCharacters),
+    middleInitialOrName: hl7StringEscaper(component[2], controlCharacters),
+    suffix: hl7StringEscaper(component[3], controlCharacters),
+    prefix: hl7StringEscaper(component[4], controlCharacters),
+    degree: hl7StringEscaper(component[5], controlCharacters),
+    nameTypeCode: hl7StringEscaper(component[6], controlCharacters) as
       | "A"
       | "C"
       | "D"
@@ -117,11 +118,10 @@ export const parseExtendPersonName = (
       | "M"
       | "O"
       | undefined,
-    nameRepresentationCode: unescapeStrings(component[7], controlCharacters) as
-      | "A"
-      | "I"
-      | "P"
-      | undefined,
+    nameRepresentationCode: hl7StringEscaper(
+      component[7],
+      controlCharacters
+    ) as "A" | "I" | "P" | undefined,
   };
 };
 
@@ -133,12 +133,12 @@ export const parseCodedElement = (
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    identifier: unescapeStrings(component[0], controlCharacters),
-    text: unescapeStrings(component[1], controlCharacters),
-    nameOfCodingSystem: unescapeStrings(component[2], controlCharacters),
-    alternateIdentifier: unescapeStrings(component[3], controlCharacters),
-    alternateText: unescapeStrings(component[4], controlCharacters),
-    nameOfAlternateCodingSystem: unescapeStrings(
+    identifier: hl7StringEscaper(component[0], controlCharacters),
+    text: hl7StringEscaper(component[1], controlCharacters),
+    nameOfCodingSystem: hl7StringEscaper(component[2], controlCharacters),
+    alternateIdentifier: hl7StringEscaper(component[3], controlCharacters),
+    alternateText: hl7StringEscaper(component[4], controlCharacters),
+    nameOfAlternateCodingSystem: hl7StringEscaper(
       component[5],
       controlCharacters
     ),
@@ -154,8 +154,8 @@ export const parseJobCodeClass = (
   if (component == null) return {};
 
   return {
-    jobCode: unescapeStrings(component[0], controlCharacters),
-    jobClass: unescapeStrings(component[1], controlCharacters),
+    jobCode: hl7StringEscaper(component[0], controlCharacters),
+    jobClass: hl7StringEscaper(component[1], controlCharacters),
   };
 };
 
@@ -167,11 +167,11 @@ export const parseExtendedCompositeNameAndIdForOrganizations = (
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    organizationName: unescapeStrings(component[0], controlCharacters),
-    organizationNameTypeCode: unescapeStrings(component[1], controlCharacters),
+    organizationName: hl7StringEscaper(component[0], controlCharacters),
+    organizationNameTypeCode: hl7StringEscaper(component[1], controlCharacters),
     idNumber: component[2] ? parseInt(component[2], 10) : undefined,
-    checkDigit: unescapeStrings(component[3], controlCharacters),
-    codeIdentifyingTheCheckDigitSchemeEmployed: unescapeStrings(
+    checkDigit: hl7StringEscaper(component[3], controlCharacters),
+    codeIdentifyingTheCheckDigitSchemeEmployed: hl7StringEscaper(
       component[4],
       controlCharacters
     ),
@@ -179,7 +179,7 @@ export const parseExtendedCompositeNameAndIdForOrganizations = (
       component[5],
       controlCharacters
     ),
-    identifierTypeCode: unescapeStrings(component[6], controlCharacters),
+    identifierTypeCode: hl7StringEscaper(component[6], controlCharacters),
     assigningFacilityId: parseHierarchicDesignator(
       component[7],
       controlCharacters
@@ -195,9 +195,9 @@ export const parseExtendedCompositeIdWithCheckDigit = (
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    id: unescapeStrings(component[0], controlCharacters),
-    checkDigit: unescapeStrings(component[1], controlCharacters),
-    codeIdentifyingTheCheckDigitSchemeEmployed: unescapeStrings(
+    id: hl7StringEscaper(component[0], controlCharacters),
+    checkDigit: hl7StringEscaper(component[1], controlCharacters),
+    codeIdentifyingTheCheckDigitSchemeEmployed: hl7StringEscaper(
       component[2],
       controlCharacters
     ),
@@ -206,7 +206,7 @@ export const parseExtendedCompositeIdWithCheckDigit = (
       controlCharacters
     ),
 
-    identifierTypeCode: unescapeStrings(component[4], controlCharacters),
+    identifierTypeCode: hl7StringEscaper(component[4], controlCharacters),
     assigningFacility: parseHierarchicDesignator(
       component[5],
       controlCharacters
@@ -222,16 +222,16 @@ export const parseHierarchicDesignator = (
   const components = field?.split(componentSeparator);
   if (components == null) return {};
   return {
-    namespaceId: unescapeStrings(components[0], controlCharacters),
-    universalId: unescapeStrings(components[1], controlCharacters),
-    universalIdType: unescapeStrings(components[2], controlCharacters),
+    namespaceId: hl7StringEscaper(components[0], controlCharacters),
+    universalId: hl7StringEscaper(components[1], controlCharacters),
+    universalIdType: hl7StringEscaper(components[2], controlCharacters),
   };
 };
 
 export const getSegmentHeader = (
   segment: string
 ): WrappedResult<HeaderResults> => {
-  const header = segment.substring(0, 3) as SegmentHeader;
+  const header = segment.substring(0, 3) as SegmentHeaders;
   if (header.length < 3)
     return {
       ok: false,
@@ -367,8 +367,8 @@ export const parseFinancial = (
   const components = field?.split(componentSeparator);
   if (components == null) return {};
   return {
-    class: unescapeStrings(components[0], controlCharacters),
-    effectiveDate: unescapeStrings(components[1], controlCharacters),
+    class: hl7StringEscaper(components[0], controlCharacters),
+    effectiveDate: hl7StringEscaper(components[1], controlCharacters),
   };
 };
 
@@ -381,8 +381,8 @@ export const parseDischargeToLocation = (
   if (components == null) return {};
 
   return {
-    location: unescapeStrings(components[0], controlCharacters),
-    effectiveDate: unescapeStrings(components[1], controlCharacters),
+    location: hl7StringEscaper(components[0], controlCharacters),
+    effectiveDate: hl7StringEscaper(components[1], controlCharacters),
   };
 };
 
@@ -395,25 +395,25 @@ export const parseExtendedCompositeIdNumberAndName = (
   if (components == null) return {};
 
   return {
-    idNumber: unescapeStrings(components[0], controlCharacters),
-    familyName: unescapeStrings(components[1], controlCharacters),
-    givenName: unescapeStrings(components[2], controlCharacters),
-    middleInitialOrName: unescapeStrings(components[3], controlCharacters),
-    suffix: unescapeStrings(components[4], controlCharacters),
-    prefix: unescapeStrings(components[5], controlCharacters),
-    degree: unescapeStrings(components[6], controlCharacters),
-    sourceTable: unescapeStrings(components[7], controlCharacters),
+    idNumber: hl7StringEscaper(components[0], controlCharacters),
+    familyName: hl7StringEscaper(components[1], controlCharacters),
+    givenName: hl7StringEscaper(components[2], controlCharacters),
+    middleInitialOrName: hl7StringEscaper(components[3], controlCharacters),
+    suffix: hl7StringEscaper(components[4], controlCharacters),
+    prefix: hl7StringEscaper(components[5], controlCharacters),
+    degree: hl7StringEscaper(components[6], controlCharacters),
+    sourceTable: hl7StringEscaper(components[7], controlCharacters),
     assigningAuthority: parseHierarchicDesignator(
       components[8],
       controlCharacters
     ),
-    nameType: unescapeStrings(components[9], controlCharacters),
-    identifierCheckDigit: unescapeStrings(components[10], controlCharacters),
-    codeIdentifyingTheCheckDigitSchemeEmployed: unescapeStrings(
+    nameType: hl7StringEscaper(components[9], controlCharacters),
+    identifierCheckDigit: hl7StringEscaper(components[10], controlCharacters),
+    codeIdentifyingTheCheckDigitSchemeEmployed: hl7StringEscaper(
       components[11],
       controlCharacters
     ),
-    identifierTypeCode: unescapeStrings(components[12], controlCharacters),
+    identifierTypeCode: hl7StringEscaper(components[12], controlCharacters),
     assigningFacilityId: parseHierarchicDesignator(
       components[13],
       controlCharacters
@@ -430,27 +430,27 @@ export const parsePersonLocation = (
   if (components == null) return {};
 
   return {
-    pointOfCare: unescapeStrings(components[0], controlCharacters),
-    room: unescapeStrings(components[1], controlCharacters),
-    bed: unescapeStrings(components[2], controlCharacters),
+    pointOfCare: hl7StringEscaper(components[0], controlCharacters),
+    room: hl7StringEscaper(components[1], controlCharacters),
+    bed: hl7StringEscaper(components[2], controlCharacters),
     facility: parseHierarchicDesignator(components[3], controlCharacters),
-    locationStatus: unescapeStrings(components[4], controlCharacters),
-    personLocationType: unescapeStrings(components[5], controlCharacters),
-    building: unescapeStrings(components[6], controlCharacters),
-    floor: unescapeStrings(components[7], controlCharacters),
-    locationType: unescapeStrings(components[8], controlCharacters),
+    locationStatus: hl7StringEscaper(components[4], controlCharacters),
+    personLocationType: hl7StringEscaper(components[5], controlCharacters),
+    building: hl7StringEscaper(components[6], controlCharacters),
+    floor: hl7StringEscaper(components[7], controlCharacters),
+    locationType: hl7StringEscaper(components[8], controlCharacters),
   };
 };
 
-export function unescapeStrings(
+export function hl7StringEscaper(
   input: string,
   controlCharacters: MSH["controlCharacters"]
 ): string;
-export function unescapeStrings(
+export function hl7StringEscaper(
   input: undefined,
   controlCharacters: MSH["controlCharacters"]
 ): undefined;
-export function unescapeStrings(
+export function hl7StringEscaper(
   input: string | undefined,
   controlCharacters: MSH["controlCharacters"]
 ): string | undefined {
@@ -474,4 +474,27 @@ export function unescapeStrings(
       `${escapeCharacter}X0D${escapeCharacter}`,
       String.fromCharCode(13)
     );
+}
+
+/**
+ *
+ * @param str Takes some array strings and maps to an object
+ * @param def for each item in the array we map to a key and parse the string with the provided function of the template key
+ * @returns A mapped object from an array
+ */
+export function hl7ElementMapper<K extends object>(
+  str: string[],
+  def: { [P in keyof K]: ((element: string) => K[P]) | K[P] }
+): K {
+  let item: any = {};
+  let keys = [...Object.keys(def)];
+  for (const ind in str) {
+    const key = keys[ind];
+    const val = str[ind];
+    if (key == null) return item;
+    let res = def[key as keyof K];
+    if (typeof res === "function") item[key] = res(val);
+    else item[key] = res;
+  }
+  return item as K;
 }

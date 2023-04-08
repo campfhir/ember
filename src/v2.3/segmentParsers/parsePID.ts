@@ -6,7 +6,7 @@ import {
   parseExtendedCompositeIdWithCheckDigit,
   parseExtendedTelecommunicationNumber,
   parseExtendPersonName,
-  unescapeStrings,
+  hl7StringEscaper,
 } from "../utils";
 
 export const parsePID = (
@@ -43,16 +43,16 @@ export const parsePID = (
       ?.split(repetitionSeparator)
       ?.map((name) => parseExtendPersonName(name, controlCharacters)),
     mothersMaidenName: parseExtendPersonName(pid[6], controlCharacters),
-    dateOfBirth: unescapeStrings(pid[7], controlCharacters),
+    dateOfBirth: hl7StringEscaper(pid[7], controlCharacters),
     sex: pid[8],
     patientAlias: pid[9]
       ?.split(repetitionSeparator)
       ?.map((name) => parseExtendPersonName(name, controlCharacters)),
-    patientRace: unescapeStrings(pid[10], controlCharacters),
+    patientRace: hl7StringEscaper(pid[10], controlCharacters),
     patientAddress: pid[11]
       ?.split(repetitionSeparator)
       ?.map((address) => parseExtendedAddress(address, controlCharacters)),
-    countyCode: unescapeStrings(pid[12], controlCharacters),
+    countyCode: hl7StringEscaper(pid[12], controlCharacters),
     homePhoneNumber: pid[13]
       ?.split(repetitionSeparator)
       .map((number) =>
@@ -75,13 +75,13 @@ export const parsePID = (
     mothersIdentifier: pid[21]
       ?.split(repetitionSeparator)
       ?.map((field) => parseCodedElement(field, controlCharacters)),
-    ethnicGroup: unescapeStrings(pid[22], controlCharacters),
-    birthPlace: unescapeStrings(pid[23], controlCharacters),
+    ethnicGroup: hl7StringEscaper(pid[22], controlCharacters),
+    birthPlace: hl7StringEscaper(pid[23], controlCharacters),
     multipleBirthIndicator: pid[24],
     birthOrder: pid[25] ? parseInt(pid[25], 10) : undefined,
     citizenship: pid[26]
       ?.split(repetitionSeparator)
-      ?.map((field) => unescapeStrings(field, controlCharacters)),
+      ?.map((field) => hl7StringEscaper(field, controlCharacters)),
     veteransMilitaryStatus: parseCodedElement(pid[27], controlCharacters),
     nationalityCode: parseCodedElement(pid[28], controlCharacters),
     patientDeathDateAndTime: pid[29],

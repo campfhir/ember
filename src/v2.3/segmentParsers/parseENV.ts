@@ -1,7 +1,8 @@
 import { EVN, MSH, MessageEvents } from "../../../typings";
 import {
   parseExtendedCompositeIdNumberAndName,
-  unescapeStrings,
+  hl7StringEscaper,
+  hl7ElementMapper,
 } from "../utils";
 
 export const parseEVN = (
@@ -11,15 +12,14 @@ export const parseEVN = (
   const { fieldSeparator, repetitionSeparator } = controlCharacters;
   const evn = segment.split(fieldSeparator);
 
-  return {
-    eventTypeCode: unescapeStrings(evn[1], controlCharacters) as MessageEvents,
-    recordedDateTime: unescapeStrings(evn[2], controlCharacters),
-    dateTimePlannedEvent: unescapeStrings(evn[3], controlCharacters),
-    eventReasonCode: unescapeStrings(evn[4], controlCharacters),
-    operatorId: parseExtendedCompositeIdNumberAndName(
-      evn[5],
-      controlCharacters
-    ),
-    eventOccurred: unescapeStrings(evn[6], controlCharacters),
-  };
+  return hl7ElementMapper(evn, {
+    eventTypeCode: (field) =>
+      hl7StringEscaper(field, controlCharacters) as MessageEvents,
+    recordedDateTime: (field) => hl7StringEscaper(field, controlCharacters),
+    dateTimePlannedEvent: (field) => hl7StringEscaper(field, controlCharacters),
+    eventReasonCode: (field) => hl7StringEscaper(field, controlCharacters),
+    operatorId: (field) =>
+      parseExtendedCompositeIdNumberAndName(field, controlCharacters),
+    eventOccurred: (field) => hl7StringEscaper(field, controlCharacters),
+  });
 };

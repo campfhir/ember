@@ -1,10 +1,4 @@
-import type {
-  HL7Message,
-  MessageTypes,
-  MessageEvents,
-  MSH,
-  WrappedResult,
-} from "../typings";
+import type { HL7Message, WrappedResult } from "../typings";
 import d from "debug";
 
 import { parseAdt, parseMSH } from "./v2.3";

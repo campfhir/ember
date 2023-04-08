@@ -8,7 +8,7 @@ import {
   getSegmentHeader,
   parseCodedElement,
   parseHierarchicDesignator,
-  unescapeStrings,
+  hl7StringEscaper,
 } from "../utils";
 
 export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
@@ -42,38 +42,41 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
     sendingFacility: parseHierarchicDesignator(msh[3], controlCharacters),
     receivingApplication: parseHierarchicDesignator(msh[4], controlCharacters),
     receivingFacility: parseHierarchicDesignator(msh[5], controlCharacters),
-    dateTimeOfMessage: unescapeStrings(msh[6], controlCharacters),
-    security: unescapeStrings(msh[7], controlCharacters),
+    dateTimeOfMessage: hl7StringEscaper(msh[6], controlCharacters),
+    security: hl7StringEscaper(msh[7], controlCharacters),
     message: {
-      type: unescapeStrings(
+      type: hl7StringEscaper(
         msh[8]?.split(componentSeparator)?.[0],
         controlCharacters
       ) as MessageTypes,
-      event: unescapeStrings(
+      event: hl7StringEscaper(
         msh[8]?.split(componentSeparator)?.[1],
         controlCharacters
       ) as MessageEvents,
     },
-    messageControlId: unescapeStrings(msh[9], controlCharacters),
+    messageControlId: hl7StringEscaper(msh[9], controlCharacters),
     processing: {
-      id: unescapeStrings(
+      id: hl7StringEscaper(
         msh[10]?.split(componentSeparator)?.[0],
         controlCharacters
       ),
-      mode: unescapeStrings(
+      mode: hl7StringEscaper(
         msh[10]?.split(componentSeparator)?.[1],
         controlCharacters
       ),
     },
-    versionId: unescapeStrings(msh[11], controlCharacters),
+    versionId: hl7StringEscaper(msh[11], controlCharacters),
     sequenceNumber: msh[12] == null ? parseInt(msh[12], 10) : undefined,
-    continuationPointer: unescapeStrings(msh[13], controlCharacters),
-    acceptAcknowledgementType: unescapeStrings(msh[14], controlCharacters),
-    applicationAcknowledgementType: unescapeStrings(msh[15], controlCharacters),
-    countryCode: unescapeStrings(msh[16], controlCharacters),
+    continuationPointer: hl7StringEscaper(msh[13], controlCharacters),
+    acceptAcknowledgementType: hl7StringEscaper(msh[14], controlCharacters),
+    applicationAcknowledgementType: hl7StringEscaper(
+      msh[15],
+      controlCharacters
+    ),
+    countryCode: hl7StringEscaper(msh[16], controlCharacters),
     characterSet: msh[17]
       ?.split(componentSeparator, 3)
-      ?.map((val) => unescapeStrings(val, controlCharacters)),
+      .map((val) => hl7StringEscaper(val, controlCharacters)),
     principalLanguageOfMessage: parseCodedElement(msh[18], controlCharacters),
   };
 
