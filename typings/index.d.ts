@@ -1,4 +1,4 @@
-export * from "./v2.3";
+export * from "./v2.8";
 export type HL7MappingDefinition<T> = {
   [P in keyof K]: ((element: string) => K[P]) | K[P];
 };
