@@ -116,7 +116,7 @@ export const parseExtendedTelecommunicationNumber = (
       component[2],
       encodingCharacters
     ) as "BP" | "CP" | "FX" | "Internet" | "MD" | "PH" | "X.400" | undefined,
-    emailAddress: hl7StringEscaper(component[3], encodingCharacters),
+    communicationAddress: hl7StringEscaper(component[3], encodingCharacters),
     countryCode: component[4],
     areaCityCode: component[5],
     extension: component[7],

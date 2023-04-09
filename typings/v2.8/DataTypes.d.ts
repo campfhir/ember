@@ -411,6 +411,37 @@ export type FinancialClass = {
   effectiveDate?: string;
 };
 
+export type EntityIdentifier = {
+  entityIdentifier?: string;
+  namespaceId?: string;
+  universalId?: string;
+  /**
+   * Common Code Values
+   *
+   *
+   * | Code   | Value                                                                                                                                                                                                                                                                                          |
+   * | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   * | CLIA   | Clinical Laboratory Improvement Amendments. Allows for the ability to designate organization identifier as a "CLIA" assigned number (for labs)                                                                                                                                                 |
+   * | CLIP   |                                                                                                                                                                                                                                                                                                |
+   * | DNS    | An Internet dotted name. Either in ASCII or as integers                                                                                                                                                                                                                                        |
+   * | EUI64  | IEEE 64-bit Extended Unique Identifier is comprised of a 24-bit company identifier and a 40-bit instance identifier. The value shall be formatted as 16 ASCII HEX digits, for example, "AABBCC1122334455". The 24-bit company identifier, formally known as                                    |
+   * | GUID   | Same as UUID                                                                                                                                                                                                                                                                                   |
+   * | HCD    | The CEN Healthcare Coding Scheme Designator. (Identifiers used in DICOM follow this assignment scheme.)                                                                                                                                                                                        |
+   * | HL7    | Reserved for future HL7 registration schemes                                                                                                                                                                                                                                                   |
+   * | ISO    | An International Standards Organization Object Identifier                                                                                                                                                                                                                                      |
+   * | L      | These are reserved for locally defined coding schemes                                                                                                                                                                                                                                          |
+   * | M      | These are reserved for locally defined coding schemes                                                                                                                                                                                                                                          |
+   * | N      | These are reserved for locally defined coding schemes                                                                                                                                                                                                                                          |
+   * | Random | Usually a base64 encoded string of random bits. The uniqueness depends on the length of the bits. Mail systems often generate ASCII string "unique names," from a combination of random bits and system names. Obviously, such identifiers will not be constrained to the base64 character set |
+   * | URI    | Uniform Resource Identifier                                                                                                                                                                                                                                                                    |
+   * | UUID   | The DCE Universal Unique Identifier, in accordance with RFC 4122. Recommended format is 32 hexadecimal digits separated by hyphens, in the digit grouping 8-4-4-4-12	                                                                                                                         |
+   * | x400   | An X.400 MHS format identifier                                                                                                                                                                                                                                                                 |
+   * | x500   | An X.500 directory name                                                                                                                                                                                                                                                                        |
+   *
+   */
+  universalIdType?: string;
+};
+
 export type ExtendedPersonName = {
   familyName?: string;
   givenName?: string;
@@ -475,6 +506,9 @@ export type ExtendedAddress = {
 };
 
 export type ExtendedTelecommunicationNumber = {
+  /**
+   * @deprecated as of 2.3
+   */
   telephoneNumber?: string;
   /**
    * | Code | Value                    |
@@ -490,6 +524,9 @@ export type ExtendedTelecommunicationNumber = {
    */
   telecommunicationUseCode?: string;
   /**
+   *
+   * @required v2.7
+   *
    * | Code     | Value                                                             |
    * | -------- | ----------------------------------------------------------------- |
    * | B        | Beeper                                                            |
@@ -501,12 +538,33 @@ export type ExtendedTelecommunicationNumber = {
    * | X.400    | X.400 email address: Use Only If TelecommunicationUse Code Is Net |
    */
   telecommunicationEquipmentType?: string;
-  emailAddress?: string;
+  communicationAddress?: string;
   countryCode?: string;
   areaCityCode?: string;
   phoneNumber?: string;
   extension?: string;
   anyText?: string;
+  extensionPrefix?: string;
+  speedDialCode?: string;
+  unformattedTelephoneNumber?: string;
+  effectiveStartDate?: string;
+  expirationDate?: string;
+  /**
+   * Common Values
+   *
+   * | Code | Description          |
+   * | ---- | -------------------- |
+   * | C    | Corrected            |
+   * | E    | Added in error       |
+   * | M    | Moved                |
+   * | N    | No longer in service |
+   * | R    | On request           |
+   *
+   */
+  expirationReason?: string;
+  protectionCode?: CodedWithExceptions;
+  sharedTelecommunicationIdentifier?: EntityIdentifier;
+  preferenceOrder?: number;
 };
 
 export type DriversLicenseNumber = {

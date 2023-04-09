@@ -8,6 +8,8 @@ import {
   hl7ElementMapper,
   parseExtendPersonNameFactory,
   parseExtendedTelecommunicationNumberFactory,
+  parseHierarchicDesignator,
+  parseHierarchicDesignatorFactory,
 } from "../utils";
 
 export const parsePID = (
@@ -32,7 +34,8 @@ export const parsePID = (
   const parseExtendedAddress = parseExtendedAddressFactory(encodingCharacters);
   const parseDriversLicenseNumber =
     parseDriversLicenseNumberFactory(encodingCharacters);
-
+  const parseHierarchicDesignator =
+    parseHierarchicDesignatorFactory(encodingCharacters);
   const parseExtendPersonName =
     parseExtendPersonNameFactory(encodingCharacters);
   const parseExtendedTelecommunicationNumber =
@@ -98,8 +101,30 @@ export const parsePID = (
           ?.map((field) => hl7StringEscaper(field) ?? ""),
       veteransMilitaryStatus: (field) => parseCodedWithExceptions(field),
       nationality: (field) => parseCodedWithExceptions(field),
-      patientDeathDateAndTime: (field) => field,
-      patientDeathIndicator: (field) => field,
+      patientDeathDateAndTime: (field) => hl7StringEscaper(field),
+      patientDeathIndicator: (field) => hl7StringEscaper(field),
+      identityUnknownIndicator: (field) => hl7StringEscaper(field),
+      identityReliabilityCode: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((id) => parseCodedWithExceptions(id)),
+      lastUpdateDateTime: (field) => hl7StringEscaper(field),
+      lastUpdateFacility: (field) => parseHierarchicDesignator(field),
+      taxonomicClassificationCode: (field) => parseCodedWithExceptions(field),
+      breedCode: (field) => parseCodedWithExceptions(field),
+      strain: (field) => hl7StringEscaper(field),
+      productionClassCode: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((id) => parseCodedWithExceptions(id)),
+      tribalCitizenship: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((id) => parseCodedWithExceptions(id)),
+      patientTelecommunicationInformation: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((tel) => parseExtendedTelecommunicationNumber(tel)),
     },
     { rootName: "PID" }
   );

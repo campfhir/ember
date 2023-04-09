@@ -893,7 +893,18 @@ export type MessageSegments = {
      * | UD	  | Unknown/Default Date of Birth	         |
      * | US   |	Unknown/Default Social Security Number |
      */
-    identityReliabilityCode?: string[];
+    identityReliabilityCode?: CodedWithExceptions[];
+    lastUpdateDateTime?: string;
+    lastUpdateFacility?: HierarchicDesignator;
+    taxonomicClassificationCode?: CodedWithExceptions;
+    breedCode?: CodedWithExceptions;
+    strain?: string;
+    /**
+     *  Spec specifies 2 repetitions
+     */
+    productionClassCode?: CodedWithExceptions[];
+    tribalCitizenship?: CodedWithExceptions[];
+    patientTelecommunicationInformation?: ExtendedTelecommunicationNumber[];
   };
 
   /** The PR1 segment contains information relative to various types of procedures that can be performed on a patient.  The PR1 segment can be used to send procedure information, for example: Surgical, Nuclear Medicine, X-ray with contrast, etc.   The PR1 segment is used to send multiple procedures, for example, for medical records encoding or for billing systems.
