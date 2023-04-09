@@ -2,7 +2,7 @@ import { MSH, AL1 } from "../../../typings";
 import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
 } from "../utils";
 
 export const parseAL1 = (
@@ -13,14 +13,15 @@ export const parseAL1 = (
   const al1 = segment.split(fieldSeparator);
 
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
 
   return hl7ElementMapper<AL1>(
     al1,
     {
       setId: (field) => hl7StringEscaper(field) ?? "",
       allergyType: (field) => hl7StringEscaper(field),
-      allergyCode: (field) => parseCodedElement(field),
+      allergyCode: (field) => parseCodedWithExceptions(field),
       allergyReaction: (field) => hl7StringEscaper(field),
       identificationDate: (field) => hl7StringEscaper(field),
     },

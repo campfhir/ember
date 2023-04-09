@@ -2,7 +2,7 @@ import "mocha";
 import { expect, should } from "chai";
 import { parseHL7 } from "../src";
 import type { HL7Message } from "../typings";
-import { getSegmentHeader } from "../src/v2.3";
+import { getSegmentHeader } from "../src/v2.8";
 should();
 
 describe("Given an ADT AO4", () => {

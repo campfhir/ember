@@ -1,6 +1,6 @@
 import { MSH, PID } from "../../../typings";
 import {
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
   parseDriversLicenseNumberFactory,
   parseExtendedAddressFactory,
   parseExtendedCompositeIdWithCheckDigitFactory,
@@ -25,7 +25,8 @@ export const parsePID = (
   const pid = segment.split(fieldSeparator);
 
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendedCompositeIdWithCheckDigit =
     parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
   const parseExtendedAddress = parseExtendedAddressFactory(encodingCharacters);
@@ -76,7 +77,7 @@ export const parsePID = (
         field
           ?.split(repetitionSeparator)
           ?.map((number) => parseExtendedTelecommunicationNumber(number)),
-      primaryLanguage: (field) => parseCodedElement(field),
+      primaryLanguage: (field) => parseCodedWithExceptions(field),
       maritalStatus: (field) => field,
       religion: (field) => field,
       patientAccountNumber: (field) =>
@@ -86,7 +87,7 @@ export const parsePID = (
       mothersIdentifier: (field) =>
         field
           ?.split(repetitionSeparator)
-          ?.map((field) => parseCodedElement(field)),
+          ?.map((field) => parseCodedWithExceptions(field)),
       ethnicGroup: (field) => hl7StringEscaper(field),
       birthPlace: (field) => hl7StringEscaper(field),
       multipleBirthIndicator: (field) => field,
@@ -95,8 +96,8 @@ export const parsePID = (
         field
           ?.split(repetitionSeparator)
           ?.map((field) => hl7StringEscaper(field) ?? ""),
-      veteransMilitaryStatus: (field) => parseCodedElement(field),
-      nationalityCode: (field) => parseCodedElement(field),
+      veteransMilitaryStatus: (field) => parseCodedWithExceptions(field),
+      nationality: (field) => parseCodedWithExceptions(field),
       patientDeathDateAndTime: (field) => field,
       patientDeathIndicator: (field) => field,
     },

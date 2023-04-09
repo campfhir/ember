@@ -1,6 +1,6 @@
 import { MSH, NK1 } from "../../../typings";
 import {
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
   parseExtendPersonNameFactory,
   parseExtendedCompositeIdWithCheckDigitFactory,
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
@@ -20,7 +20,8 @@ export const parseNK1 = (
 
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
 
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendPersonName =
     parseExtendPersonNameFactory(encodingCharacters);
   const parseExtendedAddress = parseExtendedAddressFactory(encodingCharacters);
@@ -40,7 +41,7 @@ export const parseNK1 = (
         field
           ?.split(repetitionSeparator)
           .map((person) => parseExtendPersonName(person)),
-      relationship: (field) => parseCodedElement(field),
+      relationship: (field) => parseCodedWithExceptions(field),
       address: (field) =>
         field
           ?.split(repetitionSeparator)
@@ -53,7 +54,7 @@ export const parseNK1 = (
         field
           .split(repetitionSeparator)
           .map((phone) => parseExtendedTelecommunicationNumber(phone)),
-      contactRole: (field) => parseCodedElement(field),
+      contactRole: (field) => parseCodedWithExceptions(field),
       startDate: (field) => hl7StringEscaper(field),
       endDate: (field) => hl7StringEscaper(field),
       associatedPartiesJobTitle: (field) => hl7StringEscaper(field),
@@ -79,19 +80,19 @@ export const parseNK1 = (
         field
           ?.split(repetitionSeparator)
           .map((citizenship) => hl7StringEscaper(citizenship) ?? ""),
-      primaryLanguage: (field) => parseCodedElement(field),
+      primaryLanguage: (field) => parseCodedWithExceptions(field),
       livingArrangement: (field) => hl7StringEscaper(field),
-      publicityIndicator: (field) => parseCodedElement(field),
+      publicityIndicator: (field) => parseCodedWithExceptions(field),
       protectionIndicator: (field) => hl7StringEscaper(field),
       studentIndicator: (field) => hl7StringEscaper(field),
       religion: (field) => hl7StringEscaper(field),
       mothersMaidenName: (field) => parseExtendPersonName(field),
-      nationalityCode: (field) => parseCodedElement(field),
+      nationalityCode: (field) => parseCodedWithExceptions(field),
       ethnicGroup: (field) => hl7StringEscaper(field),
       contactReason: (field) =>
         field
           ?.split(repetitionSeparator)
-          .map((reason) => parseCodedElement(reason)),
+          .map((reason) => parseCodedWithExceptions(reason)),
       contactPersonName: (field) =>
         field
           ?.split(repetitionSeparator)

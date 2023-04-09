@@ -1,8 +1,7 @@
 import "mocha";
 import { expect, should } from "chai";
-import { parseHL7 } from "../src";
-import type { HL7Message } from "../typings";
-import { hl7ElementMapper } from "../src/v2.3";
+
+import { hl7ElementMapper } from "../src/v2.8";
 should();
 
 describe("Given an ADT AO4", () => {
@@ -26,7 +25,7 @@ IN2|ID1551001|SSN12345678`;
 
   it("Parse Segments", () => {
     const adtMessage = hl7ElementMapper(adt.split("\n"), {
-      MSH: (segment: string) => segment,
+      MSH: (segment) => segment,
       EVN: (seg) => seg,
       PID: (seg) => seg,
       pd1: (seg) => seg,

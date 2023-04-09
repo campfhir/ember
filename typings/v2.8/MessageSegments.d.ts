@@ -1,6 +1,6 @@
 import { JobCodeClass } from "./DataTypes";
 import {
-  CodedElement,
+  CodedWithExceptions,
   DriversLicenseNumber,
   ExtendedAddress,
   ExtendedCompositeIdNumberAndName,
@@ -20,9 +20,9 @@ import { MessageTypes } from "./MessageTypes";
 export type MessageSegments = {
   ACC: {
     accidentDateTime?: string;
-    accidentCode?: CodedElement;
+    accidentCode?: CodedWithExceptions;
     accidentLocation?: string;
-    autoAccidentState?: CodedElement;
+    autoAccidentState?: CodedWithExceptions;
     /**
      * Common values
      *
@@ -80,7 +80,7 @@ export type MessageSegments = {
      * | MC   |	Miscellaneous contraindication |
      */
     allergyType?: string;
-    allergyCode: CodedElement;
+    allergyCode: CodedWithExceptions;
     /**
      * Common Values
      *
@@ -447,7 +447,7 @@ export type MessageSegments = {
      *
      */
     characterSet?: string[];
-    principalLanguageOfMessage?: CodedElement;
+    principalLanguageOfMessage?: CodedWithExceptions;
   };
 
   /** The NCK segment is used to allow the various systems on the network to synchronize their system clocks (system date and time).
@@ -459,11 +459,11 @@ export type MessageSegments = {
   NK1: {
     setID: string;
     name?: ExtendedPersonName[];
-    relationship?: CodedElement;
+    relationship?: CodedWithExceptions;
     address?: ExtendedAddress[];
     phoneNumber?: ExtendedTelecommunicationNumber[];
     businessPhoneNumber?: ExtendedTelecommunicationNumber[];
-    contactRole?: CodedElement;
+    contactRole?: CodedWithExceptions;
     startDate?: string;
     endDate?: string;
     associatedPartiesJobTitle?: string;
@@ -476,16 +476,16 @@ export type MessageSegments = {
     livingDependency?: string[];
     ambulatoryStatus?: string[];
     citizenship?: string[];
-    primaryLanguage?: CodedElement;
+    primaryLanguage?: CodedWithExceptions;
     livingArrangement?: string;
-    publicityIndicator?: CodedElement;
+    publicityIndicator?: CodedWithExceptions;
     protectionIndicator?: string;
     studentIndicator?: string;
     religion?: string;
     mothersMaidenName?: ExtendedPersonName;
-    nationalityCode?: CodedElement;
+    nationalityCode?: CodedWithExceptions;
     ethnicGroup?: string;
-    contactReason?: CodedElement[];
+    contactReason?: CodedWithExceptions[];
     contactPersonName?: ExtendedPersonName[];
     contactPersonTelephoneNumber?: ExtendedTelecommunicationNumber[];
     contactPersonAddress?: ExtendedAddress[];
@@ -564,10 +564,10 @@ export type MessageSegments = {
      *
      */
     valueType?: string;
-    observationIdentifier: CodedElement;
+    observationIdentifier: CodedWithExceptions;
     observationSubId?: string;
     observationValue?: string[];
-    units?: CodedElement;
+    units?: CodedWithExceptions;
     referenceRange?: string;
     /**
      * Spec limits repeatability to 5 sub components
@@ -634,7 +634,7 @@ export type MessageSegments = {
     dateTimeOfTheObservation?: string;
     producersId?: string;
     responsibleObserver?: ExtendedCompositeIdNumberAndName;
-    observationMethod?: CodedElement[];
+    observationMethod?: CodedWithExceptions[];
   };
 
   /** The ORC sequence items of interest to ODS are ORC-1-order control,ORC-2-placer order number, ORC-3filler order number, ORC-7-quantity/timing, ORC-9-date/time of transaction, ORC-10-entered by, and ORC-11-verified by.  For ORC-1-order control, the values may be New (NW), Cancel (CA), Discontinue Order Request (DC), Change (XO), Hold Order Request (HD), and Release Previous Hold (RL).  The HD and RL codes could stop service for a specified length of time.  ORC-4-quantity/timing should be used to specify whether an order is continuous or for one service period only.  It is also useful for supplements which are part of a diet but only delivered, say, every day at night.
@@ -763,7 +763,7 @@ export type MessageSegments = {
      */
     separateBill?: string;
     duplicatePatient?: ExtendedCompositeIdWithCheckDigit[];
-    publicityIndicator?: CodedElement;
+    publicityIndicator?: CodedWithExceptions;
     /**
      * Common Values
      *
@@ -833,7 +833,7 @@ export type MessageSegments = {
     countyCode?: string;
     homePhoneNumber?: ExtendedTelecommunicationNumber[];
     businessPhoneNumber?: ExtendedTelecommunicationNumber[];
-    primaryLanguage?: CodedElement;
+    primaryLanguage?: CodedWithExceptions;
     /**
      * Common code values:
      * | Code | Value    |
@@ -849,7 +849,7 @@ export type MessageSegments = {
     patientAccountNumber?: ExtendedCompositeIdWithCheckDigit;
     patientSocialSecurityNumber?: string;
     driversLicenseNumber?: DriversLicenseNumber;
-    mothersIdentifier?: CodedElement[];
+    mothersIdentifier?: CodedWithExceptions[];
     ethnicGroup?: string;
     birthPlace?: string;
     /**
@@ -863,8 +863,8 @@ export type MessageSegments = {
     multipleBirthIndicator?: string;
     birthOrder?: number;
     citizenship?: string[];
-    veteransMilitaryStatus?: CodedElement;
-    nationalityCode?: CodedElement;
+    veteransMilitaryStatus?: CodedWithExceptions;
+    nationality?: CodedWithExceptions;
     patientDeathDateAndTime?: string;
     /**
      * Common values
@@ -875,6 +875,25 @@ export type MessageSegments = {
      * | N    | No     |
      */
     patientDeathIndicator?: string;
+    /**
+     * Common values
+     *
+     * | Code | Values |
+     * | ---- | ------ |
+     * | Y    | Yes    |
+     * | N    | No     |
+     */
+    identityUnknownIndicator?: string;
+    /**
+     * Common Values
+     * | Code | Description                            |
+     * | ---- | -------------------------------------- |
+     * | AL   |	Patient/Person Name is an Alias        |
+     * | UA   |	Unknown/Default Address	               |
+     * | UD	  | Unknown/Default Date of Birth	         |
+     * | US   |	Unknown/Default Social Security Number |
+     */
+    identityReliabilityCode?: string[];
   };
 
   /** The PR1 segment contains information relative to various types of procedures that can be performed on a patient.  The PR1 segment can be used to send procedure information, for example: Surgical, Nuclear Medicine, X-ray with contrast, etc.   The PR1 segment is used to send multiple procedures, for example, for medical records encoding or for billing systems.
@@ -953,7 +972,7 @@ export type MessageSegments = {
      * | R    | Routine            |
      */
     admissionType?: string;
-    preadmitNumber?: CodedElement;
+    preadmitNumber?: CodedWithExceptions;
     priorPatientLocation?: PersonLocation;
     attendingDoctor?: ExtendedCompositeIdNumberAndName[];
     referringDoctor?: ExtendedCompositeIdNumberAndName[];
@@ -1050,9 +1069,9 @@ export type MessageSegments = {
    */
   PV2: {
     priorPendingLocation?: PersonLocation;
-    accommodationCode?: CodedElement;
-    admitReason?: CodedElement;
-    transferReason?: CodedElement;
+    accommodationCode?: CodedWithExceptions;
+    admitReason?: CodedWithExceptions;
+    transferReason?: CodedWithExceptions;
     patientValuables?: string[];
     patientValuablesLocation?: string;
     visitUserCode?: string;

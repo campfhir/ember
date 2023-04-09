@@ -11,6 +11,7 @@ import {
   ExtendedCompositeNameAndIdForOrganizations,
   JobCodeClass,
   SegmentHeaders,
+  CodedWithExceptions,
 } from "../../../typings";
 import {
   CodedElement,
@@ -160,32 +161,46 @@ export const parseExtendPersonName = (
   };
 };
 
-export function parseCodedElementFactory(
+export function parseCodedWithExceptionsFactory(
   encodingCharacters: MSH["encodingCharacters"]
 ) {
   return function (field: string | undefined) {
-    return parseCodedElement(field, encodingCharacters);
+    return parseCodedWithExceptions(field, encodingCharacters);
   };
 }
 
-export const parseCodedElement = (
+export const parseCodedWithExceptions = (
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"]
-): CodedElement => {
+): CodedWithExceptions => {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
-  return {
-    identifier: hl7StringEscaper(component[0], encodingCharacters),
-    text: hl7StringEscaper(component[1], encodingCharacters),
-    nameOfCodingSystem: hl7StringEscaper(component[2], encodingCharacters),
-    alternateIdentifier: hl7StringEscaper(component[3], encodingCharacters),
-    alternateText: hl7StringEscaper(component[4], encodingCharacters),
-    nameOfAlternateCodingSystem: hl7StringEscaper(
-      component[5],
-      encodingCharacters
-    ),
-  };
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  return hl7ElementMapper(component, {
+    identifier: (comp) => hl7StringEscaper(comp),
+    text: (comp) => hl7StringEscaper(comp),
+    nameOfCodingSystem: (comp) => hl7StringEscaper(comp),
+    alternateIdentifier: (comp) => hl7StringEscaper(comp),
+    alternateText: (comp) => hl7StringEscaper(comp),
+    nameOfAlternateCodingSystem: (comp) => hl7StringEscaper(comp),
+    codingSystemVersionId: (comp) => hl7StringEscaper(comp),
+    alternateCodingSystemVersionId: (comp) => hl7StringEscaper(comp),
+    originalText: (comp) => hl7StringEscaper(comp),
+    secondAlternateIdentifier: (comp) => hl7StringEscaper(comp),
+    secondAlternateText: (comp) => hl7StringEscaper(comp),
+    nameOfSecondAlternateCodingSystem: (comp) => hl7StringEscaper(comp),
+    secondAlternateCodingSystemVersionId: (comp) => hl7StringEscaper(comp),
+    codingSystemOID: (comp) => hl7StringEscaper(comp),
+    valueSetOID: (comp) => hl7StringEscaper(comp),
+    valueSetVersionId: (comp) => hl7StringEscaper(comp),
+    alternateCodingSystemOID: (comp) => hl7StringEscaper(comp),
+    alternateValueSetOID: (comp) => hl7StringEscaper(comp),
+    alternateValueSetVersionId: (comp) => hl7StringEscaper(comp),
+    secondAlternateCodingSystemOID: (comp) => hl7StringEscaper(comp),
+    secondAlternateValueSetOID: (comp) => hl7StringEscaper(comp),
+    secondAlternateValueSetVersionId: (comp) => hl7StringEscaper(comp),
+  });
 };
 
 export function parseJobCodeClassFactory(

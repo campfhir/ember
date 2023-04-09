@@ -3,7 +3,7 @@ import {
   parsePersonLocationFactory,
   hl7ElementMapper,
   hl7StringEscaperFactory,
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
   parseExtendedCompositeIdNumberAndNameFactory,
   parseExtendedCompositeIdWithCheckDigitFactory,
   parseFinancialFactory,
@@ -18,7 +18,8 @@ export const parsePV1 = (
   const pv1 = segment.split(fieldSeparator);
 
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendedCompositeIdNumberAndName =
     parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
   const parseExtendedCompositeIdWithCheckDigit =
@@ -35,7 +36,7 @@ export const parsePV1 = (
       patientClass: (field) => hl7StringEscaper(field) ?? "",
       assignedPatientLocation: (field) => parsePersonLocation(field),
       admissionType: (field) => hl7StringEscaper(field),
-      preadmitNumber: (field) => parseCodedElement(field),
+      preadmitNumber: (field) => parseCodedWithExceptions(field),
       priorPatientLocation: (field) => parsePersonLocation(field),
       attendingDoctor: (field) =>
         field

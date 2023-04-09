@@ -2,7 +2,7 @@ import { MSH, PD1 } from "../../../typings";
 import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
   parseExtendedCompositeIdNumberAndNameFactory,
   parseExtendedCompositeIdWithCheckDigitFactory,
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
@@ -15,7 +15,8 @@ export const parsePD1 = (
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const pd1 = segment.split(fieldSeparator);
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendedCompositeIdNumberAndName =
     parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
   const parseExtendedCompositeIdWithCheckDigit =
@@ -47,7 +48,7 @@ export const parsePD1 = (
         field
           ?.split(repetitionSeparator)
           .map((patient) => parseExtendedCompositeIdWithCheckDigit(patient)),
-      publicityIndicator: (field) => parseCodedElement(field),
+      publicityIndicator: (field) => parseCodedWithExceptions(field),
       protectionIndicator: (field) => hl7StringEscaper(field),
     },
     { rootName: "PD1" }

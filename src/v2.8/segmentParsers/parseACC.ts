@@ -2,7 +2,7 @@ import { MSH, ACC } from "../../../typings";
 import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
 } from "../utils";
 
 export const parseACC = (
@@ -13,15 +13,16 @@ export const parseACC = (
   const acc = segment.split(fieldSeparator);
 
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
 
   return hl7ElementMapper<ACC>(
     acc,
     {
       accidentDateTime: (field) => hl7StringEscaper(field),
-      accidentCode: (field) => parseCodedElement(field),
+      accidentCode: (field) => parseCodedWithExceptions(field),
       accidentLocation: (field) => hl7StringEscaper(field),
-      autoAccidentState: (field) => parseCodedElement(field),
+      autoAccidentState: (field) => parseCodedWithExceptions(field),
       accidentJobRelatedIndicator: (field) => hl7StringEscaper(field),
       accidentDeathIndicator: (field) => hl7StringEscaper(field),
     },

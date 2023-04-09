@@ -3,7 +3,7 @@ import {
   parsePersonLocationFactory,
   hl7ElementMapper,
   hl7StringEscaperFactory,
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
   parseExtendedCompositeIdNumberAndNameFactory,
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
@@ -16,7 +16,8 @@ export const parsePV2 = (
   const pv2 = segment.split(fieldSeparator);
 
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendedCompositeIdNumberAndName =
     parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
   const parsePersonLocation = parsePersonLocationFactory(encodingCharacters);
@@ -27,9 +28,9 @@ export const parsePV2 = (
     pv2,
     {
       priorPendingLocation: (field) => parsePersonLocation(field),
-      accommodationCode: (field) => parseCodedElement(field),
-      admitReason: (field) => parseCodedElement(field),
-      transferReason: (field) => parseCodedElement(field),
+      accommodationCode: (field) => parseCodedWithExceptions(field),
+      admitReason: (field) => parseCodedWithExceptions(field),
+      transferReason: (field) => parseCodedWithExceptions(field),
       patientValuables: (field) =>
         field
           ?.split(repetitionSeparator)

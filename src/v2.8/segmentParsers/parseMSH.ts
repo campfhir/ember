@@ -10,7 +10,7 @@ import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
   parseHierarchicDesignatorFactory,
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
 } from "../utils";
 
 const debug = debugLogger.extend("parseMSH");
@@ -46,7 +46,8 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
   const parseHierarchicDesignator =
     parseHierarchicDesignatorFactory(encodingCharacters);
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
 
   const mshHeader = hl7ElementMapper<MSH>(
     msh,
@@ -82,7 +83,7 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
         field
           ?.split(componentSeparator, 3)
           .map((val) => hl7StringEscaper(val) ?? ""),
-      principalLanguageOfMessage: (field) => parseCodedElement(field),
+      principalLanguageOfMessage: (field) => parseCodedWithExceptions(field),
     },
     { rootName: "MSH" }
   );

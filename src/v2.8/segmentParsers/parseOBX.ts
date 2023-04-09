@@ -2,7 +2,7 @@ import { MSH, OBX } from "../../../typings";
 import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
-  parseCodedElementFactory,
+  parseCodedWithExceptionsFactory,
   parseExtendedCompositeIdNumberAndNameFactory,
 } from "../utils";
 
@@ -13,7 +13,8 @@ export const parseOBX = (
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const obx = segment.split(fieldSeparator);
 
-  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendedCompositeIdNumberAndName =
     parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
@@ -23,13 +24,13 @@ export const parseOBX = (
     {
       setId: (field) => hl7StringEscaper(field) ?? "",
       valueType: (field) => hl7StringEscaper(field),
-      observationIdentifier: (field) => parseCodedElement(field),
+      observationIdentifier: (field) => parseCodedWithExceptions(field),
       observationSubId: (field) => hl7StringEscaper(field),
       observationValue: (field) =>
         field
           ?.split(repetitionSeparator)
           .map((value) => hl7StringEscaper(value) ?? ""),
-      units: (field) => parseCodedElement(field),
+      units: (field) => parseCodedWithExceptions(field),
       referenceRange: (field) => hl7StringEscaper(field),
       abnormalFlags: (field) =>
         field
@@ -50,7 +51,7 @@ export const parseOBX = (
       observationMethod: (field) =>
         field
           ?.split(repetitionSeparator)
-          .map((method) => parseCodedElement(method)),
+          .map((method) => parseCodedWithExceptions(method)),
     },
     { rootName: "OBX" }
   );

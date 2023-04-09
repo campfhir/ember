@@ -1,6 +1,6 @@
 import type { WrappedResult, MessageSegments } from "../../../typings";
 
-import { ADT_A04 } from "../../../typings/v2.3";
+import { ADT_A04 } from "../../../typings/v2.8";
 import {
   parsePID,
   parsePV1,
