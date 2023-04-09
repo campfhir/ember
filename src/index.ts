@@ -1,6 +1,6 @@
 import type { HL7Message, WrappedResult } from "../typings";
 
-import { debugLogger, parseAdt, parseMSH } from "./v2.3";
+import { debugLogger, parseAdt, parseMSH } from "./v2.8";
 
 const debug = debugLogger.extend("parseHL7");
 
