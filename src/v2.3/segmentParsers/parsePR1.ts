@@ -2,9 +2,9 @@ import { MSH, PR1 } from "../../../typings";
 
 export const parsePR1 = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): PR1 => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const pr1 = segment.split(fieldSeparator);
-  throw new Error("Not implemented");
+  throw new Error("PR1 Not implemented");
 };

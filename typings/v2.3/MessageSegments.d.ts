@@ -1,3 +1,4 @@
+import { JobCodeClass } from "./DataTypes";
 import {
   CodedElement,
   DriversLicenseNumber,
@@ -160,7 +161,34 @@ export type MessageSegments = {
 
   /** The disability segment contains information related to the disability of a person.  This segment was created instead of adding disability attributes to each segment that contains a person (to which disability may apply).  This is an optional segment that can be used to send disability information about a person already defined by the Patient Administration Chapter.  The disabled person code and identifier allow for the association of the disability information to the person.
    */
-  DB1: {};
+  DB1: {
+    setId: string;
+    /**
+     * Common Values
+     *
+     * | Code | Description      |
+     * | ---- | ---------------- |
+     * | AP   | Associated Party |
+     * | GT   | Guarantor        |
+     * | IN   | Insured          |
+     * | PT   | Patient          |
+     */
+    disabledPersonCode?: string;
+    disabledPersonIdentifier?: ExtendedCompositeIdWithCheckDigit[];
+    /**
+     * Common Values
+     *
+     * | Code | Description |
+     * | ---- | ----------- |
+     * | Y    | Yes         |
+     * | N    | No          |
+     */
+    disabledIndicator?: string;
+    disabledStartDate?: string;
+    disabledEndDate?: string;
+    disabilityReturnToWorkDate?: string;
+    disabilityUnableToWorkDate?: string;
+  };
 
   /** The DG1 segment contains patient diagnosis information of various types, for example, admitting,  primary, etc.  The DG1 segment is used to send multiple diagnoses (for example, for medical records encoding).  It is also used when the FT1-19-diagnosis does not provide sufficient information for a billing system.  This diagnosis coding should be distinguished from the clinical problem segment used by caregivers to manage the patient (see Chapter 12, Patient Care).  Coding methodologies are also defined.
    */
@@ -303,7 +331,8 @@ export type MessageSegments = {
   /** The MSH segment defines the intent, source, destination, and some specifics of the syntax of a message
    */
   MSH: {
-    controlCharacters: {
+    fieldSeparator: string;
+    encodingCharacters: {
       fieldSeparator: string;
       componentSeparator: string;
       subComponentSeparator: string;
@@ -438,7 +467,7 @@ export type MessageSegments = {
     startDate?: string;
     endDate?: string;
     associatedPartiesJobTitle?: string;
-    jobAssociatedPartiesCodeClass?: JobClassCode;
+    jobAssociatedPartiesCodeClass?: JobCodeClass;
     associatedPartiesEmployeeNumber?: ExtendedCompositeIdWithCheckDigit;
     organizationName?: ExtendedCompositeNameAndIdForOrganizations[];
     maritalStatus?: string;
@@ -491,13 +520,122 @@ export type MessageSegments = {
    */
   OBR: {};
 
-  /** The OBX segment is used to transmit a single observation or observation fragment.  It represents the smallest indivisible unit of a report.* 
-  * 
-  * 
-  * 
-  Its principal mission is to carry information about observations in report messages.  But the OBX can also be part of an observation order (see Section 4.2, “Order Message Definitions”).  In this case, the OBX carries clinical information needed by the filler to interpret the observation the filler makes.  For example, an OBX is needed to report the inspired oxygen on an order for a blood oxygen to a blood gas lab, or to report the menstrual phase information which should be included on an order for a pap smear to a cytology lab.  Appendix 7A includes codes for identifying many of pieces of information needed by observation producing services to properly interpret a test result.  OBX is also found in other HL7 messages that need to include patient clinical information.
+  /** The OBX segment is used to transmit a single observation or observation fragment.  It represents the smallest indivisible unit of a report.*
+   *
+   *
+   *
+   * Its principal mission is to carry information about observations in report messages.  But the OBX can also be part of an observation order (see Section 4.2, “Order Message Definitions”).  In this case, the OBX carries clinical information needed by the filler to interpret the observation the filler makes.
+   * For example, an OBX is needed to report the inspired oxygen on an order for a blood oxygen to a blood gas lab, or to report the menstrual phase information which should be included on an order for a pap smear to a cytology lab.  Appendix 7A includes codes for identifying many of pieces of information needed by
+   * observation producing services to properly interpret a test result.  OBX is also found in other HL7 messages that need to include patient clinical information.
    */
-  OBX: {};
+  OBX: {
+    setId?: string;
+    /**
+     * Common Values
+     *
+     * | Code | Description                                          |
+     * | ---- | ---------------------------------------------------- |
+     * | AD   | Address                                              |
+     * | CE   | Coded Entry                                          |
+     * | CF   | Coded Element With Formatted Values                  |
+     * | CK   | Composite ID With Check Digit                        |
+     * | CN   | Composite ID And Name                                |
+     * | CP   | Composite Price                                      |
+     * | CX   | Extended Composite ID With Check Digit               |
+     * | DT   | Date                                                 |
+     * | ED   | Encapsulated Data                                    |
+     * | FT   | Formatted Text (Display)                             |
+     * | ID   | Coded Value                                          |
+     * | MO   | Money                                                |
+     * | NM   | Numeric                                              |
+     * | PN   | Person Name                                          |
+     * | RP   | Reference Pointer                                    |
+     * | SN   | Structured Numeric                                   |
+     * | ST   | String Data.                                         |
+     * | TM   | Time                                                 |
+     * | TN   | Telephone Number                                     |
+     * | TS   | Time Stamp (Date & Time)                             |
+     * | TX   | Text Data (Display)                                  |
+     * | XAD  | Extended Address                                     |
+     * | XCN  | Extended Composite Name And Number For Persons       |
+     * | XON  | Extended Composite Name And Number For Organizations |
+     * | XPN  | Extended Person Name                                 |
+     * | XTN  | Extended Telecommunications Number                   |
+     *
+     */
+    valueType?: string;
+    observationIdentifier: CodedElement;
+    observationSubId?: string;
+    observationValue?: string[];
+    units?: CodedElement;
+    referenceRange?: string;
+    /**
+     * Spec limits repeatability to 5 sub components
+     *
+     * Common Values
+     *
+     * | Code | Description                                                                               |
+     * | ---- | ----------------------------------------------------------------------------------------- |
+     * | <    | Below absolute low-off instrument scale                                                   |
+     * | >    | Above absolute high-off instrument scale                                                  |
+     * | A    | Abnormal (applies to non-numeric results)                                                 |
+     * | AA   | Very abnormal (applies to non-numeric units, analogous to panic limits for numeric units) |
+     * | B    | Better--use when direction not relevant                                                   |
+     * | D    | Significant change down                                                                   |
+     * | H    | Above high normal                                                                         |
+     * | HH   | Above upper panic limits                                                                  |
+     * | I    | Intermediate. Indicates for microbiology susceptibilities only.                           |
+     * | L    | Below low normal                                                                          |
+     * | LL   | Below lower panic limits                                                                  |
+     * | MS   | Moderately susceptible. Indicates for microbiology susceptibilities only.                 |
+     * | N    | Normal (applies to non-numeric results)                                                   |
+     * | null | No range defined, or normal ranges don't apply                                            |
+     * | R    | Resistant. Indicates for microbiology susceptibilities only.                              |
+     * | S    | Susceptible. Indicates for microbiology susceptibilities only.                            |
+     * | U    | Significant change up                                                                     |
+     * | VS   | Very susceptible. Indicates for microbiology susceptibilities only.                       |
+     * | W    | Worse--use when direction not relevant                                                    |
+     */
+    abnormalFlags?: string[];
+    probability?: number;
+    /**
+     *
+     * Common Values
+     *
+     * | Code | Description                 |
+     * | ---- | --------------------------- |
+     * | A    | An age-based population     |
+     * | N    | None - generic normal range |
+     * | R    | A race-based population     |
+     * | S    | A sex-based population      |
+     *
+     */
+    natureOfAbnormalTest?: string[];
+    /**
+     * Common Values
+     *
+     * | Code | Description                                                                                                                                           |
+     * | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+     * | C    | Record coming over is a correction and thus replaces a final result                                                                                   |
+     * | D    | Deletes the OBX record                                                                                                                                |
+     * | F    | Final results; Can only be changed with a corrected result.                                                                                           |
+     * | I    | Specimen in lab; results pending                                                                                                                      |
+     * | P    | Preliminary results                                                                                                                                   |
+     * | R    | Results entered -- not verified                                                                                                                       |
+     * | S    | Partial results                                                                                                                                       |
+     * | U    | Results status change to final without retransmitting results already sent as ‘preliminary.’ E.g., radiology changes status from preliminary to final |
+     * | W    | Post original as wrong, e.g., transmitted for wrong patient                                                                                           |
+     * | X    | Results cannot be obtained for this observation                                                                                                       |
+     *
+     */
+    observationResultStatus: string;
+    dateLastObservationNormalValue?: string;
+    userDefinedAccessChecks?: string;
+    dateTimeOfTheObservation?: string;
+    producersId?: string;
+    responsibleObserver?: ExtendedCompositeIdNumberAndName;
+    observationMethod?: CodedElement[];
+  };
 
   /** The ORC sequence items of interest to ODS are ORC-1-order control,ORC-2-placer order number, ORC-3filler order number, ORC-7-quantity/timing, ORC-9-date/time of transaction, ORC-10-entered by, and ORC-11-verified by.  For ORC-1-order control, the values may be New (NW), Cancel (CA), Discontinue Order Request (DC), Change (XO), Hold Order Request (HD), and Release Previous Hold (RL).  The HD and RL codes could stop service for a specified length of time.  ORC-4-quantity/timing should be used to specify whether an order is continuous or for one service period only.  It is also useful for supplements which are part of a diet but only delivered, say, every day at night.
    */

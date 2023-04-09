@@ -2,9 +2,9 @@ import { MSH, ROL } from "../../../typings";
 
 export const parseROL = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): ROL => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const rol = segment.split(fieldSeparator);
-  throw new Error("Not implemented");
+  throw new Error("ROL Not implemented");
 };

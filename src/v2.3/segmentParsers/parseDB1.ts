@@ -1,10 +1,36 @@
 import { MSH, DB1 } from "../../../typings";
+import {
+  hl7ElementMapper,
+  hl7StringEscaperFactory,
+  parseExtendedCompositeIdWithCheckDigitFactory,
+} from "../utils";
 
 export const parseDB1 = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): DB1 => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const db1 = segment.split(fieldSeparator);
-  throw new Error("Not implemented");
+
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  const parseExtendedCompositeIdWithCheckDigit =
+    parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
+
+  return hl7ElementMapper(
+    db1,
+    {
+      setId: (field) => hl7StringEscaper(field) ?? "",
+      disabledPersonCode: (field) => hl7StringEscaper(field),
+      disabledPersonIdentifier: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((person) => parseExtendedCompositeIdWithCheckDigit(person)),
+      disabledIndicator: (field) => hl7StringEscaper(field),
+      disabledStartDate: (field) => hl7StringEscaper(field),
+      disabledEndDate: (field) => hl7StringEscaper(field),
+      disabilityReturnToWorkDate: (field) => hl7StringEscaper(field),
+      disabilityUnableToWorkDate: (field) => hl7StringEscaper(field),
+    },
+    { rootName: "DB1" }
+  );
 };

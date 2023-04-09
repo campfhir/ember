@@ -1,22 +1,30 @@
 import { MSH, ACC } from "../../../typings";
 import {
   hl7ElementMapper,
-  hl7StringEscaper,
-  parseCodedElement,
+  hl7StringEscaperFactory,
+  parseCodedElementFactory,
 } from "../utils";
 
 export const parseACC = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): ACC => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const acc = segment.split(fieldSeparator);
-  return hl7ElementMapper<ACC>(acc, {
-    accidentDateTime: (s) => hl7StringEscaper(s, controlCharacters),
-    accidentCode: (s) => parseCodedElement(s, controlCharacters),
-    accidentLocation: (s) => hl7StringEscaper(s, controlCharacters),
-    autoAccidentState: (s) => parseCodedElement(s, controlCharacters),
-    accidentJobRelatedIndicator: (s) => hl7StringEscaper(s, controlCharacters),
-    accidentDeathIndicator: (s) => hl7StringEscaper(s, controlCharacters),
-  });
+
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+
+  return hl7ElementMapper<ACC>(
+    acc,
+    {
+      accidentDateTime: (field) => hl7StringEscaper(field),
+      accidentCode: (field) => parseCodedElement(field),
+      accidentLocation: (field) => hl7StringEscaper(field),
+      autoAccidentState: (field) => parseCodedElement(field),
+      accidentJobRelatedIndicator: (field) => hl7StringEscaper(field),
+      accidentDeathIndicator: (field) => hl7StringEscaper(field),
+    },
+    { rootName: "ACC" }
+  );
 };

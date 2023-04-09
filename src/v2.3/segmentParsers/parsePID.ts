@@ -1,17 +1,18 @@
 import { MSH, PID } from "../../../typings";
 import {
-  parseCodedElement,
-  parseDriversLicenseNumber,
-  parseExtendedAddress,
-  parseExtendedCompositeIdWithCheckDigit,
-  parseExtendedTelecommunicationNumber,
-  parseExtendPersonName,
-  hl7StringEscaper,
+  parseCodedElementFactory,
+  parseDriversLicenseNumberFactory,
+  parseExtendedAddressFactory,
+  parseExtendedCompositeIdWithCheckDigitFactory,
+  hl7StringEscaperFactory,
+  hl7ElementMapper,
+  parseExtendPersonNameFactory,
+  parseExtendedTelecommunicationNumberFactory,
 } from "../utils";
 
 export const parsePID = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): PID => {
   const {
     fieldSeparator,
@@ -19,73 +20,86 @@ export const parsePID = (
     subComponentSeparator,
     componentSeparator,
     repetitionSeparator,
-  } = controlCharacters;
+  } = encodingCharacters;
 
   const pid = segment.split(fieldSeparator);
 
-  const pidSegment: PID = {
-    setId: pid[1] ? parseInt(pid[0], 10) : undefined,
-    externalPatientId: parseExtendedCompositeIdWithCheckDigit(
-      pid[2],
-      controlCharacters
-    ),
-    internalPatientId: pid[3]
-      ?.split(repetitionSeparator)
-      ?.map((field) =>
-        parseExtendedCompositeIdWithCheckDigit(field, controlCharacters)
-      ),
-    alternatePatientId: pid[4]
-      ?.split(repetitionSeparator)
-      ?.map((field) =>
-        parseExtendedCompositeIdWithCheckDigit(field, controlCharacters)
-      ),
-    patientName: pid[5]
-      ?.split(repetitionSeparator)
-      ?.map((name) => parseExtendPersonName(name, controlCharacters)),
-    mothersMaidenName: parseExtendPersonName(pid[6], controlCharacters),
-    dateOfBirth: hl7StringEscaper(pid[7], controlCharacters),
-    sex: pid[8],
-    patientAlias: pid[9]
-      ?.split(repetitionSeparator)
-      ?.map((name) => parseExtendPersonName(name, controlCharacters)),
-    patientRace: hl7StringEscaper(pid[10], controlCharacters),
-    patientAddress: pid[11]
-      ?.split(repetitionSeparator)
-      ?.map((address) => parseExtendedAddress(address, controlCharacters)),
-    countyCode: hl7StringEscaper(pid[12], controlCharacters),
-    homePhoneNumber: pid[13]
-      ?.split(repetitionSeparator)
-      .map((number) =>
-        parseExtendedTelecommunicationNumber(number, controlCharacters)
-      ),
-    businessPhoneNumber: pid[14]
-      ?.split(repetitionSeparator)
-      ?.map((number) =>
-        parseExtendedTelecommunicationNumber(number, controlCharacters)
-      ),
-    primaryLanguage: parseCodedElement(pid[15], controlCharacters),
-    maritalStatus: pid[16],
-    religion: pid[17],
-    patientAccountNumber: parseExtendedCompositeIdWithCheckDigit(
-      pid[18],
-      controlCharacters
-    ),
-    patientSocialSecurityNumber: pid[19],
-    driversLicenseNumber: parseDriversLicenseNumber(pid[20], controlCharacters),
-    mothersIdentifier: pid[21]
-      ?.split(repetitionSeparator)
-      ?.map((field) => parseCodedElement(field, controlCharacters)),
-    ethnicGroup: hl7StringEscaper(pid[22], controlCharacters),
-    birthPlace: hl7StringEscaper(pid[23], controlCharacters),
-    multipleBirthIndicator: pid[24],
-    birthOrder: pid[25] ? parseInt(pid[25], 10) : undefined,
-    citizenship: pid[26]
-      ?.split(repetitionSeparator)
-      ?.map((field) => hl7StringEscaper(field, controlCharacters)),
-    veteransMilitaryStatus: parseCodedElement(pid[27], controlCharacters),
-    nationalityCode: parseCodedElement(pid[28], controlCharacters),
-    patientDeathDateAndTime: pid[29],
-    patientDeathIndicator: pid[30],
-  };
-  return pidSegment;
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseExtendedCompositeIdWithCheckDigit =
+    parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
+  const parseExtendedAddress = parseExtendedAddressFactory(encodingCharacters);
+  const parseDriversLicenseNumber =
+    parseDriversLicenseNumberFactory(encodingCharacters);
+
+  const parseExtendPersonName =
+    parseExtendPersonNameFactory(encodingCharacters);
+  const parseExtendedTelecommunicationNumber =
+    parseExtendedTelecommunicationNumberFactory(encodingCharacters);
+
+  return hl7ElementMapper<PID>(
+    pid,
+    {
+      setId: (field) => (field ? parseInt(field, 10) : undefined),
+      externalPatientId: (field) =>
+        parseExtendedCompositeIdWithCheckDigit(field),
+      internalPatientId: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          ?.map((field) => parseExtendedCompositeIdWithCheckDigit(field)),
+      alternatePatientId: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          ?.map((field) => parseExtendedCompositeIdWithCheckDigit(field)),
+      patientName: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          ?.map((name) => parseExtendPersonName(name) ?? ""),
+      mothersMaidenName: (field) => parseExtendPersonName(field),
+      dateOfBirth: (field) => hl7StringEscaper(field),
+      sex: (field) => field,
+      patientAlias: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          ?.map((name) => parseExtendPersonName(name)),
+      patientRace: (field) => hl7StringEscaper(field),
+      patientAddress: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          ?.map((address) => parseExtendedAddress(address)),
+      countyCode: (field) => hl7StringEscaper(field),
+      homePhoneNumber: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((number) => parseExtendedTelecommunicationNumber(number)),
+      businessPhoneNumber: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          ?.map((number) => parseExtendedTelecommunicationNumber(number)),
+      primaryLanguage: (field) => parseCodedElement(field),
+      maritalStatus: (field) => field,
+      religion: (field) => field,
+      patientAccountNumber: (field) =>
+        parseExtendedCompositeIdWithCheckDigit(field),
+      patientSocialSecurityNumber: (field) => field,
+      driversLicenseNumber: (field) => parseDriversLicenseNumber(field),
+      mothersIdentifier: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          ?.map((field) => parseCodedElement(field)),
+      ethnicGroup: (field) => hl7StringEscaper(field),
+      birthPlace: (field) => hl7StringEscaper(field),
+      multipleBirthIndicator: (field) => field,
+      birthOrder: (field) => (field ? parseInt(field, 10) : undefined),
+      citizenship: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          ?.map((field) => hl7StringEscaper(field) ?? ""),
+      veteransMilitaryStatus: (field) => parseCodedElement(field),
+      nationalityCode: (field) => parseCodedElement(field),
+      patientDeathDateAndTime: (field) => field,
+      patientDeathIndicator: (field) => field,
+    },
+    { rootName: "PID" }
+  );
 };

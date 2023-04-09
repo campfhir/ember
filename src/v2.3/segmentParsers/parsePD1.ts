@@ -1,45 +1,55 @@
 import { MSH, PD1 } from "../../../typings";
 import {
-  hl7StringEscaper,
-  parseCodedElement,
-  parseExtendedCompositeIdNumberAndName,
-  parseExtendedCompositeIdWithCheckDigit,
-  parseExtendedCompositeNameAndIdForOrganizations,
+  hl7ElementMapper,
+  hl7StringEscaperFactory,
+  parseCodedElementFactory,
+  parseExtendedCompositeIdNumberAndNameFactory,
+  parseExtendedCompositeIdWithCheckDigitFactory,
+  parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
 
 export const parsePD1 = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): PD1 => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const pd1 = segment.split(fieldSeparator);
-  return {
-    livingDependency: hl7StringEscaper(pd1[1], controlCharacters),
-    livingArrangement: hl7StringEscaper(pd1[2], controlCharacters),
-    patientPrimaryFacility: pd1[3]
-      ?.split(repetitionSeparator)
-      .map((facility) =>
-        parseExtendedCompositeNameAndIdForOrganizations(
-          facility,
-          controlCharacters
-        )
-      ),
-    patientPrimaryCareProviderNameAndIdNumber: pd1[4]
-      ?.split(repetitionSeparator)
-      .map((provider) =>
-        parseExtendedCompositeIdNumberAndName(provider, controlCharacters)
-      ),
-    studentStatus: hl7StringEscaper(pd1[5], controlCharacters),
-    handicap: hl7StringEscaper(pd1[6], controlCharacters),
-    livingWill: hl7StringEscaper(pd1[7], controlCharacters),
-    organDonor: hl7StringEscaper(pd1[8], controlCharacters),
-    separateBill: hl7StringEscaper(pd1[9], controlCharacters),
-    duplicatePatient: pd1[10]
-      ?.split(repetitionSeparator)
-      .map((patient) =>
-        parseExtendedCompositeIdWithCheckDigit(patient, controlCharacters)
-      ),
-    publicityIndicator: parseCodedElement(pd1[11], controlCharacters),
-    protectionIndicator: hl7StringEscaper(pd1[12], controlCharacters),
-  };
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseExtendedCompositeIdNumberAndName =
+    parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
+  const parseExtendedCompositeIdWithCheckDigit =
+    parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
+  const parseExtendedCompositeNameAndIdForOrganizations =
+    parseExtendedCompositeNameAndIdForOrganizationsFactory(encodingCharacters);
+
+  return hl7ElementMapper(
+    pd1,
+    {
+      livingDependency: (field) => hl7StringEscaper(field),
+      livingArrangement: (field) => hl7StringEscaper(field),
+      patientPrimaryFacility: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((facility) =>
+            parseExtendedCompositeNameAndIdForOrganizations(facility)
+          ),
+      patientPrimaryCareProviderNameAndIdNumber: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((provider) => parseExtendedCompositeIdNumberAndName(provider)),
+      studentStatus: (field) => hl7StringEscaper(field),
+      handicap: (field) => hl7StringEscaper(field),
+      livingWill: (field) => hl7StringEscaper(field),
+      organDonor: (field) => hl7StringEscaper(field),
+      separateBill: (field) => hl7StringEscaper(field),
+      duplicatePatient: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((patient) => parseExtendedCompositeIdWithCheckDigit(patient)),
+      publicityIndicator: (field) => parseCodedElement(field),
+      protectionIndicator: (field) => hl7StringEscaper(field),
+    },
+    { rootName: "PD1" }
+  );
 };

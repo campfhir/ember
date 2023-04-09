@@ -1,3 +1,4 @@
+import d from "debug";
 import {
   DischargeLocation,
   DriversLicenseNumber,
@@ -9,7 +10,6 @@ import {
   PersonLocation,
   ExtendedCompositeNameAndIdForOrganizations,
   JobCodeClass,
-  MessageSegments,
   SegmentHeaders,
 } from "../../../typings";
 import {
@@ -21,59 +21,86 @@ import {
   HierarchicDesignator,
 } from "../../../typings";
 
+export const debugLogger = d("ember");
+const utilDebug = debugLogger.extend("utils");
+
+export function parseExtendedAddressFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseExtendedAddress(input, encodingCharacters);
+  };
+}
+
 export const parseExtendedAddress = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): ExtendedAddress => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    streetAddress: hl7StringEscaper(component[0], controlCharacters),
-    otherDesignation: hl7StringEscaper(component[1], controlCharacters),
-    city: hl7StringEscaper(component[2], controlCharacters),
-    stateOrProvince: hl7StringEscaper(component[3], controlCharacters),
-    zipOrPostalCode: hl7StringEscaper(component[4], controlCharacters),
-    country: hl7StringEscaper(component[5], controlCharacters),
-    addressType: hl7StringEscaper(component[6], controlCharacters),
+    streetAddress: hl7StringEscaper(component[0], encodingCharacters),
+    otherDesignation: hl7StringEscaper(component[1], encodingCharacters),
+    city: hl7StringEscaper(component[2], encodingCharacters),
+    stateOrProvince: hl7StringEscaper(component[3], encodingCharacters),
+    zipOrPostalCode: hl7StringEscaper(component[4], encodingCharacters),
+    country: hl7StringEscaper(component[5], encodingCharacters),
+    addressType: hl7StringEscaper(component[6], encodingCharacters),
     otherGeographicDesignation: hl7StringEscaper(
       component[7],
-      controlCharacters
+      encodingCharacters
     ),
-    countyParishCode: hl7StringEscaper(component[8], controlCharacters),
-    censusTract: hl7StringEscaper(component[9], controlCharacters),
+    countyParishCode: hl7StringEscaper(component[8], encodingCharacters),
+    censusTract: hl7StringEscaper(component[9], encodingCharacters),
   };
 };
+
+export function parseDriversLicenseNumberFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseDriversLicenseNumber(input, encodingCharacters);
+  };
+}
 
 export const parseDriversLicenseNumber = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): DriversLicenseNumber => {
   if (field == null) return {};
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const components = field.split(componentSeparator);
   return {
-    driversLicenseNumber: hl7StringEscaper(components[0], controlCharacters),
+    driversLicenseNumber: hl7StringEscaper(components[0], encodingCharacters),
     issuingStateProvinceCounty: hl7StringEscaper(
       components[1],
-      controlCharacters
+      encodingCharacters
     ),
-    expirationDate: hl7StringEscaper(components[2], controlCharacters),
+    expirationDate: hl7StringEscaper(components[2], encodingCharacters),
   };
 };
 
+export function parseExtendedTelecommunicationNumberFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseExtendedTelecommunicationNumber(input, encodingCharacters);
+  };
+}
+
 export const parseExtendedTelecommunicationNumber = (
-  field: string,
-  controlCharacters: MSH["controlCharacters"]
+  field: string | undefined,
+  encodingCharacters: MSH["encodingCharacters"]
 ): ExtendedTelecommunicationNumber => {
-  const { componentSeparator } = controlCharacters;
-  const component = field.split(componentSeparator);
+  const { componentSeparator } = encodingCharacters;
+  const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    telephoneNumber: hl7StringEscaper(component[0], controlCharacters),
+    telephoneNumber: hl7StringEscaper(component[0], encodingCharacters),
     telecommunicationUseCode: hl7StringEscaper(
       component[1],
-      controlCharacters
+      encodingCharacters
     ) as
       | "ASN"
       | "BPN"
@@ -86,9 +113,9 @@ export const parseExtendedTelecommunicationNumber = (
       | undefined,
     telecommunicationEquipmentType: hl7StringEscaper(
       component[2],
-      controlCharacters
+      encodingCharacters
     ) as "BP" | "CP" | "FX" | "Internet" | "MD" | "PH" | "X.400" | undefined,
-    emailAddress: hl7StringEscaper(component[3], controlCharacters),
+    emailAddress: hl7StringEscaper(component[3], encodingCharacters),
     countryCode: component[4],
     areaCityCode: component[5],
     extension: component[7],
@@ -96,21 +123,29 @@ export const parseExtendedTelecommunicationNumber = (
   };
 };
 
+export function parseExtendPersonNameFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseExtendPersonName(input, encodingCharacters);
+  };
+}
+
 export const parseExtendPersonName = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): ExtendedPersonName => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    familyName: hl7StringEscaper(component[0], controlCharacters),
-    givenName: hl7StringEscaper(component[1], controlCharacters),
-    middleInitialOrName: hl7StringEscaper(component[2], controlCharacters),
-    suffix: hl7StringEscaper(component[3], controlCharacters),
-    prefix: hl7StringEscaper(component[4], controlCharacters),
-    degree: hl7StringEscaper(component[5], controlCharacters),
-    nameTypeCode: hl7StringEscaper(component[6], controlCharacters) as
+    familyName: hl7StringEscaper(component[0], encodingCharacters),
+    givenName: hl7StringEscaper(component[1], encodingCharacters),
+    middleInitialOrName: hl7StringEscaper(component[2], encodingCharacters),
+    suffix: hl7StringEscaper(component[3], encodingCharacters),
+    prefix: hl7StringEscaper(component[4], encodingCharacters),
+    degree: hl7StringEscaper(component[5], encodingCharacters),
+    nameTypeCode: hl7StringEscaper(component[6], encodingCharacters) as
       | "A"
       | "C"
       | "D"
@@ -120,123 +155,175 @@ export const parseExtendPersonName = (
       | undefined,
     nameRepresentationCode: hl7StringEscaper(
       component[7],
-      controlCharacters
+      encodingCharacters
     ) as "A" | "I" | "P" | undefined,
   };
 };
 
+export function parseCodedElementFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (field: string | undefined) {
+    return parseCodedElement(field, encodingCharacters);
+  };
+}
+
 export const parseCodedElement = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): CodedElement => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    identifier: hl7StringEscaper(component[0], controlCharacters),
-    text: hl7StringEscaper(component[1], controlCharacters),
-    nameOfCodingSystem: hl7StringEscaper(component[2], controlCharacters),
-    alternateIdentifier: hl7StringEscaper(component[3], controlCharacters),
-    alternateText: hl7StringEscaper(component[4], controlCharacters),
+    identifier: hl7StringEscaper(component[0], encodingCharacters),
+    text: hl7StringEscaper(component[1], encodingCharacters),
+    nameOfCodingSystem: hl7StringEscaper(component[2], encodingCharacters),
+    alternateIdentifier: hl7StringEscaper(component[3], encodingCharacters),
+    alternateText: hl7StringEscaper(component[4], encodingCharacters),
     nameOfAlternateCodingSystem: hl7StringEscaper(
       component[5],
-      controlCharacters
+      encodingCharacters
     ),
   };
 };
+
+export function parseJobCodeClassFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseJobCodeClass(input, encodingCharacters);
+  };
+}
 
 export const parseJobCodeClass = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): JobCodeClass => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
 
   return {
-    jobCode: hl7StringEscaper(component[0], controlCharacters),
-    jobClass: hl7StringEscaper(component[1], controlCharacters),
+    jobCode: hl7StringEscaper(component[0], encodingCharacters),
+    jobClass: hl7StringEscaper(component[1], encodingCharacters),
   };
 };
+
+export function parseExtendedCompositeNameAndIdForOrganizationsFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseExtendedCompositeNameAndIdForOrganizations(
+      input,
+      encodingCharacters
+    );
+  };
+}
 
 export const parseExtendedCompositeNameAndIdForOrganizations = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): ExtendedCompositeNameAndIdForOrganizations => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    organizationName: hl7StringEscaper(component[0], controlCharacters),
-    organizationNameTypeCode: hl7StringEscaper(component[1], controlCharacters),
+    organizationName: hl7StringEscaper(component[0], encodingCharacters),
+    organizationNameTypeCode: hl7StringEscaper(
+      component[1],
+      encodingCharacters
+    ),
     idNumber: component[2] ? parseInt(component[2], 10) : undefined,
-    checkDigit: hl7StringEscaper(component[3], controlCharacters),
+    checkDigit: hl7StringEscaper(component[3], encodingCharacters),
     codeIdentifyingTheCheckDigitSchemeEmployed: hl7StringEscaper(
       component[4],
-      controlCharacters
+      encodingCharacters
     ),
     assigningAuthority: parseHierarchicDesignator(
       component[5],
-      controlCharacters
+      encodingCharacters
     ),
-    identifierTypeCode: hl7StringEscaper(component[6], controlCharacters),
+    identifierTypeCode: hl7StringEscaper(component[6], encodingCharacters),
     assigningFacilityId: parseHierarchicDesignator(
       component[7],
-      controlCharacters
+      encodingCharacters
     ),
   };
 };
+
+export function parseExtendedCompositeIdWithCheckDigitFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseExtendedCompositeIdWithCheckDigit(input, encodingCharacters);
+  };
+}
 
 export const parseExtendedCompositeIdWithCheckDigit = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): ExtendedCompositeIdWithCheckDigit => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   return {
-    id: hl7StringEscaper(component[0], controlCharacters),
-    checkDigit: hl7StringEscaper(component[1], controlCharacters),
+    id: hl7StringEscaper(component[0], encodingCharacters),
+    checkDigit: hl7StringEscaper(component[1], encodingCharacters),
     codeIdentifyingTheCheckDigitSchemeEmployed: hl7StringEscaper(
       component[2],
-      controlCharacters
+      encodingCharacters
     ),
     assigningAuthority: parseHierarchicDesignator(
       component[3],
-      controlCharacters
+      encodingCharacters
     ),
 
-    identifierTypeCode: hl7StringEscaper(component[4], controlCharacters),
+    identifierTypeCode: hl7StringEscaper(component[4], encodingCharacters),
     assigningFacility: parseHierarchicDesignator(
       component[5],
-      controlCharacters
+      encodingCharacters
     ),
   };
 };
+
+export function parseHierarchicDesignatorFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseHierarchicDesignator(input, encodingCharacters);
+  };
+}
 
 export const parseHierarchicDesignator = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): HierarchicDesignator => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
   return {
-    namespaceId: hl7StringEscaper(components[0], controlCharacters),
-    universalId: hl7StringEscaper(components[1], controlCharacters),
-    universalIdType: hl7StringEscaper(components[2], controlCharacters),
+    namespaceId: hl7StringEscaper(components[0], encodingCharacters),
+    universalId: hl7StringEscaper(components[1], encodingCharacters),
+    universalIdType: hl7StringEscaper(components[2], encodingCharacters),
   };
 };
+
+const getSegmentDebug = utilDebug.extend("getSegmentHeader");
 
 export const getSegmentHeader = (
   segment: string
 ): WrappedResult<HeaderResults> => {
+  const debug = getSegmentDebug;
   const header = segment.substring(0, 3) as SegmentHeaders;
-  if (header.length < 3)
+  if (header.length < 3) {
+    debug("Header %s is less than 3 characters", header);
     return {
       ok: false,
       err: new Error("Header is not 3 characters in length"),
     };
+  }
+
   if (
     header !== "ACC" &&
     header !== "ADD" &&
@@ -349,110 +436,158 @@ export const getSegmentHeader = (
     header !== "VAR" &&
     header !== "VTQ" &&
     header[0] !== "Z"
-  )
+  ) {
+    debug("%s is an invalid HL7v2 header", header);
     return { ok: false, err: new Error("Not a valid HL7 header") };
-
+  }
+  const fieldString =
+    header === "MSH" ? segment.substring(3) : segment.substring(4);
+  debug("%s => %O", header, fieldString);
   return {
     ok: true,
-    val: { header, fieldString: segment.substring(3) },
+    val: { header, fieldString },
     warnings: [],
   };
 };
 
+export function parseFinancialFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseFinancial(input, encodingCharacters);
+  };
+}
+
 export const parseFinancial = (
-  field: string,
-  controlCharacters: MSH["controlCharacters"]
+  field: string | undefined,
+  encodingCharacters: MSH["encodingCharacters"]
 ): FinancialClass => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
   return {
-    class: hl7StringEscaper(components[0], controlCharacters),
-    effectiveDate: hl7StringEscaper(components[1], controlCharacters),
+    class: hl7StringEscaper(components[0], encodingCharacters),
+    effectiveDate: hl7StringEscaper(components[1], encodingCharacters),
   };
 };
+
+export function parseDischargeToLocationFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseDischargeToLocation(input, encodingCharacters);
+  };
+}
 
 export const parseDischargeToLocation = (
-  field: string,
-  controlCharacters: MSH["controlCharacters"]
+  field: string | undefined,
+  encodingCharacters: MSH["encodingCharacters"]
 ): DischargeLocation => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
 
   return {
-    location: hl7StringEscaper(components[0], controlCharacters),
-    effectiveDate: hl7StringEscaper(components[1], controlCharacters),
+    location: hl7StringEscaper(components[0], encodingCharacters),
+    effectiveDate: hl7StringEscaper(components[1], encodingCharacters),
   };
 };
+
+export function parseExtendedCompositeIdNumberAndNameFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parseExtendedCompositeIdNumberAndName(input, encodingCharacters);
+  };
+}
 
 export const parseExtendedCompositeIdNumberAndName = (
-  field: string,
-  controlCharacters: MSH["controlCharacters"]
+  field: string | undefined,
+  encodingCharacters: MSH["encodingCharacters"]
 ): ExtendedCompositeIdNumberAndName => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
 
   return {
-    idNumber: hl7StringEscaper(components[0], controlCharacters),
-    familyName: hl7StringEscaper(components[1], controlCharacters),
-    givenName: hl7StringEscaper(components[2], controlCharacters),
-    middleInitialOrName: hl7StringEscaper(components[3], controlCharacters),
-    suffix: hl7StringEscaper(components[4], controlCharacters),
-    prefix: hl7StringEscaper(components[5], controlCharacters),
-    degree: hl7StringEscaper(components[6], controlCharacters),
-    sourceTable: hl7StringEscaper(components[7], controlCharacters),
+    idNumber: hl7StringEscaper(components[0], encodingCharacters),
+    familyName: hl7StringEscaper(components[1], encodingCharacters),
+    givenName: hl7StringEscaper(components[2], encodingCharacters),
+    middleInitialOrName: hl7StringEscaper(components[3], encodingCharacters),
+    suffix: hl7StringEscaper(components[4], encodingCharacters),
+    prefix: hl7StringEscaper(components[5], encodingCharacters),
+    degree: hl7StringEscaper(components[6], encodingCharacters),
+    sourceTable: hl7StringEscaper(components[7], encodingCharacters),
     assigningAuthority: parseHierarchicDesignator(
       components[8],
-      controlCharacters
+      encodingCharacters
     ),
-    nameType: hl7StringEscaper(components[9], controlCharacters),
-    identifierCheckDigit: hl7StringEscaper(components[10], controlCharacters),
+    nameType: hl7StringEscaper(components[9], encodingCharacters),
+    identifierCheckDigit: hl7StringEscaper(components[10], encodingCharacters),
     codeIdentifyingTheCheckDigitSchemeEmployed: hl7StringEscaper(
       components[11],
-      controlCharacters
+      encodingCharacters
     ),
-    identifierTypeCode: hl7StringEscaper(components[12], controlCharacters),
+    identifierTypeCode: hl7StringEscaper(components[12], encodingCharacters),
     assigningFacilityId: parseHierarchicDesignator(
       components[13],
-      controlCharacters
+      encodingCharacters
     ),
   };
 };
+
+export function parsePersonLocationFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return parsePersonLocation(input, encodingCharacters);
+  };
+}
 
 export const parsePersonLocation = (
   field: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): PersonLocation => {
-  const { componentSeparator } = controlCharacters;
+  const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
 
   return {
-    pointOfCare: hl7StringEscaper(components[0], controlCharacters),
-    room: hl7StringEscaper(components[1], controlCharacters),
-    bed: hl7StringEscaper(components[2], controlCharacters),
-    facility: parseHierarchicDesignator(components[3], controlCharacters),
-    locationStatus: hl7StringEscaper(components[4], controlCharacters),
-    personLocationType: hl7StringEscaper(components[5], controlCharacters),
-    building: hl7StringEscaper(components[6], controlCharacters),
-    floor: hl7StringEscaper(components[7], controlCharacters),
-    locationType: hl7StringEscaper(components[8], controlCharacters),
+    pointOfCare: hl7StringEscaper(components[0], encodingCharacters),
+    room: hl7StringEscaper(components[1], encodingCharacters),
+    bed: hl7StringEscaper(components[2], encodingCharacters),
+    facility: parseHierarchicDesignator(components[3], encodingCharacters),
+    locationStatus: hl7StringEscaper(components[4], encodingCharacters),
+    personLocationType: hl7StringEscaper(components[5], encodingCharacters),
+    building: hl7StringEscaper(components[6], encodingCharacters),
+    floor: hl7StringEscaper(components[7], encodingCharacters),
+    locationType: hl7StringEscaper(components[8], encodingCharacters),
   };
 };
 
+export function hl7StringEscaperFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined) {
+    return hl7StringEscaper(input, encodingCharacters);
+  };
+}
+
 export function hl7StringEscaper(
   input: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): string;
 export function hl7StringEscaper(
   input: undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): undefined;
 export function hl7StringEscaper(
   input: string | undefined,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
+): string | undefined;
+export function hl7StringEscaper(
+  input: string | undefined,
+  encodingCharacters: MSH["encodingCharacters"]
 ): string | undefined {
   if (input == null) return undefined;
   const {
@@ -461,7 +596,7 @@ export function hl7StringEscaper(
     fieldSeparator,
     componentSeparator,
     subComponentSeparator,
-  } = controlCharacters;
+  } = encodingCharacters;
   return input
     .replace(`${escapeCharacter}.br${escapeCharacter}`, String.fromCharCode(13))
     .replace(`${escapeCharacter}F${escapeCharacter}`, fieldSeparator)
@@ -476,25 +611,64 @@ export function hl7StringEscaper(
     );
 }
 
+const hl7ElementMapperDebug = utilDebug.extend("hl7ElementMapper");
+
 /**
+ * Takes an array of string an maps in order definition and returns an object
  *
- * @param str Takes some array strings and maps to an object
- * @param def for each item in the array we map to a key and parse the string with the provided function of the template key
+ * @example
+ * let elements = ["Hello", "Sam", "21", "San Francisco"]
+ * let definition = {
+ *  greeting: (field) => field + " World",
+ *  name: (field) => field,
+ *  age: 18
+ * }
+ *
+ * let result = hl7ElementMapper(elements, definition)
+ *
+ * expect(result.greeting).to.be.equal("Hello World")
+ * expect(result.name).to.be.equal("Same")
+ * expect(result.age).to.be.equal(12) // Since we have a literal value the string at elements[2] is ignored
+ *
+ * // San Francisco would not be mapped since there is no forth key in the definition
+ *
+ * @param elements String values to map
+ * @param definition The definition of how to map the strings, order of the keys defines which index in the array is
+ *        mapped to the return object keys arr[0] => first defined key
+ *        definitions can be a function or a literal value
+ * @param options
+ * @param options.rootName Omits this string value during debug logs %s => %O where %s is the rootName and %O is the result of the function or literal
  * @returns A mapped object from an array
  */
 export function hl7ElementMapper<K extends object>(
-  str: string[],
-  def: { [P in keyof K]: ((element: string) => K[P]) | K[P] }
+  elements: string[],
+  definition: { [P in keyof K]: ((element: string) => K[P]) | K[P] },
+  options?: {
+    rootName?: string;
+  }
 ): K {
+  const rootName = options?.rootName ?? "UNK";
+  const debug = hl7ElementMapperDebug.extend(rootName);
   let item: any = {};
-  let keys = [...Object.keys(def)];
-  for (const ind in str) {
+  let keys = [...Object.keys(definition)];
+  for (const ind in elements) {
+    const elementPath = rootName.concat(
+      "-",
+      (parseInt(ind, 10) + 1).toFixed(0)
+    );
     const key = keys[ind];
-    const val = str[ind];
-    if (key == null) return item;
-    let res = def[key as keyof K];
+    const val = elements[ind];
+    if (key == null) {
+      debug(
+        "%s Has No Corresponding Key in the definition will return a partial object",
+        elementPath
+      );
+      return item;
+    }
+    let res = definition[key as keyof K];
     if (typeof res === "function") item[key] = res(val);
     else item[key] = res;
+    debug("%s => %O", elementPath, item[key]);
   }
   return item as K;
 }

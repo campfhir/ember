@@ -9,6 +9,7 @@ import {
   parsePD1,
   parseAL1,
   parseACC,
+  parseOBX,
 } from "../segmentParsers";
 import { getSegmentHeader } from "../utils";
 
@@ -35,46 +36,48 @@ export function parseAdt_A04(
     if (!res.ok) continue;
     const { header, fieldString } = res.val;
     if (header === "PID") {
-      const pid = parsePID(fieldString, msh.controlCharacters);
+      const pid = parsePID(fieldString, msh.encodingCharacters);
       hl7Message.patientIdentification = pid;
       continue;
-    }
-    if (header === "PV1") {
-      const pv1 = parsePV1(fieldString, msh.controlCharacters);
+    } else if (header === "PV1") {
+      const pv1 = parsePV1(fieldString, msh.encodingCharacters);
       hl7Message.patientVisit = pv1;
       continue;
-    }
-    if (header === "EVN") {
-      const evn = parseEVN(fieldString, msh.controlCharacters);
+    } else if (header === "EVN") {
+      const evn = parseEVN(fieldString, msh.encodingCharacters);
       hl7Message.eventType = evn;
       continue;
-    }
-    if (header === "NK1") {
-      const nk1 = parseNK1(fieldString, msh.controlCharacters);
+    } else if (header === "NK1") {
+      const nk1 = parseNK1(fieldString, msh.encodingCharacters);
       if (hl7Message.nextOfKin == null) {
         hl7Message.nextOfKin = [nk1];
         continue;
       }
       hl7Message.nextOfKin.push(nk1);
       continue;
-    }
-    if (header === "PD1") {
-      const pd1 = parsePD1(fieldString, msh.controlCharacters);
+    } else if (header === "PD1") {
+      const pd1 = parsePD1(fieldString, msh.encodingCharacters);
       hl7Message.patientDemographics = pd1;
       continue;
-    }
-    if (header === "AL1") {
-      const al1 = parseAL1(fieldString, msh.controlCharacters);
+    } else if (header === "AL1") {
+      const al1 = parseAL1(fieldString, msh.encodingCharacters);
       if (hl7Message.patientAllergyInformation == null) {
         hl7Message.patientAllergyInformation = [al1];
         continue;
       }
       hl7Message.patientAllergyInformation.push(al1);
       continue;
-    }
-    if (header === "ACC") {
-      const acc = parseACC(fieldString, msh.controlCharacters);
+    } else if (header === "ACC") {
+      const acc = parseACC(fieldString, msh.encodingCharacters);
       hl7Message.accident = acc;
+      continue;
+    } else if (header === "OBX") {
+      const obx = parseOBX(fieldString, msh.encodingCharacters);
+      if (hl7Message.observation == null) {
+        hl7Message.observation = [obx];
+        continue;
+      }
+      hl7Message.observation.push(obx);
       continue;
     }
   }

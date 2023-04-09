@@ -1,113 +1,128 @@
 import { MSH, PV1 } from "../../../typings";
 import {
-  parseCodedElement,
-  parseDischargeToLocation,
-  parseExtendedCompositeIdNumberAndName,
-  parseExtendedCompositeIdWithCheckDigit,
-  parseFinancial,
-  parsePersonLocation,
-  hl7StringEscaper,
+  parsePersonLocationFactory,
+  hl7ElementMapper,
+  hl7StringEscaperFactory,
+  parseCodedElementFactory,
+  parseExtendedCompositeIdNumberAndNameFactory,
+  parseExtendedCompositeIdWithCheckDigitFactory,
+  parseFinancialFactory,
+  parseDischargeToLocationFactory,
 } from "../utils";
 
 export const parsePV1 = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): PV1 => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const pv1 = segment.split(fieldSeparator);
 
-  return {
-    setId: pv1[1] ? parseInt(pv1[1], 10) : undefined,
-    patientClass: hl7StringEscaper(pv1[2], controlCharacters),
-    assignedPatientLocation: parsePersonLocation(pv1[3], controlCharacters),
-    admissionType: hl7StringEscaper(pv1[4], controlCharacters),
-    preadmitNumber: parseCodedElement(pv1[5], controlCharacters),
-    priorPatientLocation: parsePersonLocation(pv1[6], controlCharacters),
-    attendingDoctor: pv1[7]
-      ?.split(repetitionSeparator)
-      .map((doctor) =>
-        parseExtendedCompositeIdNumberAndName(doctor, controlCharacters)
-      ),
-    referringDoctor: pv1[8]
-      ?.split(repetitionSeparator)
-      .map((doctor) =>
-        parseExtendedCompositeIdNumberAndName(doctor, controlCharacters)
-      ),
-    consultingDoctor: pv1[9]
-      ?.split(repetitionSeparator)
-      .map((doctor) =>
-        parseExtendedCompositeIdNumberAndName(doctor, controlCharacters)
-      ),
-    hospitalService: hl7StringEscaper(pv1[10], controlCharacters),
-    temporaryLocation: parsePersonLocation(pv1[11], controlCharacters),
-    preadmitTestIndicator: hl7StringEscaper(pv1[12], controlCharacters),
-    readmissionIndicator: hl7StringEscaper(pv1[13], controlCharacters),
-    admitSource: hl7StringEscaper(pv1[14], controlCharacters),
-    ambulatoryStatus: pv1[15]
-      ?.split(repetitionSeparator)
-      .map((status) => hl7StringEscaper(status, controlCharacters)),
-    vipIndicator: hl7StringEscaper(pv1[16], controlCharacters),
-    admittingDoctor: pv1[17]
-      ?.split(repetitionSeparator)
-      .map((doctor) =>
-        parseExtendedCompositeIdNumberAndName(doctor, controlCharacters)
-      ),
-    patientType: hl7StringEscaper(pv1[18], controlCharacters),
-    visitNumber: parseExtendedCompositeIdWithCheckDigit(
-      pv1[19],
-      controlCharacters
-    ),
-    financial: pv1[20]
-      .split(repetitionSeparator)
-      .map((financial) => parseFinancial(financial, controlCharacters)),
-    chargePriceIndicator: hl7StringEscaper(pv1[21], controlCharacters),
-    courtesyCode: hl7StringEscaper(pv1[22], controlCharacters),
-    creditRating: hl7StringEscaper(pv1[23], controlCharacters),
-    contractCode: pv1[24]
-      ?.split(repetitionSeparator)
-      .map((code) => hl7StringEscaper(code, controlCharacters)),
-    contractEffectiveDate: pv1[25]
-      ?.split(repetitionSeparator)
-      .map((code) => hl7StringEscaper(code, controlCharacters)),
-    contractAmount: pv1[26]
-      ?.split(repetitionSeparator)
-      .filter((number) => !isNaN(parseInt(number, 10)))
-      .map((number) => parseInt(number)),
-    contractPeriod: pv1[27]
-      ?.split(repetitionSeparator)
-      .filter((number) => !isNaN(parseInt(number, 10)))
-      .map((number) => parseInt(number)),
-    interestCode: hl7StringEscaper(pv1[28], controlCharacters),
-    transferToBadDebtCode: hl7StringEscaper(pv1[29], controlCharacters),
-    transferToBadDebtDate: hl7StringEscaper(pv1[30], controlCharacters),
-    badDebtAgencyCode: hl7StringEscaper(pv1[31], controlCharacters),
-    badDebtTransferAmount: pv1[32] ? parseInt(pv1[32], 10) : undefined,
-    badDebRecoveryAmount: pv1[33] ? parseInt(pv1[33], 10) : undefined,
-    deleteAccountIndicator: hl7StringEscaper(pv1[34], controlCharacters),
-    deleteAccountDate: hl7StringEscaper(pv1[35], controlCharacters),
-    dischargeDisposition: hl7StringEscaper(pv1[36], controlCharacters),
-    dischargedTo: parseDischargeToLocation(pv1[37], controlCharacters),
-    dietType: hl7StringEscaper(pv1[38], controlCharacters),
-    servicingFacility: hl7StringEscaper(pv1[39], controlCharacters),
-    bedStatus: hl7StringEscaper(pv1[40], controlCharacters),
-    accountStatus: hl7StringEscaper(pv1[41], controlCharacters),
-    pendingLocation: parsePersonLocation(pv1[42], controlCharacters),
-    priorTemporaryLocation: parsePersonLocation(pv1[43], controlCharacters),
-    admitDateTime: hl7StringEscaper(pv1[44], controlCharacters),
-    dischargeDateTime: hl7StringEscaper(pv1[45], controlCharacters),
-    currentPatientBalance: pv1[46] ? parseInt(pv1[46], 10) : undefined,
-    totalCharges: pv1[47] ? parseInt(pv1[47], 10) : undefined,
-    totalAdjustments: pv1[48] ? parseInt(pv1[48], 10) : undefined,
-    totalPayments: pv1[49] ? parseInt(pv1[49], 10) : undefined,
-    alternateVisitId: parseExtendedCompositeIdWithCheckDigit(
-      pv1[50],
-      controlCharacters
-    ),
-    visitIndicator: hl7StringEscaper(pv1[51], controlCharacters),
-    otherHealthcareProvider: pv1[52]
-      ?.split(repetitionSeparator)
-      .map((doctor) =>
-        parseExtendedCompositeIdNumberAndName(doctor, controlCharacters)
-      ),
-  };
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseExtendedCompositeIdNumberAndName =
+    parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
+  const parseExtendedCompositeIdWithCheckDigit =
+    parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
+  const parsePersonLocation = parsePersonLocationFactory(encodingCharacters);
+  const parseFinancial = parseFinancialFactory(encodingCharacters);
+  const parseDischargeToLocation =
+    parseDischargeToLocationFactory(encodingCharacters);
+
+  return hl7ElementMapper(
+    pv1,
+    {
+      setId: (field) => (field ? parseInt(field, 10) : undefined),
+      patientClass: (field) => hl7StringEscaper(field) ?? "",
+      assignedPatientLocation: (field) => parsePersonLocation(field),
+      admissionType: (field) => hl7StringEscaper(field),
+      preadmitNumber: (field) => parseCodedElement(field),
+      priorPatientLocation: (field) => parsePersonLocation(field),
+      attendingDoctor: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+      referringDoctor: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+      consultingDoctor: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+      hospitalService: (field) => hl7StringEscaper(field),
+      temporaryLocation: (field) => parsePersonLocation(field),
+      preadmitTestIndicator: (field) => hl7StringEscaper(field),
+      readmissionIndicator: (field) => hl7StringEscaper(field),
+      admitSource: (field) => hl7StringEscaper(field),
+      ambulatoryStatus: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((status) => hl7StringEscaper(status) ?? ""),
+      vipIndicator: (field) => hl7StringEscaper(field),
+      admittingDoctor: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+      patientType: (field) => hl7StringEscaper(field),
+      visitNumber: (field) => parseExtendedCompositeIdWithCheckDigit(field),
+      financial: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((financial) => parseFinancial(financial) ?? ""),
+      chargePriceIndicator: (field) => hl7StringEscaper(field),
+      courtesyCode: (field) => hl7StringEscaper(field),
+      creditRating: (field) => hl7StringEscaper(field),
+      contractCode: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((code) => hl7StringEscaper(code) ?? ""),
+      contractEffectiveDate: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((code) => hl7StringEscaper(code) ?? ""),
+      contractAmount: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .filter((number) => !isNaN(parseInt(number, 10)))
+          .map((number) => parseInt(number)),
+      contractPeriod: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .filter((number) => !isNaN(parseInt(number, 10)))
+          .map((number) => parseInt(number)),
+      interestCode: (field) => hl7StringEscaper(field),
+      transferToBadDebtCode: (field) => hl7StringEscaper(field),
+      transferToBadDebtDate: (field) => hl7StringEscaper(field),
+      badDebtAgencyCode: (field) => hl7StringEscaper(field),
+      badDebtTransferAmount: (field) =>
+        field ? parseInt(field, 10) : undefined,
+      badDebRecoveryAmount: (field) =>
+        field ? parseInt(field, 10) : undefined,
+      deleteAccountIndicator: (field) => hl7StringEscaper(field),
+      deleteAccountDate: (field) => hl7StringEscaper(field),
+      dischargeDisposition: (field) => hl7StringEscaper(field),
+      dischargedTo: (field) => parseDischargeToLocation(field),
+      dietType: (field) => hl7StringEscaper(field),
+      servicingFacility: (field) => hl7StringEscaper(field),
+      bedStatus: (field) => hl7StringEscaper(field),
+      accountStatus: (field) => hl7StringEscaper(field),
+      pendingLocation: (field) => parsePersonLocation(field),
+      priorTemporaryLocation: (field) => parsePersonLocation(field),
+      admitDateTime: (field) => hl7StringEscaper(field),
+      dischargeDateTime: (field) => hl7StringEscaper(field),
+      currentPatientBalance: (field) =>
+        field ? parseInt(field, 10) : undefined,
+      totalCharges: (field) => (field ? parseInt(field, 10) : undefined),
+      totalAdjustments: (field) => (field ? parseInt(field, 10) : undefined),
+      totalPayments: (field) => (field ? parseInt(field, 10) : undefined),
+      alternateVisitId: (field) =>
+        parseExtendedCompositeIdWithCheckDigit(field),
+      visitIndicator: (field) => hl7StringEscaper(field),
+      otherHealthcareProvider: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+    },
+    { rootName: "PV1" }
+  );
 };

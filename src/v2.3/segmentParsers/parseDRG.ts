@@ -2,9 +2,9 @@ import { MSH, DRG } from "../../../typings";
 
 export const parseDRG = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): DRG => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const drg = segment.split(fieldSeparator);
-  throw new Error("Not implemented");
+  throw new Error("DRG Not implemented");
 };

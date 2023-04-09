@@ -32,7 +32,7 @@ IN2|ID1551001|SSN12345678`;
     }
     const msg = res.val as HL7Message;
     const { fieldSeparator, subComponentSeparator, componentSeparator } =
-      msg.messageHeader.controlCharacters;
+      msg.messageHeader.encodingCharacters;
     fieldSeparator.should.equal("|");
     componentSeparator.should.be.equal("^");
     subComponentSeparator.should.be.equal("&");

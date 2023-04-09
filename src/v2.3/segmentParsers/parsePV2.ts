@@ -1,70 +1,79 @@
 import { MSH, PV2 } from "../../../typings";
 import {
-  hl7StringEscaper,
-  parseCodedElement,
-  parseExtendedCompositeIdNumberAndName,
-  parseExtendedCompositeNameAndIdForOrganizations,
-  parsePersonLocation,
+  parsePersonLocationFactory,
+  hl7ElementMapper,
+  hl7StringEscaperFactory,
+  parseCodedElementFactory,
+  parseExtendedCompositeIdNumberAndNameFactory,
+  parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
 
 export const parsePV2 = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): PV2 => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const pv2 = segment.split(fieldSeparator);
 
-  return {
-    priorPendingLocation: parsePersonLocation(pv2[1], controlCharacters),
-    accommodationCode: parseCodedElement(pv2[2], controlCharacters),
-    admitReason: parseCodedElement(pv2[3], controlCharacters),
-    transferReason: parseCodedElement(pv2[4], controlCharacters),
-    patientValuables: pv2[5]
-      ?.split(repetitionSeparator)
-      .map((valuable) => hl7StringEscaper(valuable, controlCharacters)),
-    patientValuablesLocation: hl7StringEscaper(pv2[6], controlCharacters),
-    visitUserCode: hl7StringEscaper(pv2[7], controlCharacters),
-    expectedAdmitDate: hl7StringEscaper(pv2[8], controlCharacters),
-    expectedDischargeDate: hl7StringEscaper(pv2[9], controlCharacters),
-    estimatedLengthOfInpatientStay: pv2[10] ? parseInt(pv2[10], 10) : undefined,
-    actualLengthOfInpatientStay: pv2[11] ? parseInt(pv2[11], 10) : undefined,
-    visitDescription: hl7StringEscaper(pv2[12], controlCharacters),
-    referralSourceCode: parseExtendedCompositeIdNumberAndName(
-      pv2[13],
-      controlCharacters
-    ),
-    previousServiceDate: hl7StringEscaper(pv2[14], controlCharacters),
-    employmentIllnessRelatedIndicator: hl7StringEscaper(
-      pv2[15],
-      controlCharacters
-    ),
-    purgeStatusCode: hl7StringEscaper(pv2[16], controlCharacters),
-    purgeStatusDate: hl7StringEscaper(pv2[17], controlCharacters),
-    specialProgramCode: hl7StringEscaper(pv2[18], controlCharacters),
-    retentionIndicator: hl7StringEscaper(pv2[19], controlCharacters),
-    expectedNumberOfInsurancePlans: pv2[20] ? parseInt(pv2[20], 10) : undefined,
-    visitPublicityCode: hl7StringEscaper(pv2[21], controlCharacters),
-    visitProtectionIndicator: hl7StringEscaper(pv2[22], controlCharacters),
-    clinicOrganizationName: pv2[23]
-      ?.split(repetitionSeparator)
-      .map((org) =>
-        parseExtendedCompositeNameAndIdForOrganizations(org, controlCharacters)
-      ),
-    patientStatusCode: hl7StringEscaper(pv2[24], controlCharacters),
-    visitPriorityCode: hl7StringEscaper(pv2[25], controlCharacters),
-    previousTreatmentDate: hl7StringEscaper(pv2[26], controlCharacters),
-    expectedDischargeDisposition: hl7StringEscaper(pv2[27], controlCharacters),
-    signatureOnFileDate: hl7StringEscaper(pv2[28], controlCharacters),
-    firstSimilarIllnessDate: hl7StringEscaper(pv2[29], controlCharacters),
-    patientChargeAdjustmentCode: hl7StringEscaper(pv2[30], controlCharacters),
-    recurringServiceCode: hl7StringEscaper(pv2[31], controlCharacters),
-    billingMediaCode: hl7StringEscaper(pv2[32], controlCharacters),
-    expectedSurgeryDateTime: hl7StringEscaper(pv2[33], controlCharacters),
-    militaryPartnershipCode: hl7StringEscaper(pv2[34], controlCharacters),
-    militaryNonAvailabilityCode: hl7StringEscaper(pv2[35], controlCharacters),
-    newbornBabyIndicator: hl7StringEscaper(pv2[36], controlCharacters),
-    babyDetainedIndicator: hl7StringEscaper(pv2[37], controlCharacters),
-  };
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+  const parseExtendedCompositeIdNumberAndName =
+    parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
+  const parsePersonLocation = parsePersonLocationFactory(encodingCharacters);
+  const parseExtendedCompositeNameAndIdForOrganizations =
+    parseExtendedCompositeNameAndIdForOrganizationsFactory(encodingCharacters);
 
-  throw new Error("Not implemented");
+  return hl7ElementMapper(
+    pv2,
+    {
+      priorPendingLocation: (field) => parsePersonLocation(field),
+      accommodationCode: (field) => parseCodedElement(field),
+      admitReason: (field) => parseCodedElement(field),
+      transferReason: (field) => parseCodedElement(field),
+      patientValuables: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((valuable) => hl7StringEscaper(valuable) ?? ""),
+      patientValuablesLocation: (field) => hl7StringEscaper(field),
+      visitUserCode: (field) => hl7StringEscaper(field),
+      expectedAdmitDate: (field) => hl7StringEscaper(field),
+      expectedDischargeDate: (field) => hl7StringEscaper(field),
+      estimatedLengthOfInpatientStay: (field) =>
+        field ? parseInt(field, 10) : undefined,
+      actualLengthOfInpatientStay: (field) =>
+        field ? parseInt(field, 10) : undefined,
+      visitDescription: (field) => hl7StringEscaper(field),
+      referralSourceCode: (field) =>
+        parseExtendedCompositeIdNumberAndName(field),
+      previousServiceDate: (field) => hl7StringEscaper(field),
+      employmentIllnessRelatedIndicator: (field) => hl7StringEscaper(field),
+      purgeStatusCode: (field) => hl7StringEscaper(field),
+      purgeStatusDate: (field) => hl7StringEscaper(field),
+      specialProgramCode: (field) => hl7StringEscaper(field),
+      retentionIndicator: (field) => hl7StringEscaper(field),
+      expectedNumberOfInsurancePlans: (field) =>
+        field ? parseInt(field, 10) : undefined,
+      visitPublicityCode: (field) => hl7StringEscaper(field),
+      visitProtectionIndicator: (field) => hl7StringEscaper(field),
+      clinicOrganizationName: (field) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((org) => parseExtendedCompositeNameAndIdForOrganizations(org)),
+      patientStatusCode: (field) => hl7StringEscaper(field),
+      visitPriorityCode: (field) => hl7StringEscaper(field),
+      previousTreatmentDate: (field) => hl7StringEscaper(field),
+      expectedDischargeDisposition: (field) => hl7StringEscaper(field),
+      signatureOnFileDate: (field) => hl7StringEscaper(field),
+      firstSimilarIllnessDate: (field) => hl7StringEscaper(field),
+      patientChargeAdjustmentCode: (field) => hl7StringEscaper(field),
+      recurringServiceCode: (field) => hl7StringEscaper(field),
+      billingMediaCode: (field) => hl7StringEscaper(field),
+      expectedSurgeryDateTime: (field) => hl7StringEscaper(field),
+      militaryPartnershipCode: (field) => hl7StringEscaper(field),
+      militaryNonAvailabilityCode: (field) => hl7StringEscaper(field),
+      newbornBabyIndicator: (field) => hl7StringEscaper(field),
+      babyDetainedIndicator: (field) => hl7StringEscaper(field),
+    },
+    { rootName: "PV2" }
+  );
 };

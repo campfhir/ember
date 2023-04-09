@@ -6,13 +6,18 @@ import type {
 } from "../../../typings";
 import {
   getSegmentHeader,
-  parseCodedElement,
-  parseHierarchicDesignator,
-  hl7StringEscaper,
+  debugLogger,
+  hl7ElementMapper,
+  hl7StringEscaperFactory,
+  parseHierarchicDesignatorFactory,
+  parseCodedElementFactory,
 } from "../utils";
+
+const debug = debugLogger.extend("parseMSH");
 
 export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
   if (segment == null) {
+    debug("Segment is NULL or undefined");
     return { ok: false, err: new Error("No header present in empty string") };
   }
   const res = getSegmentHeader(segment);
@@ -29,56 +34,58 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
     escapeCharacter = fieldString[3],
     subComponentSeparator = fieldString[4];
   const msh = fieldString.split(fieldSeparator);
-  const controlCharacters = {
+  const encodingCharacters = {
     fieldSeparator,
     repetitionSeparator,
     escapeCharacter,
     subComponentSeparator,
     componentSeparator,
   };
-  const mshHeader: MSH = {
-    controlCharacters,
-    sendingApplication: parseHierarchicDesignator(msh[2], controlCharacters),
-    sendingFacility: parseHierarchicDesignator(msh[3], controlCharacters),
-    receivingApplication: parseHierarchicDesignator(msh[4], controlCharacters),
-    receivingFacility: parseHierarchicDesignator(msh[5], controlCharacters),
-    dateTimeOfMessage: hl7StringEscaper(msh[6], controlCharacters),
-    security: hl7StringEscaper(msh[7], controlCharacters),
-    message: {
-      type: hl7StringEscaper(
-        msh[8]?.split(componentSeparator)?.[0],
-        controlCharacters
-      ) as MessageTypes,
-      event: hl7StringEscaper(
-        msh[8]?.split(componentSeparator)?.[1],
-        controlCharacters
-      ) as MessageEvents,
+  debug("Control Characters => %O", encodingCharacters);
+
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  const parseHierarchicDesignator =
+    parseHierarchicDesignatorFactory(encodingCharacters);
+  const parseCodedElement = parseCodedElementFactory(encodingCharacters);
+
+  const mshHeader = hl7ElementMapper<MSH>(
+    msh,
+    {
+      fieldSeparator: fieldSeparator,
+      encodingCharacters,
+      sendingApplication: (field) => parseHierarchicDesignator(field),
+      sendingFacility: (field) => parseHierarchicDesignator(field),
+      receivingApplication: (field) => parseHierarchicDesignator(field),
+      receivingFacility: (field) => parseHierarchicDesignator(field),
+      dateTimeOfMessage: (field) => hl7StringEscaper(field),
+      security: (field) => hl7StringEscaper(field),
+      message: (field) => ({
+        type: hl7StringEscaper(
+          field?.split(componentSeparator)?.[0]
+        ) as MessageTypes,
+        event: hl7StringEscaper(
+          field?.split(componentSeparator)?.[1]
+        ) as MessageEvents,
+      }),
+      messageControlId: (field) => hl7StringEscaper(field) ?? "",
+      processing: (field) => ({
+        id: hl7StringEscaper(field?.split(componentSeparator)?.[0]),
+        mode: hl7StringEscaper(field?.split(componentSeparator)?.[1]),
+      }),
+      versionId: (field) => hl7StringEscaper(field) ?? "",
+      sequenceNumber: (field) => (field ? parseInt(field, 10) : undefined),
+      continuationPointer: (field) => hl7StringEscaper(field),
+      acceptAcknowledgementType: (field) => hl7StringEscaper(field),
+      applicationAcknowledgementType: (field) => hl7StringEscaper(field),
+      countryCode: (field) => hl7StringEscaper(field),
+      characterSet: (field) =>
+        field
+          ?.split(componentSeparator, 3)
+          .map((val) => hl7StringEscaper(val) ?? ""),
+      principalLanguageOfMessage: (field) => parseCodedElement(field),
     },
-    messageControlId: hl7StringEscaper(msh[9], controlCharacters),
-    processing: {
-      id: hl7StringEscaper(
-        msh[10]?.split(componentSeparator)?.[0],
-        controlCharacters
-      ),
-      mode: hl7StringEscaper(
-        msh[10]?.split(componentSeparator)?.[1],
-        controlCharacters
-      ),
-    },
-    versionId: hl7StringEscaper(msh[11], controlCharacters),
-    sequenceNumber: msh[12] == null ? parseInt(msh[12], 10) : undefined,
-    continuationPointer: hl7StringEscaper(msh[13], controlCharacters),
-    acceptAcknowledgementType: hl7StringEscaper(msh[14], controlCharacters),
-    applicationAcknowledgementType: hl7StringEscaper(
-      msh[15],
-      controlCharacters
-    ),
-    countryCode: hl7StringEscaper(msh[16], controlCharacters),
-    characterSet: msh[17]
-      ?.split(componentSeparator, 3)
-      .map((val) => hl7StringEscaper(val, controlCharacters)),
-    principalLanguageOfMessage: parseCodedElement(msh[18], controlCharacters),
-  };
+    { rootName: "MSH" }
+  );
 
   return { ok: true, val: mshHeader, warnings: [] };
 };

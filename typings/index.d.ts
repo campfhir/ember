@@ -1,4 +1,7 @@
 export * from "./v2.3";
+export type HL7MappingDefinition<T> = {
+  [P in keyof K]: ((element: string) => K[P]) | K[P];
+};
 export type WrappedResult<T = any, E extends Error = Error> =
   | {
       ok: true;

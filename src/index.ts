@@ -1,9 +1,8 @@
 import type { HL7Message, WrappedResult } from "../typings";
-import d from "debug";
 
-import { parseAdt, parseMSH } from "./v2.3";
+import { debugLogger, parseAdt, parseMSH } from "./v2.3";
 
-const debug = d("parseHL7");
+const debug = debugLogger.extend("parseHL7");
 
 export const parseHL7 = (message: string): WrappedResult<HL7Message> => {
   debug("Attempting to parse a message of %d characters", message.length);
@@ -12,6 +11,11 @@ export const parseHL7 = (message: string): WrappedResult<HL7Message> => {
   const mshSegment = segments.shift();
   const msh = parseMSH(mshSegment);
   if (!msh.ok) return { ...msh, val: {} };
+  debug(
+    "Message Type => %s Event => %s",
+    msh.val.message.type,
+    msh.val.message.event
+  );
   if (msh.val.message.type === "ADT") {
     return parseAdt(msh.val, segments);
   }

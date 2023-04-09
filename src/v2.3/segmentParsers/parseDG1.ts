@@ -2,9 +2,9 @@ import { MSH, DG1 } from "../../../typings";
 
 export const parseDG1 = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): DG1 => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const dg1 = segment.split(fieldSeparator);
-  throw new Error("Not implemented");
+  throw new Error("DG1 Not implemented");
 };

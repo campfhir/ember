@@ -2,9 +2,9 @@ import { MSH, IN1 } from "../../../typings";
 
 export const parseIN1 = (
   segment: string,
-  controlCharacters: MSH["controlCharacters"]
+  encodingCharacters: MSH["encodingCharacters"]
 ): IN1 => {
-  const { fieldSeparator, repetitionSeparator } = controlCharacters;
+  const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const in1 = segment.split(fieldSeparator);
-  throw new Error("Not implemented");
+  throw new Error("IN1 Not implemented");
 };
