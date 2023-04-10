@@ -8,7 +8,6 @@ import {
   hl7ElementMapper,
   parseExtendPersonNameFactory,
   parseExtendedTelecommunicationNumberFactory,
-  parseHierarchicDesignator,
   parseHierarchicDesignatorFactory,
 } from "../utils";
 
