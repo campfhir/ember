@@ -123,6 +123,9 @@ export const parsePV1 = (
         field
           ?.split(repetitionSeparator)
           .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+      serviceEpisodeDescription: (field) => hl7StringEscaper(field),
+      serviceEpisodeIdentifier: (field) =>
+        parseExtendedCompositeIdWithCheckDigit(field),
     },
     { rootName: "PV1" }
   );

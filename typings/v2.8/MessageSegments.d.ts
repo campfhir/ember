@@ -1074,6 +1074,8 @@ export type MessageSegments = {
     alternateVisitId?: ExtendedCompositeIdWithCheckDigit;
     visitIndicator?: string;
     otherHealthcareProvider?: ExtendedCompositeIdNumberAndName[];
+    serviceEpisodeDescription?: string;
+    serviceEpisodeIdentifier?: ExtendedCompositeIdWithCheckDigit;
   };
 
   /** The PV2 segment is a continuation of visit-specific information contained on the PV1 segment
