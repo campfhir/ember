@@ -10,6 +10,8 @@ import {
   parseDischargeToLocationFactory,
 } from "../utils";
 
+const rootName = "PV1";
+
 export const parsePV1 = (
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -34,24 +36,43 @@ export const parsePV1 = (
     {
       setId: (field) => (field ? parseInt(field, 10) : undefined),
       patientClass: (field) => hl7StringEscaper(field) ?? "",
-      assignedPatientLocation: (field) => parsePersonLocation(field),
+      assignedPatientLocation: (field, elementPath) =>
+        parsePersonLocation(field, `${elementPath}`),
       admissionType: (field) => hl7StringEscaper(field),
-      preadmitNumber: (field) => parseCodedWithExceptions(field),
-      priorPatientLocation: (field) => parsePersonLocation(field),
-      attendingDoctor: (field) =>
+      preadmitNumber: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
+      priorPatientLocation: (field, elementPath) =>
+        parsePersonLocation(field, `${elementPath}`),
+      attendingDoctor: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
-      referringDoctor: (field) =>
+          .map((doctor, repetitionInd) =>
+            parseExtendedCompositeIdNumberAndName(
+              doctor,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
+      referringDoctor: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
-      consultingDoctor: (field) =>
+          .map((doctor, repetitionInd) =>
+            parseExtendedCompositeIdNumberAndName(
+              doctor,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
+      consultingDoctor: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+          .map((doctor, repetitionInd) =>
+            parseExtendedCompositeIdNumberAndName(
+              doctor,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
       hospitalService: (field) => hl7StringEscaper(field),
-      temporaryLocation: (field) => parsePersonLocation(field),
+      temporaryLocation: (field, elementPath) =>
+        parsePersonLocation(field, `${elementPath}`),
       preadmitTestIndicator: (field) => hl7StringEscaper(field),
       readmissionIndicator: (field) => hl7StringEscaper(field),
       admitSource: (field) => hl7StringEscaper(field),
@@ -60,16 +81,26 @@ export const parsePV1 = (
           ?.split(repetitionSeparator)
           .map((status) => hl7StringEscaper(status) ?? ""),
       vipIndicator: (field) => hl7StringEscaper(field),
-      admittingDoctor: (field) =>
+      admittingDoctor: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+          .map((doctor, repetitionInd) =>
+            parseExtendedCompositeIdNumberAndName(
+              doctor,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
       patientType: (field) => hl7StringEscaper(field),
-      visitNumber: (field) => parseExtendedCompositeIdWithCheckDigit(field),
-      financial: (field) =>
+      visitNumber: (field, elementPath) =>
+        parseExtendedCompositeIdWithCheckDigit(field, `${elementPath}`),
+      financial: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((financial) => parseFinancial(financial) ?? ""),
+          .map(
+            (financial, repetitionInd) =>
+              parseFinancial(financial, `${elementPath}[${repetitionInd}]`) ??
+              ""
+          ),
       chargePriceIndicator: (field) => hl7StringEscaper(field),
       courtesyCode: (field) => hl7StringEscaper(field),
       creditRating: (field) => hl7StringEscaper(field),
@@ -102,13 +133,16 @@ export const parsePV1 = (
       deleteAccountIndicator: (field) => hl7StringEscaper(field),
       deleteAccountDate: (field) => hl7StringEscaper(field),
       dischargeDisposition: (field) => hl7StringEscaper(field),
-      dischargedTo: (field) => parseDischargeToLocation(field),
+      dischargedTo: (field, elementPath) =>
+        parseDischargeToLocation(field, `${elementPath}`),
       dietType: (field) => hl7StringEscaper(field),
       servicingFacility: (field) => hl7StringEscaper(field),
       bedStatus: (field) => hl7StringEscaper(field),
       accountStatus: (field) => hl7StringEscaper(field),
-      pendingLocation: (field) => parsePersonLocation(field),
-      priorTemporaryLocation: (field) => parsePersonLocation(field),
+      pendingLocation: (field, elementPath) =>
+        parsePersonLocation(field, `${elementPath}`),
+      priorTemporaryLocation: (field, elementPath) =>
+        parsePersonLocation(field, `${elementPath}`),
       admitDateTime: (field) => hl7StringEscaper(field),
       dischargeDateTime: (field) => hl7StringEscaper(field),
       currentPatientBalance: (field) =>
@@ -116,17 +150,22 @@ export const parsePV1 = (
       totalCharges: (field) => (field ? parseInt(field, 10) : undefined),
       totalAdjustments: (field) => (field ? parseInt(field, 10) : undefined),
       totalPayments: (field) => (field ? parseInt(field, 10) : undefined),
-      alternateVisitId: (field) =>
-        parseExtendedCompositeIdWithCheckDigit(field),
+      alternateVisitId: (field, elementPath) =>
+        parseExtendedCompositeIdWithCheckDigit(field, `${elementPath}`),
       visitIndicator: (field) => hl7StringEscaper(field),
-      otherHealthcareProvider: (field) =>
+      otherHealthcareProvider: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((doctor) => parseExtendedCompositeIdNumberAndName(doctor)),
+          .map((doctor, repetitionInd) =>
+            parseExtendedCompositeIdNumberAndName(
+              doctor,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
       serviceEpisodeDescription: (field) => hl7StringEscaper(field),
-      serviceEpisodeIdentifier: (field) =>
-        parseExtendedCompositeIdWithCheckDigit(field),
+      serviceEpisodeIdentifier: (field, elementPath) =>
+        parseExtendedCompositeIdWithCheckDigit(field, `${elementPath}`),
     },
-    { rootName: "PV1" }
+    { rootName }
   );
 };

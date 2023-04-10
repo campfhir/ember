@@ -681,11 +681,11 @@ export type MessageSegments = {
    */
   ORC: {};
 
-  /** The PCR segment is used to communicate a potential or suspected relationship between a product (drug or device) or test and an event with detrimental effect on a patient.  This segment identifies a potential causal relationship between the product identified in this segment and the event identified in the PEO segment.* 
-  * 
-  * 
-  * 
-  More than one PCR segment can be included in the message if more than one product is possibly causally related to the event.
+  /**
+   * The PCR segment is used to communicate a potential or suspected relationship between a product (drug or device) or test and an event with detrimental effect on a patient.
+   * This segment identifies a potential causal relationship between the product identified in this segment and the event identified in the PEO segment.
+   *
+   * More than one PCR segment can be included in the message if more than one product is possibly causally related to the event.
    */
   PCR: {};
 
@@ -779,11 +779,15 @@ export type MessageSegments = {
    */
   PDC: {};
 
-  /** Details related to a particular clinical experience or event are embodied in the PEO segment.  This segment can be used to characterize an event which might be attributed to a product to which the patient was exposed.   Products with a possible causal relationship to the observed experience are described in the following PCR (possible causal relationship) segments.  The message format was designed to be robust and includes many optional elements which may not be required for a particular regulatory purpose but allow a complete representation of the drug experience if needed.* 
-  * 
-  * 
-  * 
-  A PEX message can contain multiple PEO segments if the patient experienced more than one event but must contain at least one PEO segment.
+  /**
+   *  Details related to a particular clinical experience or event are embodied in the PEO segment.  This segment can be used to characterize an event which might be attributed to a product to which the patient was exposed.
+   *
+   * Products with a possible causal relationship to the observed experience are described in the following PCR (possible causal relationship) segments.  The message format was designed to be robust and includes many optional elements which may not be required
+   * for a particular regulatory purpose but allow a complete representation of the drug experience if needed.*
+   *
+   *
+   *
+   * A PEX message can contain multiple PEO segments if the patient experienced more than one event but must contain at least one PEO segment.
    */
   PEO: {};
 
@@ -907,11 +911,16 @@ export type MessageSegments = {
     patientTelecommunicationInformation?: ExtendedTelecommunicationNumber[];
   };
 
-  /** The PR1 segment contains information relative to various types of procedures that can be performed on a patient.  The PR1 segment can be used to send procedure information, for example: Surgical, Nuclear Medicine, X-ray with contrast, etc.   The PR1 segment is used to send multiple procedures, for example, for medical records encoding or for billing systems.
+  /**
+   * The PR1 segment contains information relative to various types of procedures that can be performed on a patient.  The PR1 segment can be used to send procedure information, for example: Surgical, Nuclear Medicine, X-ray with contrast, etc.
+   *
+   * The PR1 segment is used to send multiple procedures, for example, for medical records encoding or for billing systems.
    */
   PR1: {};
 
-  /** The PRA segment adds detailed medical practitioner information to the personnel identified by the STF segment.  A PRA segment may optionally follow an STF segment.  A PRA segment must always have been preceded by a corresponding STF segment.  The PRA segment may also be used for staff who work in healthcare who are not practitioners, but need to be certified, e.g., “medical records staff.”
+  /**
+   * The PRA segment adds detailed medical practitioner information to the personnel identified by the STF segment.  A PRA segment may optionally follow an STF segment.  A PRA segment must always have been preceded by a corresponding STF segment.
+   * The PRA segment may also be used for staff who work in healthcare who are not practitioners, but need to be certified, e.g., “medical records staff.”
    */
   PRA: {};
 
@@ -923,11 +932,17 @@ export type MessageSegments = {
    */
   PRB: {};
 
-  /** The PRC segment contains the  pricing information for the preceding CDM segment’s chargeable item.  It contains the fields which, for the same chargeable item, might vary depending upon facility or department or patient type.  The preceding CDM segment contains the fields which, for one chargeable item, remain the same across facilities, departments, and patient types
+  /**
+   * The PRC segment contains the  pricing information for the preceding CDM segment’s chargeable item.  It contains the fields which, for the same chargeable item, might vary depending upon facility or department or patient type.
+   * The preceding CDM segment contains the fields which, for one chargeable item, remain the same across facilities, departments, and patient types
    */
   PRC: {};
 
-  /** This segment will be employed as part of a patient referral message and its related transactions.  The PRD segment contains data specifically focused on a referral, and it is inter-enterprise in nature.  The justification for this new segment comes from the fact that we are dealing with referrals that are external to the facilities that received them.  Therefore, using a segment such as the current PV1 would be inadequate for all the return information that may be required by the receiving facility or application.  In addition, the PV1 does not always provide information sufficient to enable the external facility to make a complete identification of the referring entity.  The information contained in the PRD segment will include the referring provider, the referred-to provider, the referred-to location or service, and the referring provider clinic address.
+  /**
+   * This segment will be employed as part of a patient referral message and its related transactions.  The PRD segment contains data specifically focused on a referral, and it is inter-enterprise in nature.
+   * The justification for this new segment comes from the fact that we are dealing with referrals that are external to the facilities that received them.  Therefore, using a segment such as the current PV1 would be inadequate
+   * for all the return information that may be required by the receiving facility or application.  In addition, the PV1 does not always provide information sufficient to enable the external facility to make a complete identification of the referring entity.
+   * The information contained in the PRD segment will include the referring provider, the referred-to provider, the referred-to location or service, and the referring provider clinic address.
    */
   PRD: {};
 
@@ -1197,13 +1212,14 @@ export type MessageSegments = {
    */
   QRF: {};
 
-  /** The RDF segment defines the content of the row data segments (RDT) in the Tabular Data Response Message (TBR).  It is used in two ways:* 
-  * 
-   * 
-  * 
-  - As an optional segment in the SPQ message (Stored Procedure Request) or the VQQ (Virtual Table Query) message, this segment can be used to limit the number of columns returned and to specify what column positions the fields occupy (where supported, these features can be used to override the defaults for the particular query).  If omitted, all fields defined for the query are returned in their default column order. * 
-  * 
-  - As a required segment on the tabular data response message (TBR), this segment defines the contents of the table row data (RDT) segments that follow.
+  /**
+   * The RDF segment defines the content of the row data segments (RDT) in the Tabular Data Response Message (TBR).  It is used in two ways:*
+   *
+   *
+   * - As an optional segment in the SPQ message (Stored Procedure Request) or the VQQ (Virtual Table Query) message, this segment can be used to limit the number of columns returned and to specify what column positions the fields occupy (where supported,
+   * these features can be used to override the defaults for the particular query).  If omitted, all fields defined for the query are returned in their default column order. *
+   *
+   *  - As a required segment on the tabular data response message (TBR), this segment defines the contents of the table row data (RDT) segments that follow.
    */
   RDF: {};
 
@@ -1215,9 +1231,12 @@ export type MessageSegments = {
    */
   RF1: {};
 
-  /** The RGS segment is used to identify relationships between resources identified for a scheduled event.  This segment can be used, on a site specified basis, to identify groups of resources that are used together within a scheduled event, or to describe some other relationship between resources.  To specify related groups of resources within a message, begin each group with an RGS segment, and then follow that RGS with one or more of the Appointment Information segments (AIG, AIL, AIS, or AIP). * 
-  * 
-  If a message does not require any grouping of resources, then specify a single RGS in the message, and follow it with all of the Appointment Information segments for the scheduled event.   (At least one RGS segment is required in each message — even if no grouping of resources is required — to allow parsers to properly understand the message.)
+  /**
+   * The RGS segment is used to identify relationships between resources identified for a scheduled event.  This segment can be used, on a site specified basis, to identify groups of resources that are used together within a scheduled event,
+   * or to describe some other relationship between resources.  To specify related groups of resources within a message, begin each group with an RGS segment, and then follow that RGS with one or more of the Appointment Information segments (AIG, AIL, AIS, or AIP). *
+   *
+   * If a message does not require any grouping of resources, then specify a single RGS in the message, and follow it with all of the Appointment Information segments for the scheduled event.   (At least one RGS segment is required in each message — even if no grouping of
+   * resources is required — to allow parsers to properly understand the message.)
    */
   RGS: {};
 
@@ -1237,7 +1256,9 @@ export type MessageSegments = {
    */
   RXA: {};
 
-  /** If the drug or treatment ordered with the RXO segment is a compound drug OR an IV solution, AND there is not a coded value for the Universal Service ID which specifies the components (base and all additives), then the components (the base and additives) are specified by two or more RXC segments.  The policy of the pharmacy or treatment application on substitutions at the RXC level is identical to that for the RXO level.
+  /**
+   * If the drug or treatment ordered with the RXO segment is a compound drug OR an IV solution, AND there is not a coded value for the Universal Service ID which specifies the components (base and all additives),
+   * then the components (the base and additives) are specified by two or more RXC segments.  The policy of the pharmacy or treatment application on substitutions at the RXC level is identical to that for the RXO level.
    */
   RXC: {};
 
@@ -1245,11 +1266,14 @@ export type MessageSegments = {
    */
   RXD: {};
 
-  /** The RXE segment details the pharmacy or treatment  application’s encoding of the order.  It also contains several pharmacy-specific order status fields, such as RXE-16-number of refills remaining, RXE-17-number of refills/doses dispensed, RXE-18-date/time of most recent refill/dose, and RXE-19-total daily dose.* 
-  * 
-  * 
-  * 
-  Note that ORC-7-quantity/timing has a different meaning from RXE-1-quantity/timing and RXG-3quantity/timing.  The pharmacy or treatment department has the “authority” (and/or necessity) to schedule dispense/give events.  Hence, the pharmacy or treatment department has the responsibility to encode this scheduling information in RXE-1-quantity/timing and RXG-3-quantity/timing.  ORC-7-quantity/timing does not change: it always specifies the requested give/dispense schedule of the original order
+  /**
+   *  The RXE segment details the pharmacy or treatment  application’s encoding of the order.  It also contains several pharmacy-specific order status fields, such as RXE-16-number of refills remaining,
+   * RXE-17-number of refills/doses dispensed, RXE-18-date/time of most recent refill/dose, and RXE-19-total daily dose.*
+   *
+   *
+   *
+   * Note that ORC-7-quantity/timing has a different meaning from RXE-1-quantity/timing and RXG-3quantity/timing.  The pharmacy or treatment department has the “authority” (and/or necessity) to schedule dispense/give events.
+   * Hence, the pharmacy or treatment department has the responsibility to encode this scheduling information in RXE-1-quantity/timing and RXG-3-quantity/timing.  ORC-7-quantity/timing does not change: it always specifies the requested give/dispense schedule of the original order
    */
   RXE: {};
 
@@ -1273,13 +1297,71 @@ export type MessageSegments = {
    */
   RXO: {};
 
-  /** The Pharmacy/Treatment Route segment contains the alternative combination of route, site, administration device, and administration method that are prescribed.  The pharmacy, treatment staff and/or nursing staff has a choice between the routes based on either their professional judgment or administration instructions provided by the physician.
+  /**
+   * The Pharmacy/Treatment Route segment contains the alternative combination of route, site, administration device, and administration method that are prescribed.  The pharmacy, treatment staff and/or nursing staff has a choice between the routes based on either their professional
+   * judgment or administration instructions provided by the physician.
    */
   RXR: {};
 
   /** The SCH segment contains general information about the scheduled appointment
    */
   SCH: {};
+  /**
+   * This segment provides additional information about the software product(s) used as a Sending Application. The primary purpose of this segment is for diagnostic use. There may be additional uses per site-specific agreements.
+   *
+   * Implementers are encouraged to use message profile identifiers (as found in 2.14.9.21, "MSH-21 Message Profile Identifier (EI) 01598") to control the behavior of the receiving application rather than relying on application or version information in the SFT segment.
+   *
+   * For example, if software product A has versions 9 and 10 deployed in different Enterprise locations, the fact that they use different message types, segments, or fields should be reflected via their message profiles (see section 2B, "Conformance Using Message Profiles").
+   * If there is an upgrade from version 10 to 10.1, this would be reflected in the SFT segment, but changes to the message contents should be reflected via a new/different conformance profile.
+   *
+   * Use Case: An external application has been customized to communicate with a centralized patient drug history system. However, due to certain, known characteristics of the external software package, the centralized system must modify its behavior in order to process transactions correctly.
+   * In one example, the external application may have multiple versions in production. As such, the centralized application will need to know the name of the Software Vendor Organization, the Software Release Number, the Software Product Name, and the Software Binary ID so that it can correctly
+   * identify the software submitting the transaction and modify its behavior appropriately.
+   *
+   * While preparing a transaction for submission to a centralized system the sending application specifies its Software Install Date and its configuration settings (Software Product Information).
+   * While processing the transaction, the centralized system encounters an error. Upon examination of the error, install date and configuration of the software that sent the message, helpdesk staff are able to determine the sending application has not been updated to reflect recent application changes.
+   *
+   * Use Case: In circumstances where a message is manipulated or modified by multiple systems, a repetition of this segment may be appended by each system.
+   */
+  SFT: {
+    /**
+     * Organization identification information for the software vendor that created this transaction. The purpose of this field, along with the remaining fields in this segment,
+     * is to provide a more complete picture of applications that are sending HL7 messages. The Software Vendor Organization field would allow the identification of the vendor who is responsible for maintaining the application.
+     */
+    vendorOrganization: ExtendedCompositeNameAndIdForOrganizations;
+    /**
+     * Latest software version number of the sending system that has been compliance tested and accepted. Software Certified Version or Release Number helps to provide a complete picture of the application that is sending/receiving HL7 messages.
+     * Versions are important in identifying a specific 'release' of an application. In some situations, the receiving application validates the Software Certified Version or Release Number against a list of "certified" versions/releases of the particular software to determine
+     * if the sending application adheres to specific business rules required by the receiving application.
+     *
+     * Alternatively, the software may perform different processing depending on the version of the sending software
+     */
+    certifiedVersionOrReleaseNumber: string;
+    /**
+     * The name of the software product that submitted the transaction. A key component in the identification of an application is its Software Product Name. This is a key piece of information in identifying an application.
+     */
+    productName: string;
+    /**
+     * Issued by a vendor for each unique software version instance to distinguish between like versions of the same software e.g., a checksum.
+     *
+     * Software Binary Ids are issued for each unique software version instance. As such, this information helps to differentiate between differing versions of the same software. Identical Primary IDs indicate that the software is identical at the binary level (configuration settings may differ).
+     */
+    binaryId: string;
+    /**
+     * Software identification information that can be supplied by a software vendor with their transaction. Might include configuration settings, etc.
+     *
+     * This field would contain any additional information an application provides with the transaction it has submitted. This information could be used for diagnostic purposes and provides greater flexibility in identifying a piece of software. Possibilities include setup or configuration parameter information.
+     *
+     * This field should not be sent unless performing diagnostics.
+     */
+    productInformation?: string;
+    /**
+     * Date the submitting software was installed at the sending site.
+     *
+     * A Software Install Date on its own can often provide key information about the behavior of the application, and is necessary to provide a complete picture of the sending application.
+     */
+    installDate?: string;
+  };
 
   /** The SPR segment is used to issue queries using stored procedure calls.  Refer to the functional chapters for the lists of HL7-defined stored procedure names, input parameters and output tables
    */
@@ -1424,6 +1506,7 @@ export type RXG = MessageSegments["RXG"];
 export type RXO = MessageSegments["RXO"];
 export type RXR = MessageSegments["RXR"];
 export type SCH = MessageSegments["SCH"];
+export type SFT = MessageSegments["SFT"];
 export type SPR = MessageSegments["SPR"];
 export type STF = MessageSegments["STF"];
 export type TXA = MessageSegments["TXA"];

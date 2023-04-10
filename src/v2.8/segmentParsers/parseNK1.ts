@@ -33,38 +33,61 @@ export const parseNK1 = (
   const parseExtendedCompositeIdWithCheckDigit =
     parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
 
+  const rootName = "NK1";
   return hl7ElementMapper<NK1>(
     nk1,
     {
       setID: (field) => hl7StringEscaper(field) ?? "",
-      name: (field) =>
+      name: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((person) => parseExtendPersonName(person)),
-      relationship: (field) => parseCodedWithExceptions(field),
-      address: (field) =>
+          .map((person, repetitionInd) =>
+            parseExtendPersonName(person, `${elementPath}[${repetitionInd}]`)
+          ),
+      relationship: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
+      address: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((address) => parseExtendedAddress(address)),
-      phoneNumber: (field) =>
+          .map((address, repetitionInd) =>
+            parseExtendedAddress(address, `${elementPath}[${repetitionInd}]`)
+          ),
+      phoneNumber: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((phone) => parseExtendedTelecommunicationNumber(phone)),
-      businessPhoneNumber: (field) =>
+          .map((phone, repetitionInd) =>
+            parseExtendedTelecommunicationNumber(
+              phone,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
+      businessPhoneNumber: (field, elementPath) =>
         field
           .split(repetitionSeparator)
-          .map((phone) => parseExtendedTelecommunicationNumber(phone)),
-      contactRole: (field) => parseCodedWithExceptions(field),
+          .map((phone, repetitionInd) =>
+            parseExtendedTelecommunicationNumber(
+              phone,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
+      contactRole: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       startDate: (field) => hl7StringEscaper(field),
       endDate: (field) => hl7StringEscaper(field),
       associatedPartiesJobTitle: (field) => hl7StringEscaper(field),
-      jobAssociatedPartiesCodeClass: (field) => parseJobCodeClass(field),
-      associatedPartiesEmployeeNumber: (field) =>
-        parseExtendedCompositeIdWithCheckDigit(field),
-      organizationName: (field) =>
+      jobAssociatedPartiesCodeClass: (field, elementPath) =>
+        parseJobCodeClass(field, `${elementPath}`),
+      associatedPartiesEmployeeNumber: (field, elementPath) =>
+        parseExtendedCompositeIdWithCheckDigit(field, `${elementPath}`),
+      organizationName: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((org) => parseExtendedCompositeNameAndIdForOrganizations(org)),
+          .map((org, repetitionInd) =>
+            parseExtendedCompositeNameAndIdForOrganizations(
+              org,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
       maritalStatus: (field) => hl7StringEscaper(field),
       sex: (field) => hl7StringEscaper(field),
       dateOfBirth: (field) => hl7StringEscaper(field),
@@ -80,40 +103,60 @@ export const parseNK1 = (
         field
           ?.split(repetitionSeparator)
           .map((citizenship) => hl7StringEscaper(citizenship) ?? ""),
-      primaryLanguage: (field) => parseCodedWithExceptions(field),
+      primaryLanguage: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       livingArrangement: (field) => hl7StringEscaper(field),
-      publicityIndicator: (field) => parseCodedWithExceptions(field),
+      publicityIndicator: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       protectionIndicator: (field) => hl7StringEscaper(field),
       studentIndicator: (field) => hl7StringEscaper(field),
       religion: (field) => hl7StringEscaper(field),
-      mothersMaidenName: (field) => parseExtendPersonName(field),
-      nationalityCode: (field) => parseCodedWithExceptions(field),
+      mothersMaidenName: (field, elementPath) =>
+        parseExtendPersonName(field, `${elementPath}`),
+      nationalityCode: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       ethnicGroup: (field) => hl7StringEscaper(field),
-      contactReason: (field) =>
+      contactReason: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((reason) => parseCodedWithExceptions(reason)),
-      contactPersonName: (field) =>
+          .map((reason, repetitionInd) =>
+            parseCodedWithExceptions(reason, `${elementPath}[${repetitionInd}]`)
+          ),
+      contactPersonName: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((name) => parseExtendPersonName(name)),
-      contactPersonTelephoneNumber: (field) =>
+          .map((name, repetitionInd) =>
+            parseExtendPersonName(name, `${elementPath}[${repetitionInd}]`)
+          ),
+      contactPersonTelephoneNumber: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((phone) => parseExtendedTelecommunicationNumber(phone)),
-      contactPersonAddress: (field) =>
+          .map((phone, repetitionInd) =>
+            parseExtendedTelecommunicationNumber(
+              phone,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
+      contactPersonAddress: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((address) => parseExtendedAddress(address)),
-      associatedPartyIdentifiers: (field) =>
+          .map((address, repetitionInd) =>
+            parseExtendedAddress(address, `${elementPath}[${repetitionInd}]`)
+          ),
+      associatedPartyIdentifiers: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((id) => parseExtendedCompositeIdWithCheckDigit(id)),
+          .map((id, repetitionInd) =>
+            parseExtendedCompositeIdWithCheckDigit(
+              id,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
       jobStatus: (field) => hl7StringEscaper(field),
       race: (field) => hl7StringEscaper(field),
       handicap: (field) => hl7StringEscaper(field),
       contactPersonSocialSecurityNumber: (field) => hl7StringEscaper(field),
     },
-    { rootName: "NK1" }
+    { rootName }
   );
 };

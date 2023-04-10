@@ -5,6 +5,7 @@ import {
   hl7ElementMapper,
 } from "../utils";
 
+const rootName = "EVN";
 export const parseEVN = (
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -23,9 +24,10 @@ export const parseEVN = (
       recordedDateTime: (field) => hl7StringEscaper(field) ?? "",
       dateTimePlannedEvent: (field) => hl7StringEscaper(field),
       eventReasonCode: (field) => hl7StringEscaper(field),
-      operatorId: (field) => parseExtendedCompositeIdNumberAndName(field),
+      operatorId: (field, elementPath) =>
+        parseExtendedCompositeIdNumberAndName(field, `${elementPath}`),
       eventOccurred: (field) => hl7StringEscaper(field),
     },
-    { rootName: "EVN" }
+    { rootName }
   );
 };

@@ -1,6 +1,7 @@
 import { MSH, ADD } from "../../../typings";
 import { hl7ElementMapper, hl7StringEscaperFactory } from "../utils";
 
+const rootName = "ADD";
 export const parseADD = (
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -15,6 +16,6 @@ export const parseADD = (
     {
       addendumContinuationPointer: (field) => hl7StringEscaper(field),
     },
-    { rootName: "ADD" }
+    { rootName }
   );
 };

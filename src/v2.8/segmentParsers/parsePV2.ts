@@ -8,6 +8,8 @@ import {
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
 
+const rootName = "PV2";
+
 export const parsePV2 = (
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -27,10 +29,14 @@ export const parsePV2 = (
   return hl7ElementMapper(
     pv2,
     {
-      priorPendingLocation: (field) => parsePersonLocation(field),
-      accommodationCode: (field) => parseCodedWithExceptions(field),
-      admitReason: (field) => parseCodedWithExceptions(field),
-      transferReason: (field) => parseCodedWithExceptions(field),
+      priorPendingLocation: (field, elementPath) =>
+        parsePersonLocation(field, `${elementPath}`),
+      accommodationCode: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
+      admitReason: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
+      transferReason: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       patientValuables: (field) =>
         field
           ?.split(repetitionSeparator)
@@ -44,8 +50,8 @@ export const parsePV2 = (
       actualLengthOfInpatientStay: (field) =>
         field ? parseInt(field, 10) : undefined,
       visitDescription: (field) => hl7StringEscaper(field),
-      referralSourceCode: (field) =>
-        parseExtendedCompositeIdNumberAndName(field),
+      referralSourceCode: (field, elementPath) =>
+        parseExtendedCompositeIdNumberAndName(field, `${elementPath}`),
       previousServiceDate: (field) => hl7StringEscaper(field),
       employmentIllnessRelatedIndicator: (field) => hl7StringEscaper(field),
       purgeStatusCode: (field) => hl7StringEscaper(field),
@@ -56,10 +62,15 @@ export const parsePV2 = (
         field ? parseInt(field, 10) : undefined,
       visitPublicityCode: (field) => hl7StringEscaper(field),
       visitProtectionIndicator: (field) => hl7StringEscaper(field),
-      clinicOrganizationName: (field) =>
+      clinicOrganizationName: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((org) => parseExtendedCompositeNameAndIdForOrganizations(org)),
+          .map((org, repetitionInd) =>
+            parseExtendedCompositeNameAndIdForOrganizations(
+              org,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
       patientStatusCode: (field) => hl7StringEscaper(field),
       visitPriorityCode: (field) => hl7StringEscaper(field),
       previousTreatmentDate: (field) => hl7StringEscaper(field),
@@ -75,6 +86,6 @@ export const parsePV2 = (
       newbornBabyIndicator: (field) => hl7StringEscaper(field),
       babyDetainedIndicator: (field) => hl7StringEscaper(field),
     },
-    { rootName: "PV2" }
+    { rootName }
   );
 };

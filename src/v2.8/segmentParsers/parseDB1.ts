@@ -5,6 +5,7 @@ import {
   parseExtendedCompositeIdWithCheckDigitFactory,
 } from "../utils";
 
+const rootName = "DB1";
 export const parseDB1 = (
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -21,16 +22,21 @@ export const parseDB1 = (
     {
       setId: (field) => hl7StringEscaper(field) ?? "",
       disabledPersonCode: (field) => hl7StringEscaper(field),
-      disabledPersonIdentifier: (field) =>
+      disabledPersonIdentifier: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((person) => parseExtendedCompositeIdWithCheckDigit(person)),
+          .map((person, repetitionInd) =>
+            parseExtendedCompositeIdWithCheckDigit(
+              person,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
       disabledIndicator: (field) => hl7StringEscaper(field),
       disabledStartDate: (field) => hl7StringEscaper(field),
       disabledEndDate: (field) => hl7StringEscaper(field),
       disabilityReturnToWorkDate: (field) => hl7StringEscaper(field),
       disabilityUnableToWorkDate: (field) => hl7StringEscaper(field),
     },
-    { rootName: "DB1" }
+    { rootName }
   );
 };

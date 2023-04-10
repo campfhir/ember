@@ -8,6 +8,8 @@ import {
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
 
+const rootName = "PD1";
+
 export const parsePD1 = (
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -29,28 +31,42 @@ export const parsePD1 = (
     {
       livingDependency: (field) => hl7StringEscaper(field),
       livingArrangement: (field) => hl7StringEscaper(field),
-      patientPrimaryFacility: (field) =>
+      patientPrimaryFacility: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((facility) =>
-            parseExtendedCompositeNameAndIdForOrganizations(facility)
+          .map((facility, repetitionInd) =>
+            parseExtendedCompositeNameAndIdForOrganizations(
+              facility,
+              `${elementPath}[${repetitionInd}]`
+            )
           ),
-      patientPrimaryCareProviderNameAndIdNumber: (field) =>
+      patientPrimaryCareProviderNameAndIdNumber: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((provider) => parseExtendedCompositeIdNumberAndName(provider)),
+          .map((provider, repetitionInd) =>
+            parseExtendedCompositeIdNumberAndName(
+              provider,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
       studentStatus: (field) => hl7StringEscaper(field),
       handicap: (field) => hl7StringEscaper(field),
       livingWill: (field) => hl7StringEscaper(field),
       organDonor: (field) => hl7StringEscaper(field),
       separateBill: (field) => hl7StringEscaper(field),
-      duplicatePatient: (field) =>
+      duplicatePatient: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
-          .map((patient) => parseExtendedCompositeIdWithCheckDigit(patient)),
-      publicityIndicator: (field) => parseCodedWithExceptions(field),
+          .map((patient, repetitionInd) =>
+            parseExtendedCompositeIdWithCheckDigit(
+              patient,
+              `${elementPath}[${repetitionInd}]`
+            )
+          ),
+      publicityIndicator: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       protectionIndicator: (field) => hl7StringEscaper(field),
     },
-    { rootName: "PD1" }
+    { rootName }
   );
 };

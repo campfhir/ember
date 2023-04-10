@@ -15,6 +15,7 @@ import {
 
 const debug = debugLogger.extend("parseMSH");
 
+const rootName = "MSH";
 export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
   if (segment == null) {
     debug("Segment is NULL or undefined");
@@ -54,10 +55,14 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
     {
       fieldSeparator: fieldSeparator,
       encodingCharacters,
-      sendingApplication: (field) => parseHierarchicDesignator(field),
-      sendingFacility: (field) => parseHierarchicDesignator(field),
-      receivingApplication: (field) => parseHierarchicDesignator(field),
-      receivingFacility: (field) => parseHierarchicDesignator(field),
+      sendingApplication: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${elementPath}`),
+      sendingFacility: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${elementPath}`),
+      receivingApplication: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${elementPath}`),
+      receivingFacility: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${elementPath}`),
       dateTimeOfMessage: (field) => hl7StringEscaper(field),
       security: (field) => hl7StringEscaper(field),
       message: (field) => ({
@@ -83,9 +88,10 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
         field
           ?.split(componentSeparator, 3)
           .map((val) => hl7StringEscaper(val) ?? ""),
-      principalLanguageOfMessage: (field) => parseCodedWithExceptions(field),
+      principalLanguageOfMessage: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
     },
-    { rootName: "MSH" }
+    { rootName }
   );
 
   return { ok: true, val: mshHeader, warnings: [] };

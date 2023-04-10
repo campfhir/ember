@@ -5,6 +5,7 @@ import {
   parseCodedWithExceptionsFactory,
 } from "../utils";
 
+const rootName = "AL1";
 export const parseAL1 = (
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -21,10 +22,11 @@ export const parseAL1 = (
     {
       setId: (field) => hl7StringEscaper(field) ?? "",
       allergyType: (field) => hl7StringEscaper(field),
-      allergyCode: (field) => parseCodedWithExceptions(field),
+      allergyCode: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       allergyReaction: (field) => hl7StringEscaper(field),
       identificationDate: (field) => hl7StringEscaper(field),
     },
-    { rootName: "AL1" }
+    { rootName }
   );
 };

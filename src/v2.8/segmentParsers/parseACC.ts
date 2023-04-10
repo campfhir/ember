@@ -5,6 +5,7 @@ import {
   parseCodedWithExceptionsFactory,
 } from "../utils";
 
+const rootName = "ACC";
 export const parseACC = (
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -20,12 +21,14 @@ export const parseACC = (
     acc,
     {
       accidentDateTime: (field) => hl7StringEscaper(field),
-      accidentCode: (field) => parseCodedWithExceptions(field),
+      accidentCode: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       accidentLocation: (field) => hl7StringEscaper(field),
-      autoAccidentState: (field) => parseCodedWithExceptions(field),
+      autoAccidentState: (field, elementPath) =>
+        parseCodedWithExceptions(field, `${elementPath}`),
       accidentJobRelatedIndicator: (field) => hl7StringEscaper(field),
       accidentDeathIndicator: (field) => hl7StringEscaper(field),
     },
-    { rootName: "ACC" }
+    { rootName }
   );
 };

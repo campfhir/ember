@@ -18,9 +18,18 @@ export type ExtendedCompositeNameAndIdForOrganizations = {
    * | SL   | Stock exchange listing name |
    */
   organizationNameTypeCode?: string;
+  /**
+   * @deprecated v2.7
+   */
   idNumber?: number;
+  /**
+   * @deprecated v2.8
+   */
   checkDigit?: string;
   /**
+   *
+   * @deprecated v2.8
+   *
    * Common values
    *
    * | Code | Value            |
@@ -28,7 +37,7 @@ export type ExtendedCompositeNameAndIdForOrganizations = {
    * | M10  | Mod 10 algorithm |
    * | M11  | Mod 11 algorithm |
    */
-  codeIdentifyingTheCheckDigitSchemeEmployed?: string;
+  checkDigitScheme?: string;
   assigningAuthority?: HierarchicDesignator;
   /**
    * Common values
@@ -59,7 +68,18 @@ export type ExtendedCompositeNameAndIdForOrganizations = {
    * | XX    | Organization Identifier       |
    */
   identifierTypeCode?: string;
-  assigningFacilityId?: HierarchicDesignator;
+  assigningFacility?: HierarchicDesignator;
+  /**
+   * Common code values
+   *
+   * | Code | Description                                      |
+   * | ---- | ------------------------------------------------ |
+   * | A    | Alphabetic (i.e., Default or some single-byte)   |
+   * | I    | Ideographic (i.e., Kanji)                        |
+   * | P    | Phonetic (i.e., ASCII, Katakana, Hiragana, etc.) |
+   */
+  nameRepresentationCode?: string;
+  organizationIdentifier?: string;
 };
 
 export type HierarchicDesignator = {
