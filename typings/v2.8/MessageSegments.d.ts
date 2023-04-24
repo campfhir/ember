@@ -1,9 +1,9 @@
-import { JobCodeClass } from "./DataTypes";
+import { EntityIdentifier, JobCodeClass } from "./DataTypes";
 import {
   CodedWithExceptions,
   DriversLicenseNumber,
   ExtendedAddress,
-  ExtendedCompositeIdNumberAndName,
+  ExtendedCompositeIdNumberAndNameForPerson,
   ExtendedCompositeIdWithCheckDigit,
   ExtendedCompositeNameAndIdForOrganizations,
   ExtendedPersonName,
@@ -18,6 +18,13 @@ import { MessageTypes } from "./MessageTypes";
 /** The ACC segment contains patient information relative to an accident in which the patient has been involved.
  */
 export type MessageSegments = {
+  /**
+   * This segment was created to communicate patient abstract information used for billing and reimbursement purposes. Abstract is a condensed form of medical history created for analysis, care planning, etc.
+   */
+  ABS: {};
+  /**
+   * The ACC segment contains patient information relative to an accident in which the patient has been involved.
+   */
   ACC: {
     accidentDateTime?: string;
     accidentCode?: CodedWithExceptions;
@@ -41,6 +48,20 @@ export type MessageSegments = {
      * | N    | No     |
      */
     accidentDeathIndicator?: string;
+    enteredBy?: ExtendedCompositeIdNumberAndNameForPerson;
+    accidentDescription?: string;
+    broughtInBy?: string;
+    /**
+     * Common Values
+     *
+     * | Code | Description |
+     * | ---- | ----------- |
+     * | Y    | Yes         |
+     * | N    | No          |
+     */
+    policeNotifiedIndicator?: string;
+    accidentAddress?: ExtendedAddress;
+    degreeOfPatientLiability?: EntityIdentifier[];
   };
 
   /** The ADD segment is used to define the continuation of the prior segment in a continuation message.  See Section 2.23.2, “Continuation messages and segments,” for details.
@@ -234,7 +255,7 @@ export type MessageSegments = {
      * | 03  | Census management |
      */
     eventReasonCode?: string;
-    operatorId?: ExtendedCompositeIdNumberAndName;
+    operatorId?: ExtendedCompositeIdNumberAndNameForPerson;
     eventOccurred?: string;
   };
 
@@ -633,7 +654,7 @@ export type MessageSegments = {
     userDefinedAccessChecks?: string;
     dateTimeOfTheObservation?: string;
     producersId?: string;
-    responsibleObserver?: ExtendedCompositeIdNumberAndName;
+    responsibleObserver?: ExtendedCompositeIdNumberAndNameForPerson;
     observationMethod?: CodedWithExceptions[];
   };
 
@@ -718,7 +739,7 @@ export type MessageSegments = {
      */
     livingArrangement?: string;
     patientPrimaryFacility?: ExtendedCompositeNameAndIdForOrganizations[];
-    patientPrimaryCareProviderNameAndIdNumber?: ExtendedCompositeIdNumberAndName[];
+    patientPrimaryCareProviderNameAndIdNumber?: ExtendedCompositeIdNumberAndNameForPerson[];
     /**
      * Common codes
      *
@@ -1000,9 +1021,9 @@ export type MessageSegments = {
     admissionType?: string;
     preadmitNumber?: CodedWithExceptions;
     priorPatientLocation?: PersonLocation;
-    attendingDoctor?: ExtendedCompositeIdNumberAndName[];
-    referringDoctor?: ExtendedCompositeIdNumberAndName[];
-    consultingDoctor?: ExtendedCompositeIdNumberAndName[];
+    attendingDoctor?: ExtendedCompositeIdNumberAndNameForPerson[];
+    referringDoctor?: ExtendedCompositeIdNumberAndNameForPerson[];
+    consultingDoctor?: ExtendedCompositeIdNumberAndNameForPerson[];
     hospitalService?: string;
     temporaryLocation?: PersonLocation;
     preadmitTestIndicator?: string;
@@ -1040,7 +1061,7 @@ export type MessageSegments = {
      */
     ambulatoryStatus?: string[];
     vipIndicator?: string;
-    admittingDoctor?: ExtendedCompositeIdNumberAndName[];
+    admittingDoctor?: ExtendedCompositeIdNumberAndNameForPerson[];
     patientType?: string;
     visitNumber?: ExtendedCompositeIdWithCheckDigit;
     financial?: FinancialClass[];
@@ -1088,7 +1109,7 @@ export type MessageSegments = {
     totalPayments?: number;
     alternateVisitId?: ExtendedCompositeIdWithCheckDigit;
     visitIndicator?: string;
-    otherHealthcareProvider?: ExtendedCompositeIdNumberAndName[];
+    otherHealthcareProvider?: ExtendedCompositeIdNumberAndNameForPerson[];
     serviceEpisodeDescription?: string;
     serviceEpisodeIdentifier?: ExtendedCompositeIdWithCheckDigit;
   };
@@ -1108,7 +1129,7 @@ export type MessageSegments = {
     estimatedLengthOfInpatientStay?: number;
     actualLengthOfInpatientStay?: number;
     visitDescription?: string;
-    referralSourceCode?: ExtendedCompositeIdNumberAndName;
+    referralSourceCode?: ExtendedCompositeIdNumberAndNameForPerson;
     previousServiceDate?: string;
     /**
      * Common values
@@ -1405,6 +1426,7 @@ export type MessageSegments = {
 };
 
 export type SegmentHeaders = keyof MessageSegments;
+export type ABS = MessageSegments["ABS"];
 export type ACC = MessageSegments["ACC"];
 export type ADD = MessageSegments["ADD"];
 export type AIG = MessageSegments["AIG"];
