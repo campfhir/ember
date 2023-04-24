@@ -313,7 +313,7 @@ export type CodedWithExceptions = {
   secondAlternateValueSetVersionId?: string;
 };
 
-export type ExtendedCompositeIdNumberAndName = {
+export type ExtendedCompositeIdNumberAndNameForPerson = {
   idNumber?: string;
   familyName?: string;
   givenName?: string;
@@ -523,6 +523,19 @@ export type ExtendedAddress = {
   otherGeographicDesignation?: string;
   countyParishCode?: string;
   censusTract?: string;
+  addressRepresentationCode?: string;
+  addressValidityRange?: string;
+  effectiveDate?: string;
+  expirationDate?: string;
+  expirationReason?: string;
+  temporaryIndicator?: string;
+  badAddressIndicator?: string;
+  addressUage?: string;
+  addressee?: string;
+  comment?: string;
+  preferenceOrder?: number;
+  protectionCode?: CodedWithExceptions;
+  addressIdentifier?: EntityIdentifier;
 };
 
 export type ExtendedTelecommunicationNumber = {

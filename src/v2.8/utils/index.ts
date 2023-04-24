@@ -2,7 +2,7 @@ import d from "debug";
 import {
   DischargeLocation,
   DriversLicenseNumber,
-  ExtendedCompositeIdNumberAndName,
+  ExtendedCompositeIdNumberAndNameForPerson,
   ExtendedTelecommunicationNumber,
   FinancialClass,
   MSH,
@@ -174,30 +174,34 @@ export const parseCodedWithExceptions = (
   const component = field?.split(componentSeparator);
   if (component == null) return {};
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
-  return hl7ElementMapper(component, {
-    identifier: (field) => hl7StringEscaper(field),
-    text: (field) => hl7StringEscaper(field),
-    nameOfCodingSystem: (field) => hl7StringEscaper(field),
-    alternateIdentifier: (field) => hl7StringEscaper(field),
-    alternateText: (field) => hl7StringEscaper(field),
-    nameOfAlternateCodingSystem: (field) => hl7StringEscaper(field),
-    codingSystemVersionId: (field) => hl7StringEscaper(field),
-    alternateCodingSystemVersionId: (field) => hl7StringEscaper(field),
-    originalText: (field) => hl7StringEscaper(field),
-    secondAlternateIdentifier: (field) => hl7StringEscaper(field),
-    secondAlternateText: (field) => hl7StringEscaper(field),
-    nameOfSecondAlternateCodingSystem: (field) => hl7StringEscaper(field),
-    secondAlternateCodingSystemVersionId: (field) => hl7StringEscaper(field),
-    codingSystemOID: (field) => hl7StringEscaper(field),
-    valueSetOID: (field) => hl7StringEscaper(field),
-    valueSetVersionId: (field) => hl7StringEscaper(field),
-    alternateCodingSystemOID: (field) => hl7StringEscaper(field),
-    alternateValueSetOID: (field) => hl7StringEscaper(field),
-    alternateValueSetVersionId: (field) => hl7StringEscaper(field),
-    secondAlternateCodingSystemOID: (field) => hl7StringEscaper(field),
-    secondAlternateValueSetOID: (field) => hl7StringEscaper(field),
-    secondAlternateValueSetVersionId: (field) => hl7StringEscaper(field),
-  });
+  return hl7ElementMapper(
+    component,
+    {
+      identifier: (field) => hl7StringEscaper(field),
+      text: (field) => hl7StringEscaper(field),
+      nameOfCodingSystem: (field) => hl7StringEscaper(field),
+      alternateIdentifier: (field) => hl7StringEscaper(field),
+      alternateText: (field) => hl7StringEscaper(field),
+      nameOfAlternateCodingSystem: (field) => hl7StringEscaper(field),
+      codingSystemVersionId: (field) => hl7StringEscaper(field),
+      alternateCodingSystemVersionId: (field) => hl7StringEscaper(field),
+      originalText: (field) => hl7StringEscaper(field),
+      secondAlternateIdentifier: (field) => hl7StringEscaper(field),
+      secondAlternateText: (field) => hl7StringEscaper(field),
+      nameOfSecondAlternateCodingSystem: (field) => hl7StringEscaper(field),
+      secondAlternateCodingSystemVersionId: (field) => hl7StringEscaper(field),
+      codingSystemOID: (field) => hl7StringEscaper(field),
+      valueSetOID: (field) => hl7StringEscaper(field),
+      valueSetVersionId: (field) => hl7StringEscaper(field),
+      alternateCodingSystemOID: (field) => hl7StringEscaper(field),
+      alternateValueSetOID: (field) => hl7StringEscaper(field),
+      alternateValueSetVersionId: (field) => hl7StringEscaper(field),
+      secondAlternateCodingSystemOID: (field) => hl7StringEscaper(field),
+      secondAlternateValueSetOID: (field) => hl7StringEscaper(field),
+      secondAlternateValueSetVersionId: (field) => hl7StringEscaper(field),
+    },
+    { rootName: element }
+  );
 };
 
 export function parseJobCodeClassFactory(
@@ -258,11 +262,11 @@ export const parseExtendedCompositeNameAndIdForOrganizations = (
       idNumber: component[2] ? parseInt(component[2], 10) : undefined,
       checkDigit: (field) => hl7StringEscaper(field),
       checkDigitScheme: (field) => hl7StringEscaper(field),
-      assigningAuthority: (field, ind) =>
-        parseHierarchicDesignator(field, `${element}.${ind}`),
+      assigningAuthority: (field, element) =>
+        parseHierarchicDesignator(field, `${element}`),
       identifierTypeCode: (field) => hl7StringEscaper(field),
-      assigningFacility: (field, ind) =>
-        parseHierarchicDesignator(field, `${element}.${ind}`),
+      assigningFacility: (field, element) =>
+        parseHierarchicDesignator(field, `${element}`),
     },
     { rootName: element }
   );
@@ -298,11 +302,11 @@ export const parseExtendedCompositeIdWithCheckDigit = (
       checkDigit: (field) => hl7StringEscaper(field),
       codeIdentifyingTheCheckDigitSchemeEmployed: (field) =>
         hl7StringEscaper(field),
-      assigningAuthority: (field, ind) =>
-        parseHierarchicDesignator(field, `${element}.${ind}`),
+      assigningAuthority: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${elementPath}`),
       identifierTypeCode: (field) => hl7StringEscaper(field),
-      assigningFacility: (field, ind) =>
-        parseHierarchicDesignator(field, `${element}.${ind}`),
+      assigningFacility: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${elementPath}`),
     },
     { rootName: element }
   );
@@ -547,7 +551,7 @@ export const parseExtendedCompositeIdNumberAndName = (
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): ExtendedCompositeIdNumberAndName => {
+): ExtendedCompositeIdNumberAndNameForPerson => {
   const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
@@ -565,15 +569,15 @@ export const parseExtendedCompositeIdNumberAndName = (
       prefix: (field) => hl7StringEscaper(field),
       degree: (field) => hl7StringEscaper(field),
       sourceTable: (field) => hl7StringEscaper(field),
-      assigningAuthority: (field, ind) =>
-        parseHierarchicDesignator(field, `${element}.${ind}`),
+      assigningAuthority: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${element}.${elementPath}`),
       nameType: (field) => hl7StringEscaper(field),
       identifierCheckDigit: (field) => hl7StringEscaper(field),
       codeIdentifyingTheCheckDigitSchemeEmployed: (field) =>
         hl7StringEscaper(field),
       identifierTypeCode: (field) => hl7StringEscaper(field),
-      assigningFacilityId: (field, ind) =>
-        parseHierarchicDesignator(field, `${element}.${ind}`),
+      assigningFacilityId: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${element}.${elementPath}`),
     },
     { rootName: element }
   );
@@ -605,8 +609,8 @@ export const parsePersonLocation = (
       pointOfCare: (field) => hl7StringEscaper(field),
       room: (field) => hl7StringEscaper(field),
       bed: (field) => hl7StringEscaper(field),
-      facility: (field, ind) =>
-        parseHierarchicDesignator(field, `${element}.${ind}`),
+      facility: (field, elementPath) =>
+        parseHierarchicDesignator(field, `${elementPath}`),
       locationStatus: (field) => hl7StringEscaper(field),
       personLocationType: (field) => hl7StringEscaper(field),
       building: (field) => hl7StringEscaper(field),
@@ -710,8 +714,9 @@ export function hl7ElementMapper<K extends object>(
   let item: any = {};
   let keys = [...Object.keys(definition)];
   for (const ind in elements) {
+    const delimiter = rootName.includes("-") ? "." : "-";
     const elementPath = rootName.concat(
-      "-",
+      delimiter,
       (parseInt(ind, 10) + 1).toFixed(0)
     );
     const key = keys[ind];
