@@ -3,7 +3,7 @@ import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
   parseCodedWithExceptionsFactory,
-  parseExtendedCompositeIdNumberAndNameFactory,
+  parseExtendedCompositeIdNumberAndNameForPersonFactory,
 } from "../utils";
 
 const rootName = "OBX";
@@ -17,7 +17,7 @@ export const parseOBX = (
   const parseCodedWithExceptions =
     parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendedCompositeIdNumberAndName =
-    parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
+    parseExtendedCompositeIdNumberAndNameForPersonFactory(encodingCharacters);
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
 
   return hl7ElementMapper(

@@ -4,7 +4,7 @@ import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
   parseCodedWithExceptionsFactory,
-  parseExtendedCompositeIdNumberAndNameFactory,
+  parseExtendedCompositeIdNumberAndNameForPersonFactory,
   parseExtendedCompositeIdWithCheckDigitFactory,
   parseFinancialFactory,
   parseDischargeToLocationFactory,
@@ -22,8 +22,8 @@ export const parsePV1 = (
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
   const parseCodedWithExceptions =
     parseCodedWithExceptionsFactory(encodingCharacters);
-  const parseExtendedCompositeIdNumberAndName =
-    parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
+  const parseExtendedCompositeIdNumberAndNameForPerson =
+    parseExtendedCompositeIdNumberAndNameForPersonFactory(encodingCharacters);
   const parseExtendedCompositeIdWithCheckDigit =
     parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
   const parsePersonLocation = parsePersonLocationFactory(encodingCharacters);
@@ -47,7 +47,7 @@ export const parsePV1 = (
         field
           ?.split(repetitionSeparator)
           .map((doctor, repetitionInd) =>
-            parseExtendedCompositeIdNumberAndName(
+            parseExtendedCompositeIdNumberAndNameForPerson(
               doctor,
               `${elementPath}[${repetitionInd}]`
             )
@@ -56,7 +56,7 @@ export const parsePV1 = (
         field
           ?.split(repetitionSeparator)
           .map((doctor, repetitionInd) =>
-            parseExtendedCompositeIdNumberAndName(
+            parseExtendedCompositeIdNumberAndNameForPerson(
               doctor,
               `${elementPath}[${repetitionInd}]`
             )
@@ -65,7 +65,7 @@ export const parsePV1 = (
         field
           ?.split(repetitionSeparator)
           .map((doctor, repetitionInd) =>
-            parseExtendedCompositeIdNumberAndName(
+            parseExtendedCompositeIdNumberAndNameForPerson(
               doctor,
               `${elementPath}[${repetitionInd}]`
             )
@@ -85,7 +85,7 @@ export const parsePV1 = (
         field
           ?.split(repetitionSeparator)
           .map((doctor, repetitionInd) =>
-            parseExtendedCompositeIdNumberAndName(
+            parseExtendedCompositeIdNumberAndNameForPerson(
               doctor,
               `${elementPath}[${repetitionInd}]`
             )
@@ -157,7 +157,7 @@ export const parsePV1 = (
         field
           ?.split(repetitionSeparator)
           .map((doctor, repetitionInd) =>
-            parseExtendedCompositeIdNumberAndName(
+            parseExtendedCompositeIdNumberAndNameForPerson(
               doctor,
               `${elementPath}[${repetitionInd}]`
             )
