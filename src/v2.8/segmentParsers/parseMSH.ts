@@ -11,6 +11,8 @@ import {
   hl7StringEscaperFactory,
   parseHierarchicDesignatorFactory,
   parseCodedWithExceptionsFactory,
+  parseEntityIdentifierFactory,
+  parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
 
 const debug = debugLogger.extend("parseMSH");
@@ -49,6 +51,10 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
     parseHierarchicDesignatorFactory(encodingCharacters);
   const parseCodedWithExceptions =
     parseCodedWithExceptionsFactory(encodingCharacters);
+  const parseEntityIdentifier =
+    parseEntityIdentifierFactory(encodingCharacters);
+  const parseExtendedCompositeNameAndIdForOrganizations =
+    parseExtendedCompositeNameAndIdForOrganizationsFactory(encodingCharacters);
 
   const mshHeader = hl7ElementMapper<MSH>(
     msh,
@@ -56,13 +62,13 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
       fieldSeparator: fieldSeparator,
       encodingCharacters,
       sendingApplication: (field, elementPath) =>
-        parseHierarchicDesignator(field, `${elementPath}`),
+        parseHierarchicDesignator(field, elementPath),
       sendingFacility: (field, elementPath) =>
-        parseHierarchicDesignator(field, `${elementPath}`),
+        parseHierarchicDesignator(field, elementPath),
       receivingApplication: (field, elementPath) =>
-        parseHierarchicDesignator(field, `${elementPath}`),
+        parseHierarchicDesignator(field, elementPath),
       receivingFacility: (field, elementPath) =>
-        parseHierarchicDesignator(field, `${elementPath}`),
+        parseHierarchicDesignator(field, elementPath),
       dateTimeOfMessage: (field) => hl7StringEscaper(field),
       security: (field) => hl7StringEscaper(field),
       message: (field) => ({
@@ -89,7 +95,22 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
           ?.split(componentSeparator, 3)
           .map((val) => hl7StringEscaper(val) ?? ""),
       principalLanguageOfMessage: (field, elementPath) =>
-        parseCodedWithExceptions(field, `${elementPath}`),
+        parseCodedWithExceptions(field, elementPath),
+      alternateCharacterSetHandlingScheme: (field) => hl7StringEscaper(field),
+      messageProfileIdentifier: (field, elementPath) =>
+        field
+          .split(repetitionSeparator)
+          .map((rep, ind) =>
+            parseEntityIdentifier(rep, `${elementPath}[${ind}]`)
+          ),
+      sendingResponsibleOrganization: (field, path) =>
+        parseExtendedCompositeNameAndIdForOrganizations(field, path),
+      receivingResponsibleOrganization: (field, path) =>
+        parseExtendedCompositeNameAndIdForOrganizations(field, path),
+      sendingNetworkAddress: (field, elementPath) =>
+        parseHierarchicDesignator(field, elementPath),
+      receivingNetworkAddress: (field, elementPath) =>
+        parseHierarchicDesignator(field, elementPath),
     },
     { rootName }
   );
