@@ -20,7 +20,7 @@ export const parsePV2 = (
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
   const parseCodedWithExceptions =
     parseCodedWithExceptionsFactory(encodingCharacters);
-  const parseExtendedCompositeIdNumberAndName =
+  const parseExtendedCompositeIdNumberAndNameForPerson =
     parseExtendedCompositeIdNumberAndNameForPersonFactory(encodingCharacters);
   const parsePersonLocation = parsePersonLocationFactory(encodingCharacters);
   const parseExtendedCompositeNameAndIdForOrganizations =
@@ -51,7 +51,7 @@ export const parsePV2 = (
         field ? parseInt(field, 10) : undefined,
       visitDescription: (field) => hl7StringEscaper(field),
       referralSourceCode: (field, elementPath) =>
-        parseExtendedCompositeIdNumberAndName(field, `${elementPath}`),
+        parseExtendedCompositeIdNumberAndNameForPerson(field, `${elementPath}`),
       previousServiceDate: (field) => hl7StringEscaper(field),
       employmentIllnessRelatedIndicator: (field) => hl7StringEscaper(field),
       purgeStatusCode: (field) => hl7StringEscaper(field),
