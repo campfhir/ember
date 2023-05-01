@@ -1,8 +1,9 @@
 import { EVN, MSH, MessageEvents } from "../../../typings";
 import {
-  parseExtendedCompositeIdNumberAndNameFactory,
+  parseExtendedCompositeIdNumberAndNameForPersonFactory,
   hl7StringEscaperFactory,
   hl7ElementMapper,
+  parseCodedWithExceptionsFactory,
 } from "../utils";
 
 const rootName = "EVN";
@@ -15,7 +16,9 @@ export const parseEVN = (
 
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
   const parseExtendedCompositeIdNumberAndName =
-    parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
+    parseExtendedCompositeIdNumberAndNameForPersonFactory(encodingCharacters);
+  const parseCodedWithExceptions =
+    parseCodedWithExceptionsFactory(encodingCharacters);
 
   return hl7ElementMapper(
     evn,
@@ -23,9 +26,17 @@ export const parseEVN = (
       eventTypeCode: (field) => hl7StringEscaper(field) as MessageEvents,
       recordedDateTime: (field) => hl7StringEscaper(field) ?? "",
       dateTimePlannedEvent: (field) => hl7StringEscaper(field),
-      eventReasonCode: (field) => hl7StringEscaper(field),
+      eventReasonCode: (field, elementPath) =>
+        parseCodedWithExceptions(field, elementPath),
       operatorId: (field, elementPath) =>
-        parseExtendedCompositeIdNumberAndName(field, `${elementPath}`),
+        field
+          .split(repetitionSeparator)
+          .map((comp, ind) =>
+            parseExtendedCompositeIdNumberAndName(
+              comp,
+              `${elementPath}[${ind}]`
+            )
+          ),
       eventOccurred: (field) => hl7StringEscaper(field),
     },
     { rootName }
