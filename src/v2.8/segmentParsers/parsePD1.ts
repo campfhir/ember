@@ -3,7 +3,7 @@ import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
   parseCodedWithExceptionsFactory,
-  parseExtendedCompositeIdNumberAndNameFactory,
+  parseExtendedCompositeIdNumberAndNameForPersonFactory,
   parseExtendedCompositeIdWithCheckDigitFactory,
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
@@ -20,7 +20,7 @@ export const parsePD1 = (
   const parseCodedWithExceptions =
     parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendedCompositeIdNumberAndName =
-    parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
+    parseExtendedCompositeIdNumberAndNameForPersonFactory(encodingCharacters);
   const parseExtendedCompositeIdWithCheckDigit =
     parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
   const parseExtendedCompositeNameAndIdForOrganizations =
@@ -66,6 +66,34 @@ export const parsePD1 = (
       publicityIndicator: (field, elementPath) =>
         parseCodedWithExceptions(field, `${elementPath}`),
       protectionIndicator: (field) => hl7StringEscaper(field),
+      protectionIndicatorEffectiveDate: (field) => hl7StringEscaper(field),
+      placeOfWorship: (field, elementPath) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((comp, ind) =>
+            parseExtendedCompositeNameAndIdForOrganizations(
+              comp,
+              `${elementPath}[${ind}]`
+            )
+          ),
+      advanceDirectiveCode: (field, elementPath) =>
+        field
+          ?.split(repetitionSeparator)
+          .map((comp, ind) =>
+            parseCodedWithExceptions(comp, `${elementPath}[${ind}]`)
+          ),
+      immunizationRegistryStatus: (field, elementPath) =>
+        parseCodedWithExceptions(field, elementPath),
+      immunizationRegistryStatusEffectiveDate: (field) =>
+        hl7StringEscaper(field),
+      publicityCodeEffectiveDate: (field) => hl7StringEscaper(field),
+      militaryBranch: (field, elementPath) =>
+        parseCodedWithExceptions(field, elementPath),
+      militaryRankGrade: (field, elementPath) =>
+        parseCodedWithExceptions(field, elementPath),
+      militaryStatus: (field, elementPath) =>
+        parseCodedWithExceptions(field, elementPath),
+      advanceDirectiveLastVerifiedDate: (field) => hl7StringEscaper(field),
     },
     { rootName }
   );
