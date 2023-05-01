@@ -4,7 +4,7 @@ import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
   parseCodedWithExceptionsFactory,
-  parseExtendedCompositeIdNumberAndNameFactory,
+  parseExtendedCompositeIdNumberAndNameForPersonFactory,
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
 
@@ -21,7 +21,7 @@ export const parsePV2 = (
   const parseCodedWithExceptions =
     parseCodedWithExceptionsFactory(encodingCharacters);
   const parseExtendedCompositeIdNumberAndName =
-    parseExtendedCompositeIdNumberAndNameFactory(encodingCharacters);
+    parseExtendedCompositeIdNumberAndNameForPersonFactory(encodingCharacters);
   const parsePersonLocation = parsePersonLocationFactory(encodingCharacters);
   const parseExtendedCompositeNameAndIdForOrganizations =
     parseExtendedCompositeNameAndIdForOrganizationsFactory(encodingCharacters);
