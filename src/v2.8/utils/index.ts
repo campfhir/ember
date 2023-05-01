@@ -12,6 +12,7 @@ import {
   JobCodeClass,
   SegmentHeaders,
   CodedWithExceptions,
+  EntityIdentifier,
 } from "../../../typings";
 import {
   ExtendedAddress,
@@ -24,18 +25,37 @@ import {
 export const debugLogger = d("ember");
 const utilDebug = debugLogger.extend("utils");
 
-export function parseExtendedAddressFactory(
-  encodingCharacters: MSH["encodingCharacters"]
-) {
-  return function (input: string | undefined, element: string) {
-    return parseExtendedAddress(input, encodingCharacters, element);
+export const parseEntityIdentifier = (
+  field: string | undefined,
+  encodingCharacters: MSH["encodingCharacters"],
+  element: string | undefined
+): EntityIdentifier => {
+  const { componentSeparator } = encodingCharacters;
+  const component = field?.split(componentSeparator);
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  if (component == null) return {};
+  return hl7ElementMapper(
+    component,
+    {
+      entityIdentifier: (element) => hl7StringEscaper(element),
+      namespaceId: (element) => hl7StringEscaper(element),
+      universalId: (element) => hl7StringEscaper(element),
+      universalIdType: (element) => hl7StringEscaper(element),
+    },
+    { rootName: element }
+  );
+};
+
+export const parseEntityIdentifierFactory =
+  (encodingCharacters: MSH["encodingCharacters"]) =>
+  (field: string | undefined, element?: string) => {
+    return parseEntityIdentifier(field, encodingCharacters, element);
   };
-}
 
 export const parseExtendedAddress = (
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
-  element: string
+  element?: string
 ): ExtendedAddress => {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
@@ -44,20 +64,28 @@ export const parseExtendedAddress = (
   return hl7ElementMapper(
     component,
     {
-      streetAddress: (field) => hl7StringEscaper(field),
-      otherDesignation: (field) => hl7StringEscaper(field),
-      city: (field) => hl7StringEscaper(field),
-      stateOrProvince: (field) => hl7StringEscaper(field),
-      zipOrPostalCode: (field) => hl7StringEscaper(field),
-      country: (field) => hl7StringEscaper(field),
-      addressType: (field) => hl7StringEscaper(field),
-      otherGeographicDesignation: (field) => hl7StringEscaper(field),
-      countyParishCode: (field) => hl7StringEscaper(field),
-      censusTract: (field) => hl7StringEscaper(field),
+      streetAddress: (element) => hl7StringEscaper(element),
+      otherDesignation: (element) => hl7StringEscaper(element),
+      city: (element) => hl7StringEscaper(element),
+      stateOrProvince: (element) => hl7StringEscaper(element),
+      zipOrPostalCode: (element) => hl7StringEscaper(element),
+      country: (element) => hl7StringEscaper(element),
+      addressType: (element) => hl7StringEscaper(element),
+      otherGeographicDesignation: (element) => hl7StringEscaper(element),
+      countyParishCode: (element) => hl7StringEscaper(element),
+      censusTract: (element) => hl7StringEscaper(element),
     },
     { rootName: element }
   );
 };
+
+export function parseExtendedAddressFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (input: string | undefined, element: string) {
+    return parseExtendedAddress(input, encodingCharacters, element);
+  };
+}
 
 export function parseDriversLicenseNumberFactory(
   encodingCharacters: MSH["encodingCharacters"]
@@ -160,7 +188,7 @@ export const parseExtendPersonName = (
 export function parseCodedWithExceptionsFactory(
   encodingCharacters: MSH["encodingCharacters"]
 ) {
-  return function (field: string | undefined, element: string) {
+  return function (field: string | undefined, element?: string) {
     return parseCodedWithExceptions(field, encodingCharacters, element);
   };
 }
@@ -168,7 +196,7 @@ export function parseCodedWithExceptionsFactory(
 export const parseCodedWithExceptions = (
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
-  element: string
+  element?: string
 ): CodedWithExceptions => {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
@@ -234,7 +262,7 @@ export const parseJobCodeClass = (
 export function parseExtendedCompositeNameAndIdForOrganizationsFactory(
   encodingCharacters: MSH["encodingCharacters"]
 ) {
-  return function (input: string | undefined, rootName: string) {
+  return function (input: string | undefined, rootName?: string) {
     return parseExtendedCompositeNameAndIdForOrganizations(
       input,
       encodingCharacters,
@@ -246,7 +274,7 @@ export function parseExtendedCompositeNameAndIdForOrganizationsFactory(
 export const parseExtendedCompositeNameAndIdForOrganizations = (
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
-  element: string
+  element?: string
 ): ExtendedCompositeNameAndIdForOrganizations => {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
@@ -535,11 +563,11 @@ export const parseDischargeToLocation = (
   );
 };
 
-export function parseExtendedCompositeIdNumberAndNameFactory(
+export function parseExtendedCompositeIdNumberAndNameForPersonFactory(
   encodingCharacters: MSH["encodingCharacters"]
 ) {
   return function (input: string | undefined, element: string) {
-    return parseExtendedCompositeIdNumberAndName(
+    return parseExtendedCompositeIdNumberAndNameForPerson(
       input,
       encodingCharacters,
       element
@@ -547,7 +575,7 @@ export function parseExtendedCompositeIdNumberAndNameFactory(
   };
 }
 
-export const parseExtendedCompositeIdNumberAndName = (
+export const parseExtendedCompositeIdNumberAndNameForPerson = (
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
