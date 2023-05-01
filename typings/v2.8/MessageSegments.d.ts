@@ -1,7 +1,7 @@
-import { EntityIdentifier, JobCodeClass } from "./DataTypes";
 import {
   CodedWithExceptions,
   DriversLicenseNumber,
+  EntityIdentifier,
   ExtendedAddress,
   ExtendedCompositeIdNumberAndNameForPerson,
   ExtendedCompositeIdWithCheckDigit,
@@ -10,6 +10,7 @@ import {
   ExtendedTelecommunicationNumber,
   FinancialClass,
   HierarchicDesignator,
+  JobCodeClass,
   PersonLocation,
 } from "./DataTypes";
 import { MessageEvents } from "./MessageEvents";
@@ -123,6 +124,8 @@ export type MessageSegments = {
   /** The ARQ segment defines a request for the booking of an appointment.  It is used in transactions sent from an application acting in the role of a placer.
    */
   ARQ: {};
+
+  ARV: {};
 
   /** This segment represents an authorization or a pre-authorization for a referred procedure or requested service by the payor covering the patient’s health care.
    */
@@ -254,9 +257,10 @@ export type MessageSegments = {
      * | 02  | Physician order   |
      * | 03  | Census management |
      */
-    eventReasonCode?: string;
-    operatorId?: ExtendedCompositeIdNumberAndNameForPerson;
+    eventReasonCode?: CodedWithExceptions;
+    operatorId?: ExtendedCompositeIdNumberAndNameForPerson[];
     eventOccurred?: string;
+    eventFacility?: HierarchicDesignator;
   };
 
   /**
@@ -469,6 +473,12 @@ export type MessageSegments = {
      */
     characterSet?: string[];
     principalLanguageOfMessage?: CodedWithExceptions;
+    alternateCharacterSetHandlingScheme?: string;
+    messageProfileIdentifier?: EntityIdentifier[];
+    sendingResponsibleOrganization?: ExtendedCompositeNameAndIdForOrganizations;
+    receivingResponsibleOrganization?: ExtendedCompositeNameAndIdForOrganizations;
+    sendingNetworkAddress?: HierarchicDesignator;
+    receivingNetworkAddress?: HierarchicDesignator;
   };
 
   /** The NCK segment is used to allow the various systems on the network to synchronize their system clocks (system date and time).
@@ -529,9 +539,21 @@ export type MessageSegments = {
    */
   NST: {};
 
-  /** The NTE segment is defined here for inclusion in messages defined in other chapters.  It is a common format for sending notes and comments
+  /**
+   * The NTE segment is defined here for inclusion in messages defined in other chapters. It is commonly used for sending notes and comments.
+   * The technical committees define the meaning of the NTE segments within the context of the messages in their chapters. For each NTE, the description
+   * in the message attribute table should include an indication of the segment associated with the NTE, for example "Notes and Comments for the PID".
    */
-  NTE: {};
+  NTE: {
+    setId?: string;
+    sourceOfComment?: string;
+    comment?: string[];
+    commentType?: CodedWithExceptions;
+    enteredBy?: ExtendedCompositeIdNumberAndNameForPerson;
+    enteredDateTime?: string;
+    effectiveStartDate?: string;
+    expirationDate?: string;
+  };
 
   /** The Observation Request (OBR) segment is used to transmit information specific to an order for a diagnostic study or observation, physical exam, or assessment.  * 
   * 
@@ -794,6 +816,16 @@ export type MessageSegments = {
      * | N    | No          |
      */
     protectionIndicator?: string;
+    protectionIndicatorEffectiveDate?: string;
+    placeOfWorship?: ExtendedCompositeNameAndIdForOrganizations[];
+    advanceDirectiveCode?: CodedWithExceptions[];
+    immunizationRegistryStatus?: CodedWithExceptions;
+    immunizationRegistryStatusEffectiveDate?: string;
+    publicityCodeEffectiveDate?: string;
+    militaryBranch?: CodedWithExceptions;
+    militaryRankGrade?: CodedWithExceptions;
+    militaryStatus?: CodedWithExceptions;
+    advanceDirectiveLastVerifiedDate?: string;
   };
 
   /**
@@ -1261,7 +1293,18 @@ export type MessageSegments = {
    */
   RGS: {};
 
-  /** The role segment contains the data necessary to add, update, correct, and delete from the record persons involved, as well as their functional involvement with the activity being transmitted
+  /**
+   * The role segment contains the data necessary to add, update, correct, and delete from the record persons involved, as well as their functional involvement with the activity being transmitted.
+   * In general, the ROL segment is used to describe a person playing a particular role within the context of the message. In PM, for example, in the Grant Certificate/Permission message (B07), the ROL segment is used to describe the roles a person may perform pertinent to the certificate in the message.
+   *
+   * The positional location of the ROL segment in ADT and Finance messages indicates the relationship.
+   *
+   * When the segment is used following the `IN3` segment, and the role-ROL value is PP or FHCP, the PP or FHCP is related to the health plan.
+   *
+   * When the segment is used following the `PID` segment, and the role-ROL value is PP or FHCP, the PP or FHCP is related to the person.
+   *
+   * When the segment is used following the `PV2` segment, and the role-ROL value is PCP or FHCP, the PP or FHCP is related to the patient visit.
+   *
    */
   ROL: {};
 
@@ -1396,6 +1439,33 @@ export type MessageSegments = {
    */
   TXA: {};
 
+  /**
+   * This optional segment provides user authentication credentials, a Kerberos Service Ticket or SAML assertion, to be used by the receiving system to obtain user identification data. Refer to HL7 Table 0615 - User Authentication Credential Type Code. It is to be used in when the receiving application system requires the sending system to provide end-user identification for accountability or access control in interactive applications. Since user authentication implementations often limit the time period for validity of the session authentication credentials, this segment is not intended for use in non-interactive applications.
+   *
+   * It is possible that various user authentication credential standards' data may be communicated. Kerberos and SAML are two such standards. A user authentication credential is an encapsulated data (ED type) element, as defined by standards, with no HL7-relevant structure.
+   *
+   * Note: The UAC segment is defined for use within simple protocols, such as MLLP, that do not have user authentication semantics. Implementations that use WSDL/SOAP, or similar protocols, to envelope HL7 should employ the user authentication semantics and data structures available within the scope of those protocols rather than the UAC segment.
+   *
+   * If the receiving system accepts the user credentials in the UAC segment, no specific acknowledgement is required. However, if the receiving system detects an error while processing the UAC segment, its acknowledgment message shall report it to the sender via an MSA and ERR segment pair:
+   * - The ERR-3 (error code) field value is 207 to signify an application error
+   * - The ERR-7 (diagnostic information) field reports the specific error. Examples of possible errors are:
+   * - User credentials expected but not provided
+   * - User credentials invalid
+   * - User credentials expired
+   * - User credentials from an unknown or untrusted source
+   * - User unknown
+   * - User not allowed to create or access data on the receiving system.
+   * - User not allowed to initiate a processing function on the receiving system.
+   *
+   * When an MSA and ERR segment pair is reported to the sender, an application data response shall not occur. In such cases it is correct to assume that the sending application's user is not authorized to get the data.
+   *
+   * The processing rules for the ERR segment are outside of HL7's scope.
+   */
+  UAC: {
+    credentialTypeCode: CodedWithExceptions;
+    credential: CodedWithExceptions;
+  };
+
   /** The UB1 segment contains the data necessary to complete UB82 bills.  Only UB82 fields that do not exist in other HL7 defined segments appear in this segment.  Patient Name and Date of Birth are required for UB82 billing; however, they are included in the PID segment and therefore do not appear here.
    */
   UB1: {};
@@ -1436,6 +1506,7 @@ export type AIS = MessageSegments["AIS"];
 export type AL1 = MessageSegments["AL1"];
 export type APR = MessageSegments["APR"];
 export type ARQ = MessageSegments["ARQ"];
+export type ARV = MessageSegments["ARV"];
 export type AUT = MessageSegments["AUT"];
 export type BHS = MessageSegments["BHS"];
 export type BLG = MessageSegments["BLG"];
@@ -1532,6 +1603,7 @@ export type SFT = MessageSegments["SFT"];
 export type SPR = MessageSegments["SPR"];
 export type STF = MessageSegments["STF"];
 export type TXA = MessageSegments["TXA"];
+export type UAC = MessageSegments["UAC"];
 export type UB1 = MessageSegments["UB1"];
 export type UB2 = MessageSegments["UB2"];
 export type URD = MessageSegments["URD"];

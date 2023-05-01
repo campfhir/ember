@@ -19,16 +19,27 @@ import {
   IN1,
   IN2,
   IN3,
+  SFT,
+  UAC,
+  ARV,
+  NTE,
 } from "../MessageSegments";
 
 export type ADT_A04 = {
   messageHeader: MSH;
+  software?: SFT[];
+  userAuthentication?: UAC;
   eventType: EVN;
   patientIdentification: PID;
+  patientNotes?: NTE[];
   patientDemographics?: PD1;
+  patientAccessRestriction?: ARV[];
+  patientRole?: ROL[];
   nextOfKin?: NK1[];
   patientVisit: PV1;
   patientVisitAdditionInformation?: PV2;
+  encounterVisitRestriction?: ARV[];
+  encounterRole?: ROL[];
   disability?: DB1[];
   observation?: OBX[];
   patientAllergyInformation?: AL1[];
