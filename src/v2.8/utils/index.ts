@@ -583,6 +583,7 @@ export function isValidSegmentHeader(header: string): header is SegmentHeaders {
     header === "ORC" ||
     header === "PCR" ||
     header === "PD1" ||
+    header === "PDA" ||
     header === "PDC" ||
     header === "PEO" ||
     header === "PES" ||

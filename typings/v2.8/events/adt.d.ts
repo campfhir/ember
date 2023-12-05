@@ -23,6 +23,7 @@ import {
   UAC,
   ARV,
   NTE,
+  PDA,
 } from "../MessageSegments";
 
 export type ADT_A04 = {
@@ -45,17 +46,20 @@ export type ADT_A04 = {
   patientAllergyInformation?: AL1[];
   diagnosis?: DG1[];
   diagnosisRelatedGroup?: DRG;
-  procedures?: {
+  procedure?: {
     procedure: PR1;
     roles?: ROL[];
   }[];
   guarantor?: GT1[];
-  insurances?: {
+  insurance?: {
     insurance: IN1;
     insuranceAdditionalInfo?: IN2;
     insuranceAdditionalInfoCertification?: IN3;
   }[];
   accident?: ACC;
-  UB1?: UB1;
-  UB2?: UB2;
+  uniformBillingData?: {
+    UB1?: UB1;
+    UB2?: UB2;
+  };
+  patientDeathAndAutopsy?: PDA;
 };

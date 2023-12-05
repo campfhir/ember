@@ -827,7 +827,10 @@ export type MessageSegments = {
     militaryStatus?: CodedWithExceptions;
     advanceDirectiveLastVerifiedDate?: string;
   };
-
+  /**
+   * This segment carries information on a patient's death and possible autopsy.
+   */
+  PDA: {};
   /**
    */
   PDC: {};
@@ -1680,6 +1683,7 @@ export type OM6 = MessageSegments["OM6"];
 export type ORC = MessageSegments["ORC"];
 export type PCR = MessageSegments["PCR"];
 export type PD1 = MessageSegments["PD1"];
+export type PDA = MessageSegments["PDA"];
 export type PDC = MessageSegments["PDC"];
 export type PEO = MessageSegments["PEO"];
 export type PES = MessageSegments["PES"];
