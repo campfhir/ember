@@ -18,6 +18,7 @@ import {
   ExtendedPersonName,
   HeaderResults,
   HierarchicDesignator,
+  CodedWithNoExceptions,
 } from "../../../typings";
 
 export const debugLogger = d("ember");
@@ -287,6 +288,73 @@ export function parseCodedWithExceptions(
     component,
     {
       identifier: (field) => hl7StringEscaper(field),
+      text: (field) => hl7StringEscaper(field),
+      nameOfCodingSystem: (field) => hl7StringEscaper(field),
+      alternateIdentifier: (field) => hl7StringEscaper(field),
+      alternateText: (field) => hl7StringEscaper(field),
+      nameOfAlternateCodingSystem: (field) => hl7StringEscaper(field),
+      codingSystemVersionId: (field) => hl7StringEscaper(field),
+      alternateCodingSystemVersionId: (field) => hl7StringEscaper(field),
+      originalText: (field) => hl7StringEscaper(field),
+      secondAlternateIdentifier: (field) => hl7StringEscaper(field),
+      secondAlternateText: (field) => hl7StringEscaper(field),
+      nameOfSecondAlternateCodingSystem: (field) => hl7StringEscaper(field),
+      secondAlternateCodingSystemVersionId: (field) => hl7StringEscaper(field),
+      codingSystemOID: (field) => hl7StringEscaper(field),
+      valueSetOID: (field) => hl7StringEscaper(field),
+      valueSetVersionId: (field) => hl7StringEscaper(field),
+      alternateCodingSystemOID: (field) => hl7StringEscaper(field),
+      alternateValueSetOID: (field) => hl7StringEscaper(field),
+      alternateValueSetVersionId: (field) => hl7StringEscaper(field),
+      secondAlternateCodingSystemOID: (field) => hl7StringEscaper(field),
+      secondAlternateValueSetOID: (field) => hl7StringEscaper(field),
+      secondAlternateValueSetVersionId: (field) => hl7StringEscaper(field),
+    },
+    { rootName: element }
+  );
+}
+
+export function parseCodedWithNoExceptionsFactory(
+  encodingCharacters?: MSH["encodingCharacters"]
+) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
+  return function (field: string | undefined, element?: string) {
+    return parseCodedWithNoExceptions(
+      field,
+      {
+        fieldSeparator,
+        componentSeparator,
+        repetitionSeparator,
+        subComponentSeparator,
+        escapeCharacter,
+      },
+      element
+    );
+  };
+}
+
+export function parseCodedWithNoExceptions(
+  field: string | undefined,
+  encodingCharacters: MSH["encodingCharacters"],
+  element?: string
+): CodedWithNoExceptions {
+  const { componentSeparator } = encodingCharacters;
+  const component = field?.split(componentSeparator);
+  if (component == null)
+    return {
+      identifier: "",
+    };
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  return hl7ElementMapper(
+    component,
+    {
+      identifier: (field) => hl7StringEscaper(field) ?? "",
       text: (field) => hl7StringEscaper(field),
       nameOfCodingSystem: (field) => hl7StringEscaper(field),
       alternateIdentifier: (field) => hl7StringEscaper(field),

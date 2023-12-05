@@ -124,8 +124,31 @@ export type MessageSegments = {
   /** The ARQ segment defines a request for the booking of an appointment.  It is used in transactions sent from an application acting in the role of a placer.
    */
   ARQ: {};
-
-  ARV: {};
+  /**
+   * The ARV segment is used to communicate the requested/required type of access restrictions from system to system, at both the person/patient and the encounter/visit level.
+   *
+   * Examples:
+   * A person/patient may have the right to object to any or all of his/her information to be disclosed. In addition, the patient may request that protected information not be disclosed to family members or friends who may be involved in their care or for notification purposes.
+   *
+   * A realm or organization may have certain privacy policies.
+   *
+   * A patient may have the right to opt out of being included on facility directories.
+   * In an international context, a physician may be culturally obligated to protect the patient's privacy.
+   *
+   * Any "opt-in" or "opt-out" restrictions are communicated in ARV-3 - Access Restriction Value. This segment replaces PD1-12 and PV2-22, which have been deprecated in V2.6. The ARV segment is optional and is sent after the PID/PD1 segments to describe access restrictions associated with the person/patient. The ARV segment is optional and is sent after the PV1/PV2 segments to describe access restrictions associated with that specific encounter.
+   *
+   * Usage Notes:
+   *
+   * The individual system security may want to utilize the Access Restriction Value along with the Access Restriction Reason (and/or with the Confidentiality Code from another segment, e.g., OM1-30 or other data) in order to implement the appropriate type of protection for the person, patient, visit and/or visit data. Each system has the flexibility to incorporate/map the access values into their security system appropriately; the actual implementation for access to protected data is determined by the individual system. The Access Restriction Values supported by an enterprise/system would be defined and determined by that organization.
+   *
+   * It is expected that these access restriction values would be utilized in combination with other system security information (e.g., patient locations, user department, caregiver-patient relationships, other access restriction parameters) to determine user access.
+   *
+   * System implementers should carefully control access to the restriction codes and values, as they themselves hold sensitive information.
+   */
+  ARV: {
+    setId?: number;
+    accessRestrictionActionCode?: CodedWithExceptions;
+  };
 
   /** This segment represents an authorization or a pre-authorization for a referred procedure or requested service by the payor covering the patient’s health care.
    */
