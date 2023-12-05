@@ -11,10 +11,11 @@ import {
   parseJobCodeClassFactory,
 } from "../utils";
 
-export const parseNK1 = (
+export function parseNK1(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): NK1 => {
+): NK1 {
+  const rootName = "NK1";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const nk1 = segment.split(fieldSeparator);
 
@@ -33,7 +34,6 @@ export const parseNK1 = (
   const parseExtendedCompositeIdWithCheckDigit =
     parseExtendedCompositeIdWithCheckDigitFactory(encodingCharacters);
 
-  const rootName = "NK1";
   return hl7ElementMapper<NK1>(
     nk1,
     {
@@ -159,4 +159,4 @@ export const parseNK1 = (
     },
     { rootName }
   );
-};
+}

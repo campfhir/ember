@@ -17,8 +17,8 @@ import {
 
 const debug = debugLogger.extend("parseMSH");
 
-const rootName = "MSH";
-export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
+export function parseMSH(segment: string | undefined): WrappedResult<MSH> {
+  const rootName = "MSH";
   if (segment == null) {
     debug("Segment is NULL or undefined");
     return { ok: false, err: new Error("No header present in empty string") };
@@ -116,4 +116,4 @@ export const parseMSH = (segment: string | undefined): WrappedResult<MSH> => {
   );
 
   return { ok: true, val: mshHeader, warnings: [] };
-};
+}

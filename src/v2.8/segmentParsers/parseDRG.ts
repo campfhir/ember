@@ -1,10 +1,11 @@
 import { MSH, DRG } from "../../../typings";
 
-export const parseDRG = (
+export function parseDRG(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): DRG => {
+): DRG {
+  const rootName = "DRG";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const drg = segment.split(fieldSeparator);
   throw new Error("DRG Not implemented");
-};
+}

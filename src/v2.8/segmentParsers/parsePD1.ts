@@ -8,12 +8,11 @@ import {
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
 
-const rootName = "PD1";
-
-export const parsePD1 = (
+export function parsePD1(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): PD1 => {
+): PD1 {
+  const rootName = "PD1";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const pd1 = segment.split(fieldSeparator);
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
@@ -97,4 +96,4 @@ export const parsePD1 = (
     },
     { rootName }
   );
-};
+}

@@ -11,21 +11,27 @@ import {
   parseHierarchicDesignatorFactory,
 } from "../utils";
 
-const rootName = "PID";
-
-export const parsePID = (
+export function parsePID(
   segment: string,
-  encodingCharacters: MSH["encodingCharacters"]
-): PID => {
-  const {
-    fieldSeparator,
-    escapeCharacter,
-    subComponentSeparator,
-    componentSeparator,
-    repetitionSeparator,
-  } = encodingCharacters;
+  opt?: {
+    encodingCharacters?: MSH["encodingCharacters"];
+    hasSegmentHeader?: boolean;
+  }
+): PID {
+  const hasSegmentHeader = opt?.hasSegmentHeader ?? false;
+  const encodingCharacters = opt?.encodingCharacters;
+  const rootName = "PID";
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
 
   const pid = segment.split(fieldSeparator);
+  if (hasSegmentHeader) {
+    pid.shift();
+  }
 
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
   const parseCodedWithExceptions =
@@ -178,4 +184,23 @@ export const parsePID = (
     },
     { rootName }
   );
-};
+}
+
+export function isPID(unk: unknown): unk is PID {
+  if (typeof unk != "object") return false;
+  if (unk == null) {
+    return false;
+  }
+  if (!("patientName" in (unk as PID))) {
+    return false;
+  }
+
+  if (
+    typeof (unk as PID)["patientName"] !== "object" ||
+    (unk as PID).patientName == null
+  ) {
+    return false;
+  }
+
+  return true;
+}

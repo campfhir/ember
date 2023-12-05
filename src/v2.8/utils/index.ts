@@ -13,8 +13,6 @@ import {
   SegmentHeaders,
   CodedWithExceptions,
   EntityIdentifier,
-} from "../../../typings";
-import {
   ExtendedAddress,
   ExtendedCompositeIdWithCheckDigit,
   ExtendedPersonName,
@@ -25,11 +23,11 @@ import {
 export const debugLogger = d("ember");
 const utilDebug = debugLogger.extend("utils");
 
-export const parseEntityIdentifier = (
+export function parseEntityIdentifier(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string | undefined
-): EntityIdentifier => {
+): EntityIdentifier {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
@@ -44,19 +42,21 @@ export const parseEntityIdentifier = (
     },
     { rootName: element }
   );
-};
+}
 
-export const parseEntityIdentifierFactory =
-  (encodingCharacters: MSH["encodingCharacters"]) =>
-  (field: string | undefined, element?: string) => {
+export function parseEntityIdentifierFactory(
+  encodingCharacters: MSH["encodingCharacters"]
+) {
+  return function (field: string | undefined, element?: string) {
     return parseEntityIdentifier(field, encodingCharacters, element);
   };
+}
 
-export const parseExtendedAddress = (
+export function parseExtendedAddress(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element?: string
-): ExtendedAddress => {
+): ExtendedAddress {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
@@ -77,29 +77,63 @@ export const parseExtendedAddress = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseExtendedAddressFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
-    return parseExtendedAddress(input, encodingCharacters, element);
+    return parseExtendedAddress(
+      input,
+      {
+        fieldSeparator,
+        componentSeparator,
+        subComponentSeparator,
+        repetitionSeparator,
+        escapeCharacter,
+      },
+      element
+    );
   };
 }
 
 export function parseDriversLicenseNumberFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
-    return parseDriversLicenseNumber(input, encodingCharacters, element);
+    return parseDriversLicenseNumber(
+      input,
+      {
+        fieldSeparator,
+        subComponentSeparator,
+        componentSeparator,
+        escapeCharacter,
+        repetitionSeparator,
+      },
+      element
+    );
   };
 }
 
-export const parseDriversLicenseNumber = (
+export function parseDriversLicenseNumber(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): DriversLicenseNumber => {
+): DriversLicenseNumber {
   if (field == null) return {};
   const { componentSeparator } = encodingCharacters;
   const components = field.split(componentSeparator);
@@ -113,25 +147,38 @@ export const parseDriversLicenseNumber = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseExtendedTelecommunicationNumberFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
     return parseExtendedTelecommunicationNumber(
       input,
-      encodingCharacters,
+      {
+        fieldSeparator,
+        subComponentSeparator,
+        repetitionSeparator,
+        escapeCharacter,
+        componentSeparator,
+      },
       element
     );
   };
 }
 
-export const parseExtendedTelecommunicationNumber = (
+export function parseExtendedTelecommunicationNumber(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): ExtendedTelecommunicationNumber => {
+): ExtendedTelecommunicationNumber {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
@@ -150,21 +197,38 @@ export const parseExtendedTelecommunicationNumber = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseExtendPersonNameFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
-    return parseExtendPersonName(input, encodingCharacters, element);
+    return parseExtendPersonName(
+      input,
+      {
+        fieldSeparator,
+        subComponentSeparator,
+        componentSeparator,
+        escapeCharacter,
+        repetitionSeparator,
+      },
+      element
+    );
   };
 }
 
-export const parseExtendPersonName = (
+export function parseExtendPersonName(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): ExtendedPersonName => {
+): ExtendedPersonName {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
@@ -183,21 +247,38 @@ export const parseExtendPersonName = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseCodedWithExceptionsFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (field: string | undefined, element?: string) {
-    return parseCodedWithExceptions(field, encodingCharacters, element);
+    return parseCodedWithExceptions(
+      field,
+      {
+        fieldSeparator,
+        componentSeparator,
+        repetitionSeparator,
+        subComponentSeparator,
+        escapeCharacter,
+      },
+      element
+    );
   };
 }
 
-export const parseCodedWithExceptions = (
+export function parseCodedWithExceptions(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element?: string
-): CodedWithExceptions => {
+): CodedWithExceptions {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
@@ -230,21 +311,38 @@ export const parseCodedWithExceptions = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseJobCodeClassFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
-    return parseJobCodeClass(input, encodingCharacters, element);
+    return parseJobCodeClass(
+      input,
+      {
+        fieldSeparator,
+        subComponentSeparator,
+        repetitionSeparator,
+        componentSeparator,
+        escapeCharacter,
+      },
+      element
+    );
   };
 }
 
-export const parseJobCodeClass = (
+export function parseJobCodeClass(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): JobCodeClass => {
+): JobCodeClass {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
@@ -257,25 +355,38 @@ export const parseJobCodeClass = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseExtendedCompositeNameAndIdForOrganizationsFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, rootName?: string) {
     return parseExtendedCompositeNameAndIdForOrganizations(
       input,
-      encodingCharacters,
+      {
+        fieldSeparator,
+        componentSeparator,
+        subComponentSeparator,
+        repetitionSeparator,
+        escapeCharacter,
+      },
       rootName
     );
   };
 }
 
-export const parseExtendedCompositeNameAndIdForOrganizations = (
+export function parseExtendedCompositeNameAndIdForOrganizations(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element?: string
-): ExtendedCompositeNameAndIdForOrganizations => {
+): ExtendedCompositeNameAndIdForOrganizations {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
@@ -298,25 +409,38 @@ export const parseExtendedCompositeNameAndIdForOrganizations = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseExtendedCompositeIdWithCheckDigitFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
     return parseExtendedCompositeIdWithCheckDigit(
       input,
-      encodingCharacters,
+      {
+        fieldSeparator,
+        componentSeparator,
+        subComponentSeparator,
+        escapeCharacter,
+        repetitionSeparator,
+      },
       element
     );
   };
 }
 
-export const parseExtendedCompositeIdWithCheckDigit = (
+export function parseExtendedCompositeIdWithCheckDigit(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): ExtendedCompositeIdWithCheckDigit => {
+): ExtendedCompositeIdWithCheckDigit {
   const { componentSeparator } = encodingCharacters;
   const component = field?.split(componentSeparator);
   if (component == null) return {};
@@ -338,21 +462,38 @@ export const parseExtendedCompositeIdWithCheckDigit = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseHierarchicDesignatorFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
-    return parseHierarchicDesignator(input, encodingCharacters, element);
+    return parseHierarchicDesignator(
+      input,
+      {
+        fieldSeparator,
+        subComponentSeparator,
+        componentSeparator,
+        escapeCharacter,
+        repetitionSeparator,
+      },
+      element
+    );
   };
 }
 
-export const parseHierarchicDesignator = (
+export function parseHierarchicDesignator(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): HierarchicDesignator => {
+): HierarchicDesignator {
   const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
@@ -366,13 +507,132 @@ export const parseHierarchicDesignator = (
     },
     { rootName: element }
   );
-};
+}
 
 const getSegmentDebug = utilDebug.extend("getSegmentHeader");
 
-export const getSegmentHeader = (
+export function isValidSegmentHeader(header: string): header is SegmentHeaders {
+  if (
+    header === "ACC" ||
+    header === "ADD" ||
+    header === "AIG" ||
+    header === "AIL" ||
+    header === "AIP" ||
+    header === "AIS" ||
+    header === "AL1" ||
+    header === "APR" ||
+    header === "ARQ" ||
+    header === "AUT" ||
+    header === "BHS" ||
+    header === "BLG" ||
+    header === "BTS" ||
+    header === "CDM" ||
+    header === "CM0" ||
+    header === "CM1" ||
+    header === "CM2" ||
+    header === "CSP" ||
+    header === "CSR" ||
+    header === "CSS" ||
+    header === "CTD" ||
+    header === "CTI" ||
+    header === "DB1" ||
+    header === "DG1" ||
+    header === "DRG" ||
+    header === "DSC" ||
+    header === "DSP" ||
+    header === "EQL" ||
+    header === "ERQ" ||
+    header === "ERR" ||
+    header === "EVN" ||
+    header === "FAC" ||
+    header === "FHS" ||
+    header === "FT1" ||
+    header === "FTS" ||
+    header === "GOL" ||
+    header === "GT1" ||
+    header === "IN1" ||
+    header === "IN2" ||
+    header === "IN3" ||
+    header === "LCC" ||
+    header === "LCH" ||
+    header === "LDP" ||
+    header === "LOC" ||
+    header === "LRL" ||
+    header === "MFA" ||
+    header === "MFE" ||
+    header === "MFI" ||
+    header === "MRG" ||
+    header === "MSA" ||
+    header === "MSH" ||
+    header === "NCK" ||
+    header === "NK1" ||
+    header === "NPU" ||
+    header === "NSC" ||
+    header === "NST" ||
+    header === "NTE" ||
+    header === "OBR" ||
+    header === "OBX" ||
+    header === "ODS" ||
+    header === "ODT" ||
+    header === "OM1" ||
+    header === "OM2" ||
+    header === "OM3" ||
+    header === "OM4" ||
+    header === "OM5" ||
+    header === "OM6" ||
+    header === "ORC" ||
+    header === "PCR" ||
+    header === "PD1" ||
+    header === "PDC" ||
+    header === "PEO" ||
+    header === "PES" ||
+    header === "PID" ||
+    header === "PR1" ||
+    header === "PRA" ||
+    header === "PRB" ||
+    header === "PRC" ||
+    header === "PRD" ||
+    header === "PSH" ||
+    header === "PTH" ||
+    header === "PV1" ||
+    header === "PV2" ||
+    header === "QAK" ||
+    header === "QRD" ||
+    header === "QRF" ||
+    header === "RDF" ||
+    header === "RDT" ||
+    header === "RF1" ||
+    header === "RGS" ||
+    header === "ROL" ||
+    header === "RQ1" ||
+    header === "RQD" ||
+    header === "RXA" ||
+    header === "RXC" ||
+    header === "RXD" ||
+    header === "RXE" ||
+    header === "RXG" ||
+    header === "RXO" ||
+    header === "RXR" ||
+    header === "SCH" ||
+    header === "SPR" ||
+    header === "STF" ||
+    header === "TXA" ||
+    header === "UB1" ||
+    header === "UB2" ||
+    header === "URD" ||
+    header === "URS" ||
+    header === "VAR" ||
+    header === "VTQ" ||
+    header.match(/^Z[\w|\d]{2}$/) != null
+  ) {
+    return true;
+  }
+  return false;
+}
+
+export function getSegmentHeader(
   segment: string
-): WrappedResult<HeaderResults> => {
+): WrappedResult<HeaderResults> {
   const debug = getSegmentDebug;
   const header = segment.substring(0, 3) as SegmentHeaders;
   if (header.length < 3) {
@@ -383,119 +643,7 @@ export const getSegmentHeader = (
     };
   }
 
-  if (
-    header !== "ACC" &&
-    header !== "ADD" &&
-    header !== "AIG" &&
-    header !== "AIL" &&
-    header !== "AIP" &&
-    header !== "AIS" &&
-    header !== "AL1" &&
-    header !== "APR" &&
-    header !== "ARQ" &&
-    header !== "AUT" &&
-    header !== "BHS" &&
-    header !== "BLG" &&
-    header !== "BTS" &&
-    header !== "CDM" &&
-    header !== "CM0" &&
-    header !== "CM1" &&
-    header !== "CM2" &&
-    header !== "CSP" &&
-    header !== "CSR" &&
-    header !== "CSS" &&
-    header !== "CTD" &&
-    header !== "CTI" &&
-    header !== "DB1" &&
-    header !== "DG1" &&
-    header !== "DRG" &&
-    header !== "DSC" &&
-    header !== "DSP" &&
-    header !== "EQL" &&
-    header !== "ERQ" &&
-    header !== "ERR" &&
-    header !== "EVN" &&
-    header !== "FAC" &&
-    header !== "FHS" &&
-    header !== "FT1" &&
-    header !== "FTS" &&
-    header !== "GOL" &&
-    header !== "GT1" &&
-    header !== "IN1" &&
-    header !== "IN2" &&
-    header !== "IN3" &&
-    header !== "LCC" &&
-    header !== "LCH" &&
-    header !== "LDP" &&
-    header !== "LOC" &&
-    header !== "LRL" &&
-    header !== "MFA" &&
-    header !== "MFE" &&
-    header !== "MFI" &&
-    header !== "MRG" &&
-    header !== "MSA" &&
-    header !== "MSH" &&
-    header !== "NCK" &&
-    header !== "NK1" &&
-    header !== "NPU" &&
-    header !== "NSC" &&
-    header !== "NST" &&
-    header !== "NTE" &&
-    header !== "OBR" &&
-    header !== "OBX" &&
-    header !== "ODS" &&
-    header !== "ODT" &&
-    header !== "OM1" &&
-    header !== "OM2" &&
-    header !== "OM3" &&
-    header !== "OM4" &&
-    header !== "OM5" &&
-    header !== "OM6" &&
-    header !== "ORC" &&
-    header !== "PCR" &&
-    header !== "PD1" &&
-    header !== "PDC" &&
-    header !== "PEO" &&
-    header !== "PES" &&
-    header !== "PID" &&
-    header !== "PR1" &&
-    header !== "PRA" &&
-    header !== "PRB" &&
-    header !== "PRC" &&
-    header !== "PRD" &&
-    header !== "PSH" &&
-    header !== "PTH" &&
-    header !== "PV1" &&
-    header !== "PV2" &&
-    header !== "QAK" &&
-    header !== "QRD" &&
-    header !== "QRF" &&
-    header !== "RDF" &&
-    header !== "RDT" &&
-    header !== "RF1" &&
-    header !== "RGS" &&
-    header !== "ROL" &&
-    header !== "RQ1" &&
-    header !== "RQD" &&
-    header !== "RXA" &&
-    header !== "RXC" &&
-    header !== "RXD" &&
-    header !== "RXE" &&
-    header !== "RXG" &&
-    header !== "RXO" &&
-    header !== "RXR" &&
-    header !== "SCH" &&
-    header !== "SPR" &&
-    header !== "STF" &&
-    header !== "TXA" &&
-    header !== "UB1" &&
-    header !== "UB2" &&
-    header !== "URD" &&
-    header !== "URS" &&
-    header !== "VAR" &&
-    header !== "VTQ" &&
-    header[0] !== "Z"
-  ) {
+  if (!isValidSegmentHeader(header)) {
     debug("%s is an invalid HL7v2 header", header);
     return { ok: false, err: new Error("Not a valid HL7 header") };
   }
@@ -507,7 +655,7 @@ export const getSegmentHeader = (
     val: { header, fieldString },
     warnings: [],
   };
-};
+}
 
 export function parseFinancialFactory(
   encodingCharacters: MSH["encodingCharacters"]
@@ -517,11 +665,11 @@ export function parseFinancialFactory(
   };
 }
 
-export const parseFinancial = (
+export function parseFinancial(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): FinancialClass => {
+): FinancialClass {
   const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
@@ -534,21 +682,38 @@ export const parseFinancial = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseDischargeToLocationFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
-    return parseDischargeToLocation(input, encodingCharacters, element);
+    return parseDischargeToLocation(
+      input,
+      {
+        fieldSeparator,
+        componentSeparator,
+        subComponentSeparator,
+        repetitionSeparator,
+        escapeCharacter,
+      },
+      element
+    );
   };
 }
 
-export const parseDischargeToLocation = (
+export function parseDischargeToLocation(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): DischargeLocation => {
+): DischargeLocation {
   const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
@@ -561,25 +726,38 @@ export const parseDischargeToLocation = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parseExtendedCompositeIdNumberAndNameForPersonFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
     return parseExtendedCompositeIdNumberAndNameForPerson(
       input,
-      encodingCharacters,
+      {
+        fieldSeparator,
+        componentSeparator,
+        subComponentSeparator,
+        escapeCharacter,
+        repetitionSeparator,
+      },
       element
     );
   };
 }
 
-export const parseExtendedCompositeIdNumberAndNameForPerson = (
+export function parseExtendedCompositeIdNumberAndNameForPerson(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): ExtendedCompositeIdNumberAndNameForPerson => {
+): ExtendedCompositeIdNumberAndNameForPerson {
   const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
@@ -609,21 +787,38 @@ export const parseExtendedCompositeIdNumberAndNameForPerson = (
     },
     { rootName: element }
   );
-};
+}
 
 export function parsePersonLocationFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined, element: string) {
-    return parsePersonLocation(input, encodingCharacters, element);
+    return parsePersonLocation(
+      input,
+      {
+        fieldSeparator,
+        subComponentSeparator,
+        componentSeparator,
+        escapeCharacter,
+        repetitionSeparator,
+      },
+      element
+    );
   };
 }
 
-export const parsePersonLocation = (
+export function parsePersonLocation(
   field: string | undefined,
   encodingCharacters: MSH["encodingCharacters"],
   element: string
-): PersonLocation => {
+): PersonLocation {
   const { componentSeparator } = encodingCharacters;
   const components = field?.split(componentSeparator);
   if (components == null) return {};
@@ -647,13 +842,26 @@ export const parsePersonLocation = (
     },
     { rootName: element }
   );
-};
+}
 
 export function hl7StringEscaperFactory(
-  encodingCharacters: MSH["encodingCharacters"]
+  encodingCharacters?: MSH["encodingCharacters"]
 ) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
   return function (input: string | undefined) {
-    return hl7StringEscaper(input, encodingCharacters);
+    return hl7StringEscaper(input, {
+      fieldSeparator,
+      subComponentSeparator,
+      repetitionSeparator,
+      escapeCharacter,
+      componentSeparator,
+    });
   };
 }
 

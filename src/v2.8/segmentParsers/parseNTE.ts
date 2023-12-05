@@ -3,14 +3,14 @@ import {
   hl7ElementMapper,
   hl7StringEscaperFactory,
   parseCodedWithExceptionsFactory,
-  parseExtendedCompositeIdNumberAndNameForPerson,
   parseExtendedCompositeIdNumberAndNameForPersonFactory,
 } from "../utils";
 
-export const parseNTE = (
+export function parseNTE(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): NTE => {
+): NTE {
+  const rootName = "NTE";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const NTE = segment.split(fieldSeparator);
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
@@ -35,6 +35,6 @@ export const parseNTE = (
       effectiveStartDate: (field) => hl7StringEscaper(field),
       expirationDate: (field) => hl7StringEscaper(field),
     },
-    { rootName: "NTE" }
+    { rootName }
   );
-};
+}

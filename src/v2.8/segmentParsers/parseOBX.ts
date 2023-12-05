@@ -6,11 +6,11 @@ import {
   parseExtendedCompositeIdNumberAndNameForPersonFactory,
 } from "../utils";
 
-const rootName = "OBX";
-export const parseOBX = (
+export function parseOBX(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): OBX => {
+): OBX {
+  const rootName = "OBX";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const obx = segment.split(fieldSeparator);
 
@@ -60,4 +60,4 @@ export const parseOBX = (
     },
     { rootName }
   );
-};
+}

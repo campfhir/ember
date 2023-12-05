@@ -5,11 +5,11 @@ import {
   parseExtendedCompositeIdWithCheckDigitFactory,
 } from "../utils";
 
-const rootName = "DB1";
-export const parseDB1 = (
+export function parseDB1(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): DB1 => {
+): DB1 {
+  const rootName = "DB1";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const db1 = segment.split(fieldSeparator);
 
@@ -39,4 +39,4 @@ export const parseDB1 = (
     },
     { rootName }
   );
-};
+}

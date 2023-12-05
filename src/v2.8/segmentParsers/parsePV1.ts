@@ -10,12 +10,11 @@ import {
   parseDischargeToLocationFactory,
 } from "../utils";
 
-const rootName = "PV1";
-
-export const parsePV1 = (
+export function parsePV1(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): PV1 => {
+): PV1 {
+  const rootName = "PV1";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const pv1 = segment.split(fieldSeparator);
 
@@ -168,4 +167,4 @@ export const parsePV1 = (
     },
     { rootName }
   );
-};
+}

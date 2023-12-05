@@ -1,10 +1,11 @@
 import { MSH, UAC } from "../../../typings";
 import { hl7ElementMapper, parseCodedWithExceptionsFactory } from "../utils";
 
-export const parseUAC = (
+export function parseUAC(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): UAC => {
+): UAC {
+  const rootName = "UAC";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const uac = segment.split(fieldSeparator);
   const parseCodedWithExceptions =
@@ -16,6 +17,6 @@ export const parseUAC = (
         parseCodedWithExceptions(field, element),
       credential: (field, element) => parseCodedWithExceptions(field, element),
     },
-    { rootName: "UAC" }
+    { rootName }
   );
-};
+}

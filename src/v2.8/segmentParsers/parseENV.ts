@@ -6,11 +6,11 @@ import {
   parseCodedWithExceptionsFactory,
 } from "../utils";
 
-const rootName = "EVN";
-export const parseEVN = (
+export function parseEVN(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): EVN => {
+): EVN {
+  const rootName = "EVN";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const evn = segment.split(fieldSeparator);
 
@@ -41,4 +41,4 @@ export const parseEVN = (
     },
     { rootName }
   );
-};
+}

@@ -5,14 +5,13 @@ import {
   parseCodedWithExceptionsFactory,
 } from "../utils";
 
-const rootName = "AL1";
-export const parseAL1 = (
+export function parseAL1(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): AL1 => {
+): AL1 {
+  const rootName = "AL1";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const al1 = segment.split(fieldSeparator);
-
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
   const parseCodedWithExceptions =
     parseCodedWithExceptionsFactory(encodingCharacters);
@@ -29,4 +28,4 @@ export const parseAL1 = (
     },
     { rootName }
   );
-};
+}

@@ -5,12 +5,11 @@ import {
   parseExtendedCompositeNameAndIdForOrganizationsFactory,
 } from "../utils";
 
-const rootName = "SFT";
-
-export const parseSFT = (
+export function parseSFT(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): SFT => {
+): SFT {
+  const rootName = "SFT";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const sft = segment.split(fieldSeparator);
   const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
@@ -31,6 +30,6 @@ export const parseSFT = (
       productInformation: (field) => hl7StringEscaper(field),
       installDate: (field) => hl7StringEscaper(field),
     },
-    { rootName: rootName }
+    { rootName }
   );
-};
+}

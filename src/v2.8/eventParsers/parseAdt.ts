@@ -16,13 +16,19 @@ import { parseSFT } from "../segmentParsers/parseSFT";
 import { parseUAC } from "../segmentParsers/parseUAC";
 import { getSegmentHeader } from "../utils";
 
-export const parseAdt = (
+export function parseAdt(
   msh: MessageSegments["MSH"],
   segments: string[]
-): WrappedResult<ADT_A04> => {
-  if (msh.message.event === "A04") return parseAdt_A04(msh, segments);
+): WrappedResult<ADT_A04> {
+  if (msh.message.event === "A04") {
+    return parseAdt_A04(msh, segments);
+  }
+  // @ts-ignore Some implementations use the format with ADT_{event_type} format
+  if (msh.message.event === "ADT_A04") {
+    return parseAdt_A04(msh, segments);
+  }
   return { ok: false, err: new Error("Not Implemented") };
-};
+}
 /**
  *
  *
@@ -32,12 +38,12 @@ export const parseAdt = (
  * @param hl7Message
  * @returns
  */
-const parseNote = (
+function parseNote(
   noteSegment: string,
   encodingCharacters: MSH["encodingCharacters"],
   previousSegment: keyof MessageSegments,
   hl7Message: HL7Message
-): HL7Message => {
+): HL7Message {
   const nte = parseNTE(noteSegment, encodingCharacters);
   if (previousSegment === "PID") {
     if (hl7Message.patientNotes == null) {
@@ -48,7 +54,7 @@ const parseNote = (
   }
 
   return hl7Message;
-};
+}
 
 export function parseAdt_A04(
   msh: MessageSegments["MSH"],
@@ -59,14 +65,16 @@ export function parseAdt_A04(
   };
   const errors: Error[] = [];
   const warnings: Error[] = [];
-  let previousSegment: keyof MessageSegments | "" = "";
+  let previousSegment: keyof MessageSegments | null = null;
   for (let ind = 0; ind < segments.length - 1; ind++) {
     let segment = segments[ind];
     const res = getSegmentHeader(segment);
     if (!res.ok) continue;
     const { header, fieldString } = res.val;
     if (header === "PID") {
-      const pid = parsePID(fieldString, msh.encodingCharacters);
+      const pid = parsePID(fieldString, {
+        encodingCharacters: msh.encodingCharacters,
+      });
       hl7Message.patientIdentification = pid;
       previousSegment = "PID";
       continue;
@@ -107,7 +115,6 @@ export function parseAdt_A04(
       continue;
     } else if (header === "ACC") {
       const acc = parseACC(fieldString, msh.encodingCharacters);
-
       hl7Message.accident = acc;
       continue;
     } else if (header === "OBX") {

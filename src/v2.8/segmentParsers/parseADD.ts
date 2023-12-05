@@ -1,11 +1,11 @@
 import { MSH, ADD } from "../../../typings";
 import { hl7ElementMapper, hl7StringEscaperFactory } from "../utils";
 
-const rootName = "ADD";
-export const parseADD = (
+export function parseADD(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): ADD => {
+): ADD {
+  const rootName = "ADD";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const add = segment.split(fieldSeparator);
 
@@ -18,4 +18,4 @@ export const parseADD = (
     },
     { rootName }
   );
-};
+}

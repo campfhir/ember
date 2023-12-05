@@ -6,7 +6,7 @@ export type WrappedResult<T = any, E extends Error = Error> =
   | {
       ok: true;
       val: T;
-      warnings: Error[];
+      warnings?: Error[];
     }
   | {
       ok: false;

@@ -867,14 +867,37 @@ export type MessageSegments = {
    * implementations that have more than a single Patient Administration application assigning such numbers.
    */
   PID: {
+    /**
+     * PID-1
+     */
     setId?: number;
+    /**
+     * PID-2
+     */
     externalPatientId?: ExtendedCompositeIdWithCheckDigit;
+    /**
+     * PID-3
+     */
     internalPatientId: ExtendedCompositeIdWithCheckDigit[];
+    /**
+     * PID-4
+     */
     alternatePatientId?: ExtendedCompositeIdWithCheckDigit[];
+    /**
+     * PID-5
+     */
     patientName: ExtendedPersonName[];
+    /**
+     * PID-6
+     */
     mothersMaidenName?: ExtendedPersonName;
+    /**
+     * PID-7
+     */
     dateOfBirth?: string;
     /**
+     * PID-8
+     *
      * Common code values:
      * | Code |Value    |
      * | ---- | ------- |
@@ -884,14 +907,37 @@ export type MessageSegments = {
      * | U    | Unknown |
      */
     sex?: string;
+    /**
+     * PID-9
+     */
     patientAlias?: ExtendedPersonName[];
+    /**
+     * PID-10
+     */
     patientRace?: string;
+    /**
+     * PID-11
+     */
     patientAddress?: ExtendedAddress[];
+    /**
+     * PID-12
+     */
     countyCode?: string;
+    /**
+     * PID-13
+     */
     homePhoneNumber?: ExtendedTelecommunicationNumber[];
+    /**
+     * PID-14
+     */
     businessPhoneNumber?: ExtendedTelecommunicationNumber[];
+    /**
+     * PID-15
+     */
     primaryLanguage?: CodedWithExceptions;
     /**
+     * PID-16
+     *
      * Common code values:
      * | Code | Value    |
      * | ---- | -------- |
@@ -902,14 +948,37 @@ export type MessageSegments = {
      * | W    | Widowed  |
      */
     maritalStatus?: string;
+    /**
+     * PID-17
+     */
     religion?: string;
+    /**
+     * PID-18
+     */
     patientAccountNumber?: ExtendedCompositeIdWithCheckDigit;
+    /**
+     * PID-19
+     */
     patientSocialSecurityNumber?: string;
+    /**
+     * PID-20
+     */
     driversLicenseNumber?: DriversLicenseNumber;
+    /**
+     * PID-21
+     */
     mothersIdentifier?: CodedWithExceptions[];
+    /**
+     * PID-22
+     */
     ethnicGroup?: string;
+    /**
+     * PID-23
+     */
     birthPlace?: string;
     /**
+     * PID-24
+     *
      * Common values
      *
      * | Code | Values |
@@ -918,12 +987,29 @@ export type MessageSegments = {
      * | N    | No     |
      */
     multipleBirthIndicator?: string;
+    /**
+     * PID-25
+     */
     birthOrder?: number;
+    /**
+     * PID-26
+     */
     citizenship?: string[];
+    /**
+     * PID-27
+     */
     veteransMilitaryStatus?: CodedWithExceptions;
+    /**
+     * PID-28
+     */
     nationality?: CodedWithExceptions;
+    /**
+     * PID-29
+     */
     patientDeathDateAndTime?: string;
     /**
+     * PID-30
+     *
      * Common values
      *
      * | Code | Values |
@@ -933,6 +1019,8 @@ export type MessageSegments = {
      */
     patientDeathIndicator?: string;
     /**
+     * PID-31
+     *
      * Common values
      *
      * | Code | Values |
@@ -942,6 +1030,8 @@ export type MessageSegments = {
      */
     identityUnknownIndicator?: string;
     /**
+     * PID-32
+     *
      * Common Values
      * | Code | Description                            |
      * | ---- | -------------------------------------- |
@@ -951,16 +1041,38 @@ export type MessageSegments = {
      * | US   |	Unknown/Default Social Security Number |
      */
     identityReliabilityCode?: CodedWithExceptions[];
+    /**
+     * PID-33
+     */
     lastUpdateDateTime?: string;
+    /**
+     * PID-34
+     */
     lastUpdateFacility?: HierarchicDesignator;
+    /**
+     * PID-35
+     */
     taxonomicClassificationCode?: CodedWithExceptions;
+    /**
+     * PID-36
+     */
     breedCode?: CodedWithExceptions;
+    /**
+     * PID-37
+     */
     strain?: string;
     /**
+     * PID-38
      *  Spec specifies 2 repetitions
      */
     productionClassCode?: CodedWithExceptions[];
+    /**
+     * PID-39
+     */
     tribalCitizenship?: CodedWithExceptions[];
+    /**
+     * PID-40
+     */
     patientTelecommunicationInformation?: ExtendedTelecommunicationNumber[];
   };
 

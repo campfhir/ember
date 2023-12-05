@@ -5,11 +5,11 @@ import {
   parseCodedWithExceptionsFactory,
 } from "../utils";
 
-const rootName = "ACC";
-export const parseACC = (
+export function parseACC(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
-): ACC => {
+): ACC {
+  const rootName = "ACC";
   const { fieldSeparator, repetitionSeparator } = encodingCharacters;
   const acc = segment.split(fieldSeparator);
 
@@ -31,4 +31,4 @@ export const parseACC = (
     },
     { rootName }
   );
-};
+}
