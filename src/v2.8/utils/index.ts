@@ -996,8 +996,7 @@ export function hl7StringEscaper(
   encodingCharacters: MSH["encodingCharacters"]
 ): string | undefined {
   if (input == null) {
-    const data = undefined;
-    return data;
+    return undefined;
   }
   const {
     escapeCharacter,
@@ -1073,8 +1072,11 @@ export function hl7ElementMapper<K extends object>(
     const val = elements[ind];
 
     let res = definition[key as keyof K];
-    if (typeof res === "function") item[key] = res(val, elementPath);
-    else item[key] = res;
+    if (typeof res === "function") {
+      item[key] = res(val, elementPath);
+    } else {
+      item[key] = res;
+    }
     debug("%s => %O", elementPath, item[key]);
   }
   return item as K;
