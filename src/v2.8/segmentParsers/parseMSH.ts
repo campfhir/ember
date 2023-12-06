@@ -99,7 +99,7 @@ export function parseMSH(segment: string | undefined): WrappedResult<MSH> {
       alternateCharacterSetHandlingScheme: (field) => hl7StringEscaper(field),
       messageProfileIdentifier: (field, elementPath) =>
         field
-          .split(repetitionSeparator)
+          ?.split(repetitionSeparator)
           .map((rep, ind) =>
             parseEntityIdentifier(rep, `${elementPath}[${ind}]`)
           ),

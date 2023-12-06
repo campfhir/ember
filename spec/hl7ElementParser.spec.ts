@@ -8,6 +8,8 @@ describe("Given an ADT AO4", () => {
   const adt = `MSH|^~\\&|MESA_ADT|XYZ_ADMITTING|iFW|ZYX_HOSPITAL|||ADT^A04|103102|P|2.4||||||8859/1^8859/2^8859/3||
 EVN||200007010800||||200007010800
 PID|||583295^^^ADT1||DOE^JANE||19610615|M||2106-3|123 MAIN \\T\\ CLARK STREET^^GREENSBORO^NC^27401-1020|GL|(919)379-1212|(919)271-3434~(919)277-3114||S||PATID12345001^2^M10|123456789|9-87654^NC
+NTE|1|Patient|Patient Loves Chocolate~Patient Has a Best Friend
+NTE|2|Doctor|This patient needs a wheelchair
 PD1|||Test Health Facility^^13838|||||||||
 NK1|1|BATES^RONALD^L|SPO|||||20011105
 NK1|2|BATES^JUDY^L|SISTER|||||20011105
@@ -28,6 +30,8 @@ IN2|ID1551001|SSN12345678`;
       MSH: (segment) => segment,
       EVN: (seg) => seg,
       PID: (seg) => seg,
+      NTE1: (seg) => seg,
+      NTE2: (seg) => seg,
       pd1: (seg) => seg,
     });
     expect(adtMessage.pd1).to.equal(

@@ -62,7 +62,7 @@ export function parsePID(
               field,
               `${elementPath}[${repetitionInd}]`
             )
-          ),
+          ) ?? [],
       alternatePatientId: (field, elementPath) =>
         field
           ?.split(repetitionSeparator)
@@ -79,7 +79,7 @@ export function parsePID(
             (name, repetitionInd) =>
               parseExtendPersonName(name, `${elementPath}[${repetitionInd}]`) ??
               ""
-          ),
+          ) ?? [],
       mothersMaidenName: (field, elementPath) =>
         parseExtendPersonName(field, `${elementPath}`),
       dateOfBirth: (field) => hl7StringEscaper(field),
@@ -181,6 +181,7 @@ export function parsePID(
               `${elementPath}[${repetitionInd}]`
             )
           ),
+      comments: [],
     },
     { rootName }
   );

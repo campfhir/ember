@@ -626,6 +626,11 @@ export type ExtendedCompositeIdWithCheckDigit = {
   assigningFacility?: HierarchicDesignator;
 };
 
+export type DateRange = {
+  rangeStartDateTime?: string;
+  rangeEndDateTime?: string;
+};
+
 export type DischargeLocation = {
   location?: string;
   effectiveDate?: string;

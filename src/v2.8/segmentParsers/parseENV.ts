@@ -30,7 +30,7 @@ export function parseEVN(
         parseCodedWithExceptions(field, elementPath),
       operatorId: (field, elementPath) =>
         field
-          .split(repetitionSeparator)
+          ?.split(repetitionSeparator)
           .map((comp, ind) =>
             parseExtendedCompositeIdNumberAndName(
               comp,

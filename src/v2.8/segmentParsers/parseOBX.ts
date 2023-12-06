@@ -5,7 +5,14 @@ import {
   parseCodedWithExceptionsFactory,
   parseExtendedCompositeIdNumberAndNameForPersonFactory,
 } from "../utils";
-
+/**
+ *
+ *
+ * @export
+ * @param {string} segment
+ * @param {MSH["encodingCharacters"]} encodingCharacters
+ * @returns {OBX}
+ */
 export function parseOBX(
   segment: string,
   encodingCharacters: MSH["encodingCharacters"]
@@ -57,6 +64,8 @@ export function parseOBX(
           .map((method, repetitionInd) =>
             parseCodedWithExceptions(method, `${elementPath}[${repetitionInd}]`)
           ),
+      // this value is not populated by an OBX value but from succeeding NTE segments
+      comments: [],
     },
     { rootName }
   );

@@ -1,5 +1,7 @@
 import {
   CodedWithExceptions,
+  CodedWithNoExceptions,
+  DateRange,
   DriversLicenseNumber,
   EntityIdentifier,
   ExtendedAddress,
@@ -147,7 +149,11 @@ export type MessageSegments = {
    */
   ARV: {
     setId?: number;
-    accessRestrictionActionCode?: CodedWithExceptions;
+    accessRestrictionActionCode: CodedWithNoExceptions;
+    accessRestrictionValue: CodedWithExceptions;
+    accessRestrictionReason?: CodedWithExceptions[];
+    specialAccessRestrictionInstructions?: string[];
+    accessRestrictionDateRange?: DateRange;
   };
 
   /** This segment represents an authorization or a pre-authorization for a referred procedure or requested service by the payor covering the patient’s health care.
@@ -701,6 +707,10 @@ export type MessageSegments = {
     producersId?: string;
     responsibleObserver?: ExtendedCompositeIdNumberAndNameForPerson;
     observationMethod?: CodedWithExceptions[];
+    /**
+     * ! This value is not part of the OBX segment is only populated with succeeding NTE segments, should be the last value in the HL7 mapping function to avoid conflicts with other fields
+     */
+    comments: NTE[];
   };
 
   /** The ORC sequence items of interest to ODS are ORC-1-order control,ORC-2-placer order number, ORC-3filler order number, ORC-7-quantity/timing, ORC-9-date/time of transaction, ORC-10-entered by, and ORC-11-verified by.  For ORC-1-order control, the values may be New (NW), Cancel (CA), Discontinue Order Request (DC), Change (XO), Hold Order Request (HD), and Release Previous Hold (RL).  The HD and RL codes could stop service for a specified length of time.  ORC-4-quantity/timing should be used to specify whether an order is continuous or for one service period only.  It is also useful for supplements which are part of a diet but only delivered, say, every day at night.
@@ -1100,6 +1110,10 @@ export type MessageSegments = {
      * PID-40
      */
     patientTelecommunicationInformation?: ExtendedTelecommunicationNumber[];
+    /**
+     * ! This value is not part of the PID segment is only populated with succeeding NTE segments, should be the last value in the HL7 mapping function to avoid conflicts with other fields
+     */
+    comments: NTE[];
   };
 
   /**

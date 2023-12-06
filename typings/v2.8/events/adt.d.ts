@@ -32,7 +32,6 @@ export type ADT_A04 = {
   userAuthentication?: UAC;
   eventType: EVN;
   patientIdentification: PID;
-  patientNotes?: NTE[];
   patientDemographics?: PD1;
   patientAccessRestriction?: ARV[];
   patientRole?: ROL[];
@@ -42,15 +41,15 @@ export type ADT_A04 = {
   encounterVisitRestriction?: ARV[];
   encounterRole?: ROL[];
   disability?: DB1[];
-  observation?: OBX[];
+  observations?: OBX[];
   patientAllergyInformation?: AL1[];
   diagnosis?: DG1[];
   diagnosisRelatedGroup?: DRG;
-  procedure?: {
+  procedures?: {
     procedure: PR1;
     roles?: ROL[];
   }[];
-  guarantor?: GT1[];
+  guarantors?: GT1[];
   insurance?: {
     insurance: IN1;
     insuranceAdditionalInfo?: IN2;

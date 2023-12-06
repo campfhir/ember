@@ -19,6 +19,7 @@ import {
   HeaderResults,
   HierarchicDesignator,
   CodedWithNoExceptions,
+  DateRange,
 } from "../../../typings";
 
 export const debugLogger = d("ember");
@@ -145,6 +146,50 @@ export function parseDriversLicenseNumber(
       driversLicenseNumber: (field) => hl7StringEscaper(field),
       issuingStateProvinceCounty: (field) => hl7StringEscaper(field),
       expirationDate: (field) => hl7StringEscaper(field),
+    },
+    { rootName: element }
+  );
+}
+
+export function parseDateRangeFactory(
+  encodingCharacters?: MSH["encodingCharacters"]
+) {
+  const fieldSeparator = encodingCharacters?.fieldSeparator ?? "|";
+  const componentSeparator = encodingCharacters?.componentSeparator ?? "^";
+  const subComponentSeparator =
+    encodingCharacters?.subComponentSeparator ?? "&";
+  const repetitionSeparator = encodingCharacters?.repetitionSeparator ?? "~";
+  const escapeCharacter = encodingCharacters?.escapeCharacter ?? "\\";
+
+  return function (input: string | undefined, element: string) {
+    return parseDateRange(
+      input,
+      {
+        fieldSeparator,
+        subComponentSeparator,
+        componentSeparator,
+        escapeCharacter,
+        repetitionSeparator,
+      },
+      element
+    );
+  };
+}
+
+export function parseDateRange(
+  field: string | undefined,
+  encodingCharacters: MSH["encodingCharacters"],
+  element: string
+): DateRange {
+  if (field == null) return {};
+  const { componentSeparator } = encodingCharacters;
+  const components = field.split(componentSeparator);
+  const hl7StringEscaper = hl7StringEscaperFactory(encodingCharacters);
+  return hl7ElementMapper(
+    components,
+    {
+      rangeStartDateTime: (field) => hl7StringEscaper(field),
+      rangeEndDateTime: (field) => hl7StringEscaper(field),
     },
     { rootName: element }
   );
@@ -979,7 +1024,7 @@ export function hl7StringEscaper(
 const hl7ElementMapperDebug = utilDebug.extend("hl7ElementMapper");
 
 /**
- * Takes an array of string an maps in order definition and returns an object
+ * Takes an array of string and maps in order of a definition and returns an object
  *
  * @example
  * let elements = ["Hello", "Sam", "21", "San Francisco"]
@@ -995,7 +1040,7 @@ const hl7ElementMapperDebug = utilDebug.extend("hl7ElementMapper");
  * expect(result.name).to.be.equal("Same")
  * expect(result.age).to.be.equal(12) // Since we have a literal value the string at elements[2] is ignored
  *
- * // San Francisco would not be mapped since there is no forth key in the definition
+ *  San Francisco would not be mapped since there is no forth key in the definition
  *
  * @param elements String values to map
  * @param definition The definition of how to map the strings, order of the keys defines which index in the array is
@@ -1008,7 +1053,7 @@ const hl7ElementMapperDebug = utilDebug.extend("hl7ElementMapper");
 export function hl7ElementMapper<K extends object>(
   elements: string[],
   definition: {
-    [P in keyof K]: ((element: string, ind: string) => K[P]) | K[P];
+    [P in keyof K]: ((element: string | undefined, ind: string) => K[P]) | K[P];
   },
   options?: {
     rootName?: string;
@@ -1018,7 +1063,7 @@ export function hl7ElementMapper<K extends object>(
   const debug = hl7ElementMapperDebug.extend(rootName);
   let item: any = {};
   let keys = [...Object.keys(definition)];
-  for (const ind in elements) {
+  for (const ind in keys) {
     const delimiter = rootName.includes("-") ? "." : "-";
     const elementPath = rootName.concat(
       delimiter,
@@ -1026,13 +1071,7 @@ export function hl7ElementMapper<K extends object>(
     );
     const key = keys[ind];
     const val = elements[ind];
-    if (key == null) {
-      debug(
-        "%s Has No Corresponding Key in the definition will return a partial object",
-        elementPath
-      );
-      return item;
-    }
+
     let res = definition[key as keyof K];
     if (typeof res === "function") item[key] = res(val, elementPath);
     else item[key] = res;

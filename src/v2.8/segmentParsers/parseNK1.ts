@@ -63,7 +63,7 @@ export function parseNK1(
           ),
       businessPhoneNumber: (field, elementPath) =>
         field
-          .split(repetitionSeparator)
+          ?.split(repetitionSeparator)
           .map((phone, repetitionInd) =>
             parseExtendedTelecommunicationNumber(
               phone,
